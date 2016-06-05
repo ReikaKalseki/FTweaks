@@ -1,0 +1,10 @@
+{
+  "name": "FTweaks",
+  "version": "0.0.1",
+  "title": "FTweaks",
+  "author": "Reika",
+  "contact": "",
+  "homepage": "",
+  "description": "Makes a few minor tweaks.",
+  "dependencies": ["base >= 0.12.0"]
+}
