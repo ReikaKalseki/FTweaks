@@ -57,10 +57,11 @@ data:extend(
   },
   
   --inserter stack size
+  --[[
     {
     type = "technology",
     name = "inserter-stack-size-bonus-5",
-    icon = "__base__/graphics/technology/inserter-stack-size-bonus.png",
+    icon = "__base__/graphics/technology/inserter-capacity.png",
     effects =
     {
       {
@@ -87,7 +88,7 @@ data:extend(
     {
     type = "technology",
     name = "inserter-stack-size-bonus-6",
-    icon = "__base__/graphics/technology/inserter-stack-size-bonus.png",
+    icon = "__base__/graphics/technology/inserter-capacity.png",
     effects =
     {
       {
@@ -114,7 +115,7 @@ data:extend(
     {
     type = "technology",
     name = "inserter-stack-size-bonus-7",
-    icon = "__base__/graphics/technology/inserter-stack-size-bonus.png",
+    icon = "__base__/graphics/technology/inserter-capacity.png",
     effects =
     {
       {
@@ -137,7 +138,7 @@ data:extend(
     },
     upgrade = true,
     order = "c-o-d"
-  },
+  },--]]
 }
 )
 
