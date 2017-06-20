@@ -5,7 +5,7 @@
   "author": "Reika",
   "contact": "",
   "homepage": "",
-  "factorio_version" : "0.14",
+  "factorio_version" : "0.15",
   "description": "Makes a few minor tweaks.",
   "dependencies": ["base >= 0.12.0"]
 }

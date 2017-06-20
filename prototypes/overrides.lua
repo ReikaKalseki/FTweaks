@@ -2,6 +2,26 @@ require("config")
 
 data.raw["pipe-to-ground"]["pipe-to-ground"].fast_replaceable_group = "pipe-to-ground"
 
+data.raw["electric-pole"]["small-electric-pole"].fast_replaceable_group = "powerpole"
+data.raw["electric-pole"]["medium-electric-pole"].fast_replaceable_group = "powerpole"
+
+if data.raw["electric-pole"]["medium-electric-pole-2"] then
+	data.raw["electric-pole"]["small-electric-pole-2"].fast_replaceable_group = "powerpole"
+	data.raw["electric-pole"]["medium-electric-pole-2"].fast_replaceable_group = "powerpole"
+end
+if data.raw["electric-pole"]["medium-electric-pole-3"] then
+	data.raw["electric-pole"]["small-electric-pole-3"].fast_replaceable_group = "powerpole"
+	data.raw["electric-pole"]["medium-electric-pole-3"].fast_replaceable_group = "powerpole"
+end
+if data.raw["electric-pole"]["medium-electric-pole-4"] then
+	data.raw["electric-pole"]["small-electric-pole-4"].fast_replaceable_group = "powerpole"
+	data.raw["electric-pole"]["medium-electric-pole-4"].fast_replaceable_group = "powerpole"
+end
+if data.raw["electric-pole"]["medium-electric-pole-5"] then
+	data.raw["electric-pole"]["small-electric-pole-5"].fast_replaceable_group = "powerpole"
+	data.raw["electric-pole"]["medium-electric-pole-5"].fast_replaceable_group = "powerpole"
+end
+
 -- Stack Sizes
 if Config.stackSize then
 	data.raw.item["stone"].stack_size = 200
@@ -31,7 +51,7 @@ end
 
 -- Cheaper Steel
 if Config.cheapSteel then
-	data.raw.recipe["steel-plate"].energy_required = 7
+	data.raw.recipe["steel-plate"].energy = 7
 	data.raw.recipe["steel-plate"].ingredients = {{"iron-plate", 2}}
 end
 
@@ -55,34 +75,6 @@ if data.raw.item["basic-circuit-board"] then
       {"iron-plate", 5}
     }
 end
-
--- Cheaper purple potions
-data.raw.recipe["alien-science-pack"].result_count = 20
-
--- Cheaper modules (remove alien artifact)
-if Config.removeArtifactFromModules then
-	data.raw["recipe"]["speed-module-3"].ingredients =
-		{
-		  {"speed-module-2", 4},
-		  {"advanced-circuit", 5},
-		  {"processing-unit", 5},
-		  --{"alien-artifact", 1}
-		}
-	data.raw["recipe"]["productivity-module-3"].ingredients =
-		{
-		  {"productivity-module-2", 5},
-		  {"advanced-circuit", 5},
-		  {"processing-unit", 5},
-		  --{"alien-artifact", 1}
-		}
-	data.raw["recipe"]["effectivity-module-3"].ingredients =
-		{
-		  {"effectivity-module-2", 5},
-		  {"advanced-circuit", 5},
-		  {"processing-unit", 5},
-		  --{"alien-artifact", 1}
-		}
-end
 	
 -- fluid color correction
 data.raw["fluid"]["heavy-oil"].base_color = {r=0.906, g=0.376, b=0.145}
@@ -92,6 +84,15 @@ data.raw["fluid"]["petroleum-gas"].base_color = {r=0.741, g=0.741, b=0.741}
 data.raw["fluid"]["petroleum-gas"].flow_color = {r=0.282, g=0.282, b=0.282}
 
 data.raw["fluid"]["sulfuric-acid"].base_color = {r=0, g=0.7, b=0.788}
+
+if data.raw["technology"]["fast-loader"] then
+	table.insert(data.raw["technology"]["fast-loader"].prerequisites,"loader")
+	table.insert(data.raw["technology"]["express-loader"].prerequisites,"fast-loader")
+	if data.raw["technology"]["green-loader"] then
+		table.insert(data.raw["technology"]["green-loader"].prerequisites,"express-loader")
+		table.insert(data.raw["technology"]["purple-loader"].prerequisites,"green-loader")
+	end
+end
 
 -- tougher endgame
 if Config.harderSilo then
@@ -110,13 +111,73 @@ if Config.harderSilo then
 	if data.raw["technology"]["plasma-turret-damage-10"] then
 		table.insert(data.raw["technology"]["rocket-silo"].prerequisites,"plasma-turret-damage-10")
 	end
+	--[[
 	if data.raw["technology"]["follower-robot-count-20"] then
 		table.insert(data.raw["technology"]["rocket-silo"].prerequisites,"follower-robot-count-20")
 	end
+	--]]
 
-	data.raw["recipe"]["satellite"].energy_required = 600
-	data.raw["recipe"]["rocket-part"].energy_required = 120
+	data.raw["recipe"]["satellite"].energy = 600
+	data.raw["recipe"]["rocket-part"].energy = 120
+	
+	local satparts = {}
+	local circuitcount = 0
+	for k,item in pairs(data.raw.recipe["satellite"].ingredients) do
+		if item[1] == "accumulator" and data.raw.item["large-accumulator-3"] then
+			item[1] = "large-accumulator-3"
+		end
+		if item[1] == "solar-panel" and data.raw.item["solar-panel-5"] then
+			item[1] = "solar-panel-5"
+		end
+		if item[1] == "solar-panel" and data.raw.item["solar-panel-3"] then
+			item[1] = "solar-panel-3"
+		end
+		if item[1] == "solar-panel" and data.raw.item["solar-panel-5"] then
+			item[1] = "solar-panel-5"
+		end
+		if item[1] == "processing-unit" then
+			circuitcount = item[2]
+		end
+		table.insert(satparts, item)
+	end
+	if data.raw.item["advanced-processing-unit"] then
+		table.insert(satparts, {"advanced-processing-unit", math.floor(circuitcount/2)})
+	end
+	table.insert(satparts, item)
+	
+	data.raw["recipe"]["satellite"].ingredients = satparts
+	
+	if data.raw.item["titanium-plate"] then
+		table.insert(data.raw["recipe"]["low-density-structure"].ingredients, {"titanium-plate", 5})
+	end
+	if data.raw.item["tungsten-plate"] then
+		table.insert(data.raw["recipe"]["low-density-structure"].ingredients, {"tungsten-plate", 2})
+	end
+	
+	local controlparts = {}
+	
+	for k,item in pairs(data.raw.recipe["rocket-control-unit"].ingredients) do
+		if item[1] == "speed-module" then
+			if data.raw.module["speed-module-5"] then
+				item[1] = "speed-module-5"
+			else
+				item[1] = "speed-module-3"
+			end
+		end
+		table.insert(controlparts, item)
+	end
+	data.raw["recipe"]["rocket-control-unit"].ingredients = controlparts
+	
+	data.raw["recipe"]["rocket-control-unit"].energy = data.raw["recipe"]["rocket-control-unit"].energy*10
+	data.raw["recipe"]["low-density-structure"].energy = data.raw["recipe"]["low-density-structure"].energy*4
+	data.raw["recipe"]["rocket-fuel"].energy = data.raw["recipe"]["rocket-fuel"].energy*5
+	
+	data.raw["recipe"]["rocket-fuel"].category = "chemistry"--"crafting-with-fluid"
+	table.insert(data.raw["recipe"]["rocket-fuel"].ingredients, {type="fluid", name = "hydrogen", amount = 20})
+	table.insert(data.raw["recipe"]["rocket-fuel"].ingredients, {type="fluid", name = "nitrogen", amount = 10})
 end
+
+data.raw.item["rocket-fuel"].fuel_value = "1000MJ"
 
 if data.raw["technology"]["uranium-processing"] then
 	if data.raw["technology"]["advanced-material-processing-4"] then
@@ -157,8 +218,134 @@ if data.raw["storage-tank"]["rail-tanker-proxy"] then
 	data.raw["storage-tank"]["rail-tanker-proxy"].fluid_box.base_area = 1000 --was 250
 end
 
+if data.raw.locomotive["bob-diesel-locomotive-3"] then
+	data.raw.locomotive["bob-diesel-locomotive-3"].max_speed = 3
+end
+
 if data.raw.recipe["basic-circuit-board"] then
-	data.raw.recipe["basic-circuit-board"].energy_required = 0.5
+	data.raw.recipe["basic-circuit-board"].energy = 0.5
+end
+
+if data.raw.recipe["solder"] then
+	data.raw.recipe["solder"].energy = 0.5
+end
+
+if data.raw.recipe["large-accumulator"] then
+		if not Config.harderSilo then
+			local ingredients = {}
+			local accucount = 0
+			for k,item in pairs(data.raw.recipe["satellite"].ingredients) do
+				if item[1] == "accumulator" then
+					accucount = item[2]
+				else
+					table.insert(ingredients, item)
+				end
+			end
+			table.insert(ingredients, {"large-accumulator", math.floor(accucount*0.8)})
+		end
+		
+	data:extend(
+	{
+	  {
+		type = "recipe",
+		name = "large-accumulator-conversion",
+		energy = 8,
+		enabled = "true",
+		ingredients =
+		{
+		  {"iron-plate", 1},
+		  {"battery", 5},
+		  {"accumulator", 1},
+		},
+		result = "large-accumulator"
+	  }
+	})
+
+	if not Config.harderSilo then
+		data:extend(
+		{
+		  {
+			type = "recipe",
+			name = "large-accumulator-satellite",
+			energy = data.raw.recipe["satellite"].energy,
+			enabled = "true",
+			ingredients = ingredients--[[
+			{
+			  {"low-density-structure", 100},
+			  {"solar-panel", 100},
+			  {"large-accumulator", 80},
+			  {"radar", 5},
+			  {"processing-unit", 100},
+			  {"rocket-fuel", 50}
+			}--]],
+			result = "satellite"
+		  }
+		})
+	end
+	 
+	table.insert(data.raw.technology["bob-electric-energy-accumulators-2"].effects, {type = "unlock-recipe", recipe = "large-accumulator-conversion"})
+	 
+	if not Config.harderSilo then
+		table.insert(data.raw.technology["rocket-silo"].effects, {type = "unlock-recipe", recipe = "large-accumulator-satellite"})
+	end
+end
+
+if data.raw.recipe["chemical-furnace"] then
+	data:extend(
+	{
+	  {
+		type = "recipe",
+		name = "chemical-furnace-conversion",
+		energy = 8,
+		enabled = "true",
+		ingredients =
+		{
+		  {"electric-furnace", 1},
+		  {"steel-pipe", 5},
+		},
+		result = "chemical-furnace"
+	  }
+	})
+	 
+	 table.insert(data.raw.technology["chemical-processing-3"].effects, {type = "unlock-recipe", recipe = "chemical-furnace-conversion"})
+end
+
+if data.raw.recipe["electric-chemical-mixing-furnace"] and data.raw.recipe["chemical-furnace-conversion"] then
+	data:extend(
+	{
+	  	  {
+		type = "recipe",
+		name = "chemical-furnace-conversion-2",
+		energy = 8,
+		enabled = "true",
+		ingredients =
+		{
+		  {"electric-furnace-2", 1},
+		  {"tungsten-gear-wheel", 10},
+		  {"processing-unit", 5},
+		},
+		result = "electric-chemical-mixing-furnace"
+	  },
+	  	  {
+		type = "recipe",
+		name = "chemical-furnace-conversion-3",
+		energy = 8,
+		enabled = "true",
+		ingredients =
+		{
+		  {"electric-furnace-3", 1},
+		  {"tungsten-pipe", 10},
+		  {"tungsten-gear-wheel", 10},
+		  {"advanced-processing-unit", 5},
+		  {"processing-unit", 5},
+		},
+		result = "electric-chemical-mixing-furnace-2"
+	  },
+	  
+	})
+	 
+	 table.insert(data.raw.technology["chemical-processing-3"].effects, {type = "unlock-recipe", recipe = "chemical-furnace-conversion-2"})
+	 table.insert(data.raw.technology["chemical-processing-3"].effects, {type = "unlock-recipe", recipe = "chemical-furnace-conversion-3"})
 end
 
 if data.raw["generator"]["wind-turbine"] then
@@ -170,6 +357,10 @@ if data.raw["generator"]["wind-turbine"] then
       {"copper-cable", 3},
       {"iron-stick", 3}
     }
+end
+
+for k,robot in pairs(data.raw["construction-robot"]) do
+	robot.resistances = { { type = "fire", percent = 100 } }
 end
 
 
