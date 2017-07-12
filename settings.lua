@@ -34,5 +34,23 @@ data:extend({
             order = "r",
 			localised_name = "Harder reactors",
 			localised_description = "Greatly increases the technology progression required to research nuclear reactors.",
+        },--[[
+        {
+            type = "bool-setting",
+            name = "coal-steel",
+            setting_type = "startup",
+            default_value = true,
+            order = "r",
+			localised_name = "Steel requires coal",
+			localised_description = "Makes the production of steel require coal as a carbon source. Steel and stone furnaces use coal anyways, but this means coal is also required for steel-making electric furnaces.",
+        },--]]
+        {
+            type = "bool-setting",
+            name = "harder-rockets",
+            setting_type = "startup",
+            default_value = true,
+            order = "r",
+			localised_name = "Harder rockets",
+			localised_description = "Makes the rocket launches more difficult by making the resultant noise SERIOUSLY upset the local wildlife.",
         },
 })

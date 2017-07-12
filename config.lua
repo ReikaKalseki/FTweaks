@@ -11,3 +11,7 @@ Config.harderSilo = settings.startup["harder-silo"].value--true
 
 --This enables an increased difficulty for nuclear power - more tech gating and more expensive research
 Config.harderNuclear = settings.startup["harder-nuclear"].value--true
+
+--Config.coalInSteel = settings.startup["coal-steel"].value--true
+
+Config.harderRockets = settings.startup["harder-rockets"].value--true

@@ -22,26 +22,34 @@ if data.raw["electric-pole"]["medium-electric-pole-5"] then
 	data.raw["electric-pole"]["medium-electric-pole-5"].fast_replaceable_group = "powerpole"
 end
 
+function increaseStackSize(item, amt)
+	data.raw.item[item].stack_size = math.max(data.raw.item[item].stack_size, amt)
+end
+
 -- Stack Sizes
 if Config.stackSize then
-	data.raw.item["stone"].stack_size = 200
-	data.raw.item["coal"].stack_size = 200
-	data.raw.item["iron-ore"].stack_size = 200
-	data.raw.item["copper-ore"].stack_size = 200
-	data.raw.item["sulfur"].stack_size = 200
-	data.raw.item["raw-wood"].stack_size = 200
+	increaseStackSize("stone", 200)
+	increaseStackSize("coal", 200)
+	increaseStackSize("iron-ore", 200)
+	increaseStackSize("copper-ore", 200)
+	increaseStackSize("uranium-ore", 200)
+	increaseStackSize("sulfur", 200)
+	increaseStackSize("raw-wood", 200)
 
-	data.raw.item["iron-plate"].stack_size = 200
-	data.raw.item["copper-plate"].stack_size = 200
-	data.raw.item["steel-plate"].stack_size = 200
+	increaseStackSize("iron-plate", 200)
+	increaseStackSize("copper-plate", 200)
+	increaseStackSize("steel-plate", 200)
 
-	data.raw.item["plastic-bar"].stack_size = 200
-	data.raw.item["stone-brick"].stack_size = 200
-	data.raw.item["battery"].stack_size = 200
-	data.raw.item["stone-wall"].stack_size = 100
+	increaseStackSize("plastic-bar", 200)
+	increaseStackSize("stone-brick", 200)
+	increaseStackSize("battery", 200)
+	increaseStackSize("stone-wall", 100)
+	
+	increaseStackSize("concrete", 500)
+	increaseStackSize("landfill", 500)
 
-	data.raw.item["rocket-fuel"].stack_size = 50
-	data.raw.item["low-density-structure"].stack_size = 50
+	increaseStackSize("rocket-fuel", 50)
+	increaseStackSize("low-density-structure", 50)
 end
 
 -- Cheaper Steel
@@ -51,6 +59,16 @@ if Config.cheapSteel then
 	data.raw.recipe["steel-plate"].expensive.energy_required = 15
 	data.raw.recipe["steel-plate"].expensive.ingredients = {{"iron-plate", 5}}
 end
+
+--[[
+if Config.coalInSteel then
+	table.insert(data.raw.recipe["steel-plate"].normal.ingredients, {"coal", 1}) --requires new input slot
+	table.insert(data.raw.recipe["steel-plate"].expensive.ingredients, {"coal", 2})
+	data.raw.furnace["stone-furnace"].source_inventory_size = math.max(2, data.raw.furnace["stone-furnace"].source_inventory_size) --does not work, triggers crash
+	data.raw.furnace["steel-furnace"].source_inventory_size = math.max(2, data.raw.furnace["steel-furnace"].source_inventory_size)
+	data.raw.furnace["electric-furnace"].source_inventory_size = math.max(2, data.raw.furnace["electric-furnace"].source_inventory_size)
+end
+--]]
 
 if data.raw.item["basic-circuit-board"] then
 	data.raw.recipe["small-lamp"].ingredients = {
@@ -74,6 +92,10 @@ data.raw["fluid"]["petroleum-gas"].flow_color = {r=0.282, g=0.282, b=0.282}
 
 data.raw["fluid"]["sulfuric-acid"].base_color = {r=0, g=0.7, b=0.788}
 
+--table.insert(data.raw["heat-pipe"]["heat-pipe"].flags, "placeable-off-grid")
+--table.insert(data.raw["heat-pipe"]["heat-pipe"].flags, "not-on-map")
+--data.raw["heat-pipe"]["heat-pipe"].collision_mask = {} --makes heat pipes placeable on top of each other
+
 if data.raw["technology"]["fast-loader"] then
 	table.insert(data.raw["technology"]["fast-loader"].prerequisites,"loader")
 	table.insert(data.raw["technology"]["express-loader"].prerequisites,"fast-loader")
@@ -94,6 +116,17 @@ end
 
 table.insert(data.raw["technology"]["electric-energy-distribution-2"].prerequisites,"advanced-electronics")
 
+data.raw.item["rocket-silo"].subgroup = "production-machine"
+
+data:extend(
+{
+  {
+    type = "recipe-category",
+    name = "manual-crafting"
+  },
+})
+
+
 -- tougher endgame
 if Config.harderSilo then
 	data.raw["technology"]["rocket-silo"].unit.count = data.raw["technology"]["rocket-silo"].unit.count*10
@@ -109,7 +142,7 @@ if Config.harderSilo then
 		table.insert(data.raw["technology"]["rocket-silo"].prerequisites,"effectivity-module-5")
 	end
 	if data.raw["technology"]["plasma-turret-damage-10"] then
-		table.insert(data.raw["technology"]["rocket-silo"].prerequisites,"plasma-turret-damage-10")
+		table.insert(data.raw["technology"]["rocket-silo"].prerequisites,"plasma-turret-damage-9") --not 10, as that requires space science
 	end
 	--[[
 	if data.raw["technology"]["follower-robot-count-20"] then
@@ -119,6 +152,9 @@ if Config.harderSilo then
 
 	data.raw["recipe"]["satellite"].energy_required = 600
 	data.raw["recipe"]["rocket-part"].energy_required = 120
+	
+	data.raw["recipe"]["rocket-silo"].category = "manual-crafting"
+	table.insert(data.raw.player["player"].crafting_categories,"manual-crafting")
 	
 	local satparts = {}
 	local circuitcount = 0
@@ -143,9 +179,19 @@ if Config.harderSilo then
 	if data.raw.item["advanced-processing-unit"] then
 		table.insert(satparts, {"advanced-processing-unit", math.floor(circuitcount/2)})
 	end
+	if data.raw.item["plutonium"] then --RTG
+		table.insert(satparts, {"plutonium", 2})
+		table.insert(data.raw.technology["rocket-silo"].prerequisites, "kovarex-enrichment-process")
+	end
 	table.insert(satparts, item)
 	
 	data.raw["recipe"]["satellite"].ingredients = satparts
+	for i = 8,3,-1 do
+		if data.raw["assembling-machine"]["assembling-machine-" .. i] then
+			data.raw["assembling-machine"]["assembling-machine-" .. i].ingredient_count = math.max(data.raw["assembling-machine"]["assembling-machine-" .. i].ingredient_count, #satparts) --ensure craftability in the highest assembling machine tier
+			break
+		end
+	end
 	
 	if data.raw.item["titanium-plate"] then
 		table.insert(data.raw["recipe"]["low-density-structure"].ingredients, {"titanium-plate", 5})
@@ -172,11 +218,12 @@ if Config.harderSilo then
 	data.raw["recipe"]["low-density-structure"].normal.energy_required = data.raw["recipe"]["low-density-structure"].normal.energy_required*4
 	data.raw["recipe"]["low-density-structure"].expensive.energy_required = data.raw["recipe"]["low-density-structure"].expensive.energy_required*4
 	data.raw["recipe"]["rocket-fuel"].energy_required = data.raw["recipe"]["rocket-fuel"].energy_required*5
+	table.insert(data.raw["recipe"]["rocket-fuel"].ingredients, {"steel-plate", 2})
 	
-	data.raw["recipe"]["rocket-fuel"].category = "chemistry"--"crafting-with-fluid"
 	if data.raw.fluid["hydrogen"] then
 		table.insert(data.raw["recipe"]["rocket-fuel"].ingredients, {type="fluid", name = "hydrogen", amount = 200})
 		table.insert(data.raw["recipe"]["rocket-fuel"].ingredients, {type="fluid", name = "nitrogen", amount = 100})
+		data.raw["recipe"]["rocket-fuel"].category = "chemistry" --to allow 2 fluid inputs
 	end
 end
 
@@ -268,7 +315,7 @@ for name,spawner in pairs(data.raw["unit-spawner"]) do
 	spawner.resistances = createSpawnerResistance(spawner)
 end
 
-data.raw.unit["medium-biter"].attack_parameters.range = 0.5--0.75--0.9 --was 1.0, allowing through-wall attacks
+data.raw.unit["medium-biter"].attack_parameters.range = 0.9 --was 1.0, allowing through-wall attacks
 
 if data.raw.recipe["large-accumulator"] then
 		if not Config.harderSilo then
@@ -401,4 +448,19 @@ end
 
 for k,robot in pairs(data.raw["construction-robot"]) do
 	robot.resistances = { { type = "fire", percent = 100 } }
+end
+
+data.raw.generator["steam-turbine"].working_sound.sound.filename = "__FTweaks__/sounds/turbine.ogg"
+data.raw.generator["steam-turbine"].working_sound.sound.volume = 1.0
+data.raw.generator["steam-turbine"].working_sound.match_speed_to_activity = false
+
+data.raw["assembling-machine"]["centrifuge"].working_sound.sound = {
+        {
+          filename = "__FTweaks__/sounds/centrifuge.ogg",
+          volume = 0.8
+        },
+}
+
+if data.raw.recipe["breeder-fuel-cell"] then
+	table.insert(data.raw.technology["kovarex-enrichment-process"].effects, {type = "unlock-recipe", recipe = "kovarex-enrichment-process"})
 end
