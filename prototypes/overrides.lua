@@ -251,12 +251,14 @@ if data.raw["underground-belt"]["purple-underground-belt"] then
 	data.raw["transport-belt"]["purple-transport-belt"].speed = 0.2
 end
 
+--[[
 if data.raw["pipe"]["stone-pipe"] then
 	data.raw["pipe"]["stone-pipe"].fluid_box.base_area = 4
 end
 if data.raw["pipe-to-ground"]["stone-pipe-to-ground"] then
 	data.raw["pipe-to-ground"]["stone-pipe-to-ground"].fluid_box.base_area = 4
 end
+--]]
 
 data.raw["assembling-machine"]["assembling-machine-3"].crafting_speed = 1.5 --vanilla is 1.25, which is LESS than a tier2 with the four speed modules
 
