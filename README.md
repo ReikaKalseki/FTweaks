@@ -15,6 +15,7 @@ KSPower windmills are made somewhat cheaper
 
 
 Secondary Features:
+Automatically reloads recipes and technologies when the game is reloaded, to keep up to date with mod changes
 Small/Medium Powerpoles can now fast-replace each other
 Lamps and rail signals use basic circuits instead of ones with components if BobElectronics is installed
 Fixes some fluid-in-pipe colors, especially for the three oil products, to match the icons
@@ -25,3 +26,5 @@ Makes BobElectronics solder faster to craft if present
 Adds a few conversion recipes for crafting low-tier machines into high-tier ones
 Construction robots are now fire-resistant to prevent mass death in forest fires
 Steam Turbine and Uranium Centrifuge now have their own sounds instead of sounding like steam engines and assemblers
+Fluid Spills (mod) no longer prevent building placement
+Accumulators are now somewhat quieter

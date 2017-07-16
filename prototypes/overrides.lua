@@ -463,6 +463,11 @@ data.raw["assembling-machine"]["centrifuge"].working_sound.sound = {
         },
 }
 
+data.raw["accumulator"]["accumulator"]["working_sound"]["sound"][1] = {
+        filename = "__base__/sound/accumulator-working.ogg",
+        volume = 0.4
+}
+
 if data.raw.recipe["breeder-fuel-cell"] then
 	table.insert(data.raw.technology["kovarex-enrichment-process"].effects, {type = "unlock-recipe", recipe = "kovarex-enrichment-process"})
 end

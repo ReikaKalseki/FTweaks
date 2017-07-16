@@ -1,11 +1,11 @@
 {
   "name": "FTweaks",
-  "version": "0.0.1",
+  "version": "0.0.3",
   "title": "FTweaks",
   "author": "Reika",
   "contact": "",
   "homepage": "",
   "factorio_version" : "0.15",
-  "description": "Makes a few minor tweaks.",
-  "dependencies": ["base >= 0.12.0"]
+  "description": "Tweaks the game to either fix minor issues, add QoL features, or make larger changes to game behavior.",
+  "dependencies": ["base >= 0.15.0"]
 }

@@ -1,37 +1,51 @@
 require "config"
 
-ranTick = false
+function initGlobal(force)
+	if not global.ftweaks then
+		global.ftweaks = {}
+	end
+	if force or global.ftweaks.ranTick == nil then
+		global.ftweaks.ranTick = false
+	end
+end
+
+local function doOneTick()
+	for _,force in pairs(game.forces) do
+		force.reset_recipes()
+		force.reset_technologies()
+	end
+	if game.players and #game.players > 0 and game.players["Reika"] then
+		game.players["Reika"].color = {r=0.2, g=0.7, b=1.0, a=1.0}
+	end
+end
+
+initGlobal(true)
 
 script.on_load(function()
 	
 end)
 
+script.on_init(function()
+	initGlobal(true)
+end)
+
+script.on_configuration_changed(function()
+	initGlobal(true)
+end)
+
 script.on_event(defines.events.on_tick, function(event)
-  if not ranTick then
-	  game.players[1].force.reset_recipes()
-	  game.players[1].force.reset_technologies()
-	  game.players[1].color = {r=0.2, g=0.7, b=1.0, a=1.0}
-	  ranTick = true
-	  --[[
-		for chunk in game.surfaces["nauvis"].get_chunks() do
-			local x1 = chunk.x*32
-			local y1 = chunk.y*32
-			local x2 = x1+32
-			local y2 = y1+32
-			local wells = game.surfaces["nauvis"].find_entities_filtered({area = {{x1, y1}, {x2, y2}}, type = "mining-drill", name="geothermal-well"})
-			for _,well in pairs(wells) do
-				if well.valid then
-					local pos = well.position
-					local dir = well.direction
-					local f = well.force
-					local n = well.name
-					well.destroy()
-					game.surfaces["nauvis"].create_entity{name=n, position=pos, direction=dir, force=f, fast_replace=true, spill=false}
-				end
-			end
-		end
-		--]]
-  end
+	initGlobal(false)
+	if not global.ftweaks.ranTick then
+		doOneTick()
+		global.ftweaks.ranTick = true
+		game.print("FTweaks: Game state changed; reloading caches.")
+	end
+end)
+
+script.on_event(defines.events.on_player_joined_game, function(event)
+	if game.players and #game.players > 0 and game.players[event.player_index].name == "Reika" then
+		game.players[event.player_index].color = {r=0.2, g=0.7, b=1.0, a=1.0}
+	end
 end)
 
 local function getRocketEvoIncrease(evo)
