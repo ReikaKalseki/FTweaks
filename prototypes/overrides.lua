@@ -449,7 +449,8 @@ if data.raw["electric-energy-interface"]["wind-turbine-2"] then
 end
 
 for k,robot in pairs(data.raw["construction-robot"]) do
-	robot.resistances = { { type = "fire", percent = 100 } }
+	if robot.resistances == nil then robot.resistances = {} end
+	table.insert(robot.resistances, { type = "fire", percent = 100 })
 end
 
 data.raw.generator["steam-turbine"].working_sound.sound.filename = "__FTweaks__/sounds/turbine.ogg"
