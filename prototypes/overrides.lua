@@ -448,7 +448,17 @@ if data.raw["electric-energy-interface"]["wind-turbine-2"] then
     }
 end
 
-for k,robot in pairs(data.raw["construction-robot"]) do
+for name,radar in pairs(data.raw.radar) do --by default radar amplification adds 2 "active scan" and 3 "region scan" per level; this changes it to 0/5, so that one radar cannot active scan a huge area, and compensates by increasing search range
+	if string.find(name, "big_brother", 1, true) then
+		local amp = (radar.max_distance_of_sector_revealed-data.raw.radar.radar.max_distance_of_sector_revealed)/3
+		if amp > 0 then
+			radar.max_distance_of_nearby_sector_revealed = data.raw.radar.radar.max_distance_of_nearby_sector_revealed
+			radar.max_distance_of_sector_revealed = radar.max_distance_of_sector_revealed+amp*2
+		end
+	end
+end
+
+for _,robot in pairs(data.raw["construction-robot"]) do
 	if robot.resistances == nil then robot.resistances = {} end
 	table.insert(robot.resistances, { type = "fire", percent = 100 })
 end
@@ -468,6 +478,20 @@ data.raw["accumulator"]["accumulator"]["working_sound"]["sound"][1] = {
         filename = "__base__/sound/accumulator-working.ogg",
         volume = 0.4
 }
+
+local function createWaterSounds()
+	local ret = {}
+	for i = 1,9 do
+		ret[#ret+1] = {filename = "__FTweaks__/sounds/walking/water" .. i .. ".ogg", volume=0.85}
+	end
+	return ret
+end
+
+for name,tile in pairs(data.raw.tile) do
+	if string.find(name, "water") then
+		tile.walking_sound = createWaterSounds()
+	end
+end
 
 if data.raw.recipe["breeder-fuel-cell"] then
 	table.insert(data.raw.technology["kovarex-enrichment-process"].effects, {type = "unlock-recipe", recipe = "kovarex-enrichment-process"})

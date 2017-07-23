@@ -5,8 +5,8 @@ data:extend({
             setting_type = "startup",
             default_value = true,
             order = "r",
-			localised_name = "Bigger material stack sizes",
-			localised_description = "If true, raw materials (ore, plates, etc) stack to 200.",
+			--localised_name = "Bigger material stack sizes",
+			--localised_description = "If true, raw materials (ore, plates, etc) stack to 200.",
         },
         {
             type = "bool-setting",
@@ -14,8 +14,8 @@ data:extend({
             setting_type = "startup",
             default_value = true,
             order = "r",
-			localised_name = "Cheaper steel",
-			localised_description = "Bobplates-style; reduces cost to 2 iron per steel and halves smelt time.",
+			--localised_name = "Cheaper steel",
+			--localised_description = "Bobplates-style; reduces cost to 2 iron per steel and halves smelt time.",
         },
         {
             type = "bool-setting",
@@ -23,8 +23,8 @@ data:extend({
             setting_type = "startup",
             default_value = true,
             order = "r",
-			localised_name = "Harder silo",
-			localised_description = "Makes the rocket silo much harder, both in terms of research and resources.",
+			--localised_name = "Harder silo",
+			--localised_description = "Makes the rocket silo much harder, both in terms of research and resources.",
         },
         {
             type = "bool-setting",
@@ -32,8 +32,8 @@ data:extend({
             setting_type = "startup",
             default_value = true,
             order = "r",
-			localised_name = "Harder reactors",
-			localised_description = "Greatly increases the technology progression required to research nuclear reactors.",
+			--localised_name = "Harder reactors",
+			--localised_description = "Greatly increases the technology progression required to research nuclear reactors.",
         },--[[
         {
             type = "bool-setting",
@@ -41,8 +41,8 @@ data:extend({
             setting_type = "startup",
             default_value = true,
             order = "r",
-			localised_name = "Steel requires coal",
-			localised_description = "Makes the production of steel require coal as a carbon source. Steel and stone furnaces use coal anyways, but this means coal is also required for steel-making electric furnaces.",
+			--localised_name = "Steel requires coal",
+			--localised_description = "Makes the production of steel require coal as a carbon source. Steel and stone furnaces use coal anyways, but this means coal is also required for steel-making electric furnaces.",
         },--]]
         {
             type = "bool-setting",
@@ -50,7 +50,7 @@ data:extend({
             setting_type = "startup",
             default_value = true,
             order = "r",
-			localised_name = "Harder rockets",
-			localised_description = "Makes the rocket launches more difficult by making the resultant noise SERIOUSLY upset the local wildlife.",
+			--localised_name = "Harder rockets",
+			--localised_description = "Makes the rocket launches more difficult by making the resultant noise SERIOUSLY upset the local wildlife.",
         },
 })
