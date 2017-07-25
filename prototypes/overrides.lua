@@ -302,7 +302,7 @@ local function createSpawnerResistance(spawner)
       {
         type = "explosion",
         decrease = 0, --was 5
-        percent = math.max(-400, -50-5*(spawner.max_health/350)), --was +15
+        percent = math.max(-400, -50*(1+0.2*(math.max(0, (spawner.max_health/350)-1)))), --was +15
       },
       {
         type = "fire",

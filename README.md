@@ -12,6 +12,7 @@ Increases max range for green/purple Bob belts if present
 Increases green (Tier 3) assembler from 1.25x to 1.5x speed, as if the four speed modules inside actually worked
 Changes spawners' damage resistance to explosions from 5/15% to negative, as big bubbly things are not known for shockwave resilience, and there is otherwise no realistic way to destroy spawners pre-oil
 KSPower windmills are made somewhat cheaper
+Big Brother expanded-area radars now scan further but only monitor the normal area
 
 
 Secondary Features:
@@ -28,3 +29,4 @@ Construction robots are now fire-resistant to prevent mass death in forest fires
 Steam Turbine and Uranium Centrifuge now have their own sounds instead of sounding like steam engines and assemblers
 Fluid Spills (mod) no longer prevent building placement
 Accumulators are now somewhat quieter
+Walking through water (if enabled by another mod) now makes splashing sounds

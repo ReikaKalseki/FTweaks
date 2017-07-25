@@ -33,6 +33,8 @@ script.on_configuration_changed(function()
 	initGlobal(true)
 end)
 
+local strees = {}
+
 script.on_event(defines.events.on_tick, function(event)
 	initGlobal(false)
 	if not global.ftweaks.ranTick then
@@ -40,6 +42,26 @@ script.on_event(defines.events.on_tick, function(event)
 		global.ftweaks.ranTick = true
 		game.print("FTweaks: Game state changed; reloading caches.")
 	end
+	--[[
+	local player = game.players["Reika"]
+	local trees = player.surface.find_entities_filtered({type="tree", area = {{player.position.x-50, player.position.y-50}, {player.position.x+50, player.position.y+50}}})
+	for _,tree in pairs(trees) do
+		local flag = true
+		for _,tree2 in pairs(strees) do
+			if tree2.position.x == tree.position.x and tree2.position.y == tree.position.y then
+				flag = false
+			end
+		end
+		if flag then
+			local pos = tree.position
+			local name = tree.name
+			local dir = tree.direction
+			local force = tree.force
+			tree.destroy()
+			table.insert(strees, player.surface.create_entity({name=name, position=pos, direction=dir, force=force, fast_replace = true}))
+		end
+	end
+	--]]
 end)
 
 script.on_event(defines.events.on_player_joined_game, function(event)
