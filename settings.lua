@@ -53,4 +53,18 @@ data:extend({
 			--localised_name = "Harder rockets",
 			--localised_description = "Makes the rocket launches more difficult by making the resultant noise SERIOUSLY upset the local wildlife.",
         },
+        {
+            type = "bool-setting",
+            name = "tiered-armor",
+            setting_type = "startup",
+            default_value = true,
+            order = "r",
+        },
+        {
+            type = "bool-setting",
+            name = "smaller-trees",
+            setting_type = "startup",
+            default_value = true,
+            order = "r",
+        },
 })

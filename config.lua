@@ -15,3 +15,7 @@ Config.harderNuclear = settings.startup["harder-nuclear"].value--true
 --Config.coalInSteel = settings.startup["coal-steel"].value--true
 
 Config.harderRockets = settings.startup["harder-rockets"].value--true
+
+Config.smallerTrees = settings.startup["smaller-trees"].value--true
+
+Config.tieredArmor = settings.startup["tiered-armor"].value--true

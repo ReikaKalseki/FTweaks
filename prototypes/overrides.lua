@@ -126,6 +126,12 @@ data:extend(
   },
 })
 
+if Config.tieredArmor then
+	data.raw.recipe["heavy-armor"].ingredients = {{"copper-plate", 100}, {"steel-plate", 30}, {"light-armor", 1}}
+	data.raw.recipe["modular-armor"].ingredients = {{"heavy-armor", 1}, {"advanced-circuit", 30}}
+	data.raw.recipe["power-armor"].ingredients = {{"modular-armor", 1}, {"electric-engine-unit", 20}, {"steel-plate", 20}}
+	table.insert(data.raw.recipe["power-armor-mk2"].ingredients, {"power-armor", 1})
+end
 
 -- tougher endgame
 if Config.harderSilo then
@@ -490,6 +496,13 @@ end
 for name,tile in pairs(data.raw.tile) do
 	if string.find(name, "water") then
 		tile.walking_sound = createWaterSounds()
+	end
+end
+
+if Config.smallerTrees then
+	local f = 0.5
+	for name,tree in pairs(data.raw.tree) do
+		tree.selection_box = {{tree.selection_box[1][1]*f, tree.selection_box[1][2]*f}, {tree.selection_box[2][1]*f, tree.selection_box[2][2]*f}}
 	end
 end
 
