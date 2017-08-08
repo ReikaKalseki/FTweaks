@@ -112,6 +112,9 @@ if Config.harderNuclear then
 	data.raw["technology"]["nuclear-power"].prerequisites = {"advanced-electronics-2", "concrete", "advanced-material-processing-2", "electric-energy-distribution-2", "circuit-network", "robotics"}
 	table.insert(data.raw["technology"]["nuclear-power"].unit.ingredients, {"high-tech-science-pack", 1})
 	table.insert(data.raw["technology"]["nuclear-power"].unit.ingredients, {"production-science-pack", 1})
+	
+	data.raw["assembling-machine"]["centrifuge"].energy_usage = "600kW" --default is 350
+	data.raw["assembling-machine"]["centrifuge"].energy_source.emissions = 0.03 / 2.5 --default is 0.04 / 2.5
 end
 
 table.insert(data.raw["technology"]["electric-energy-distribution-2"].prerequisites,"advanced-electronics")
@@ -147,9 +150,11 @@ if Config.harderSilo then
 	if data.raw["technology"]["effectivity-module-5"] then
 		table.insert(data.raw["technology"]["rocket-silo"].prerequisites,"effectivity-module-5")
 	end
-	if data.raw["technology"]["plasma-turret-damage-10"] then
+	--[[
+	if data.raw["technology"]["plasma-turret-9"] then
 		table.insert(data.raw["technology"]["rocket-silo"].prerequisites,"plasma-turret-damage-9") --not 10, as that requires space science
 	end
+	--]]
 	--[[
 	if data.raw["technology"]["follower-robot-count-20"] then
 		table.insert(data.raw["technology"]["rocket-silo"].prerequisites,"follower-robot-count-20")
@@ -454,11 +459,11 @@ if data.raw["electric-energy-interface"]["wind-turbine-2"] then
     }
 end
 
-for name,radar in pairs(data.raw.radar) do --by default radar amplification adds 2 "active scan" and 3 "region scan" per level; this changes it to 0/5, so that one radar cannot active scan a huge area, and compensates by increasing search range
+for name,radar in pairs(data.raw.radar) do --by default radar amplification adds 2 "active scan" and 3 "region scan" per level; this changes it to 0.25/5, so that one radar cannot active scan a huge area, and compensates by increasing search range
 	if string.find(name, "big_brother", 1, true) then
 		local amp = (radar.max_distance_of_sector_revealed-data.raw.radar.radar.max_distance_of_sector_revealed)/3
 		if amp > 0 then
-			radar.max_distance_of_nearby_sector_revealed = data.raw.radar.radar.max_distance_of_nearby_sector_revealed
+			radar.max_distance_of_nearby_sector_revealed = data.raw.radar.radar.max_distance_of_nearby_sector_revealed+math.floor(amp/4)
 			radar.max_distance_of_sector_revealed = radar.max_distance_of_sector_revealed+amp*2
 		end
 	end
@@ -508,4 +513,20 @@ end
 
 if data.raw.recipe["breeder-fuel-cell"] then
 	table.insert(data.raw.technology["kovarex-enrichment-process"].effects, {type = "unlock-recipe", recipe = "kovarex-enrichment-process"})
+end
+
+local f = 1.6
+if data.raw.car["heli-entity-_-"] then
+	for name,car in pairs(data.raw.car) do
+		if string.find(name, "heli", 1, true) then
+			--error(serpent.block(car.consumption .. " >> " .. string.sub(car.consumption, 1, -3) .. " >>> " .. tonumber(string.sub(car.consumption, 1, -3))))
+			if tonumber(string.sub(car.consumption, 1, -3)) then --skip technical entities
+				car.breaking_speed = car.breaking_speed*f
+				car.consumption = (tonumber(string.sub(car.consumption, 1, -3))*f) .. "MW"
+				car.braking_power = (tonumber(string.sub(car.braking_power, 1, -3))*f) .. "MW"
+				car.effectivity = car.effectivity*f*f
+				car.burner.effectivity = car.burner.effectivity*f*f
+			end
+		end
+	end
 end
