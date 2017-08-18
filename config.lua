@@ -19,3 +19,5 @@ Config.harderRockets = settings.startup["harder-rockets"].value--true
 Config.smallerTrees = settings.startup["smaller-trees"].value--true
 
 Config.tieredArmor = settings.startup["tiered-armor"].value--true
+
+Config.woodSludge = settings.startup["wood-sludging"].value--true

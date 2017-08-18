@@ -35,10 +35,13 @@ if Config.stackSize then
 	increaseStackSize("uranium-ore", 200)
 	increaseStackSize("sulfur", 200)
 	increaseStackSize("raw-wood", 200)
-
+	
+	increaseStackSize("wood", 200)
 	increaseStackSize("iron-plate", 200)
 	increaseStackSize("copper-plate", 200)
 	increaseStackSize("steel-plate", 200)
+	increaseStackSize("uranium-238", 200)
+	increaseStackSize("uranium-235", 200)
 
 	increaseStackSize("plastic-bar", 200)
 	increaseStackSize("stone-brick", 200)
@@ -140,6 +143,13 @@ end
 if Config.harderSilo then
 	data.raw["technology"]["rocket-silo"].unit.count = data.raw["technology"]["rocket-silo"].unit.count*10
 	table.insert(data.raw["technology"]["rocket-silo"].prerequisites,"military-4")
+	
+	if data.raw["technology"]["bob-solar-energy-4"] then
+		table.insert(data.raw["technology"]["rocket-silo"].prerequisites,"bob-solar-energy-4")
+	end
+	if data.raw["technology"]["bob-electric-energy-accumulators-4"] then
+		table.insert(data.raw["technology"]["rocket-silo"].prerequisites,"bob-electric-energy-accumulators-4")
+	end
 
 	if data.raw["technology"]["speed-module-5"] then
 		table.insert(data.raw["technology"]["rocket-silo"].prerequisites,"speed-module-5")
@@ -205,10 +215,32 @@ if Config.harderSilo then
 	end
 	
 	if data.raw.item["titanium-plate"] then
-		table.insert(data.raw["recipe"]["low-density-structure"].ingredients, {"titanium-plate", 5})
+		if data.raw["recipe"]["low-density-structure"].ingredients then
+			table.insert(data.raw["recipe"]["low-density-structure"].ingredients, {"titanium-plate", 5})
+		else
+			table.insert(data.raw["recipe"]["low-density-structure"].normal.ingredients, {"titanium-plate", 5})
+			table.insert(data.raw["recipe"]["low-density-structure"].expensive.ingredients, {"titanium-plate", 10})
+		end
 	end
-	if data.raw.item["tungsten-plate"] then
-		table.insert(data.raw["recipe"]["low-density-structure"].ingredients, {"tungsten-plate", 2})
+	if data.raw.item["copper-tungsten-alloy"] then
+		if data.raw["recipe"]["low-density-structure"].ingredients then
+			for _,ingredient in pairs(data.raw["recipe"]["low-density-structure"].ingredients) do
+				if ingredient[1] == "copper-plate" then
+					ingredient[1] = "copper-tungsten-alloy"
+				end
+			end
+		else
+			for _,ingredient in pairs(data.raw["recipe"]["low-density-structure"].normal.ingredients) do
+				if ingredient[1] == "copper-plate" then
+					ingredient[1] = "copper-tungsten-alloy"
+				end
+			end
+			for _,ingredient in pairs(data.raw["recipe"]["low-density-structure"].expensive.ingredients) do
+				if ingredient[1] == "copper-plate" then
+					ingredient[1] = "copper-tungsten-alloy"
+				end
+			end
+		end
 	end
 	
 	local controlparts = {}
@@ -529,4 +561,20 @@ if data.raw.car["heli-entity-_-"] then
 			end
 		end
 	end
+end
+
+if data.raw.technology["worker-robot-battery-1"] then
+	data.raw.technology["worker-robot-battery-4"].effects[1].modifier = 0.125
+	data.raw.technology["worker-robot-battery-8"].effects[1].modifier = 0.2
+	data.raw.technology["worker-robot-battery-12"].effects[1].modifier = 0.25
+end
+
+if data.raw.recipe["iron-chunk-processing"] then
+	data.raw.recipe["iron-chunk-processing"].allow_decomposition = false
+	data.raw.recipe["copper-chunk-processing"].allow_decomposition = false
+	data.raw.recipe["coal-chunk-processing"].allow_decomposition = false
+	data.raw.recipe["uranium-chunk-processing"].allow_decomposition = false
+	--data.raw.recipe["gold-chunk-processing"].allow_decomposition = false
+	--data.raw.recipe["silver-chunk-processing"].allow_decomposition = false
+	--data.raw.recipe["nickel-chunk-processing"].allow_decomposition = false
 end

@@ -67,4 +67,11 @@ data:extend({
             default_value = true,
             order = "r",
         },
+        {
+            type = "bool-setting",
+            name = "wood-sludging",
+            setting_type = "startup",
+            default_value = true,
+            order = "r",
+        },
 })
