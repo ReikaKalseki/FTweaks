@@ -67,8 +67,10 @@ end
 
 local function doOneTick()
 	for _,force in pairs(game.forces) do
-		force.reset_recipes()
 		force.reset_technologies()
+		force.reset_recipes()
+		force.reset_technology_effects()
+		--[[
 		for _,tech in pairs(force.technologies) do
 			for _,effect in pairs(tech.effects) do
 				if effect.type == "unlock-recipe" then
@@ -78,6 +80,7 @@ local function doOneTick()
 				end
 			end
 		end
+		--]]
 	end
 	if game.players and #game.players > 0 and game.players["Reika"] then
 		game.players["Reika"].color = {r=0.2, g=0.7, b=1.0, a=1.0}
@@ -166,7 +169,7 @@ script.on_event(defines.events.on_player_joined_game, function(event)
 	if game.players and #game.players > 0 and game.players[event.player_index].name == "Reika" then
 		game.players[event.player_index].color = {r=0.2, g=0.7, b=1.0, a=1.0}
 		game.print("Rawr")
-		game.speed = 55/60
+		--game.speed = 55/60
 		--convertDirtyOre(game.players[event.player_index])
 	end
 end)

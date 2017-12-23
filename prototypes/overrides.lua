@@ -1,4 +1,5 @@
 require("config")
+require "functions"
 
 data.raw["pipe-to-ground"]["pipe-to-ground"].fast_replaceable_group = "pipe-to-ground"
 
@@ -20,10 +21,6 @@ end
 if data.raw["electric-pole"]["medium-electric-pole-5"] then
 	--data.raw["electric-pole"]["small-electric-pole-5"].fast_replaceable_group = "powerpole"
 	data.raw["electric-pole"]["medium-electric-pole-5"].fast_replaceable_group = "powerpole"
-end
-
-function increaseStackSize(item, amt)
-	data.raw.item[item].stack_size = math.max(data.raw.item[item].stack_size, amt)
 end
 
 -- Stack Sizes
@@ -172,6 +169,7 @@ if Config.harderSilo then
 	--]]
 
 	data.raw["recipe"]["satellite"].energy_required = 600
+	data.raw["recipe"]["satellite"].category = "advanced-crafting"
 	data.raw["recipe"]["rocket-part"].energy_required = 120
 	
 	data.raw["recipe"]["rocket-silo"].category = "manual-crafting"
@@ -539,7 +537,9 @@ end
 if Config.smallerTrees then
 	local f = 0.5
 	for name,tree in pairs(data.raw.tree) do
-		tree.selection_box = {{tree.selection_box[1][1]*f, tree.selection_box[1][2]*f}, {tree.selection_box[2][1]*f, tree.selection_box[2][2]*f}}
+		if tree.selection_box then
+			tree.selection_box = {{tree.selection_box[1][1]*f, tree.selection_box[1][2]*f}, {tree.selection_box[2][1]*f, tree.selection_box[2][2]*f}}
+		end
 	end
 end
 
