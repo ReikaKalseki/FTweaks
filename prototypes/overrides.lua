@@ -57,7 +57,7 @@ if Config.cheapSteel then
 	data.raw.recipe["steel-plate"].normal.energy_required = 7.5
 	data.raw.recipe["steel-plate"].normal.ingredients = {{"iron-plate", 2}}
 	data.raw.recipe["steel-plate"].expensive.energy_required = 15
-	data.raw.recipe["steel-plate"].expensive.ingredients = {{"iron-plate", 5}}
+	data.raw.recipe["steel-plate"].expensive.ingredients = {{"iron-plate", 4}}
 end
 
 --[[
@@ -69,6 +69,23 @@ if Config.coalInSteel then
 	data.raw.furnace["electric-furnace"].source_inventory_size = math.max(2, data.raw.furnace["electric-furnace"].source_inventory_size)
 end
 --]]
+
+if Config.saneConcrete then
+	replaceItemInRecipe(data.raw.recipe.concrete, "iron-ore", "iron-stick", 2) --x2 since sticks are 0.5 iron each, this maintains ratios
+end
+
+if data.raw["assembling-machine"]["bob-greenhouse"] then --buff Bob Greenhouses to compete with TreeFarm
+	data.raw.recipe["bob-basic-greenhouse-cycle"].normal.energy_required = data.raw.recipe["bob-basic-greenhouse-cycle"].normal.energy_required*0.75
+	data.raw.recipe["bob-basic-greenhouse-cycle"].expensive.energy_required = data.raw.recipe["bob-basic-greenhouse-cycle"].expensive.energy_required*0.75
+	data.raw.recipe["bob-advanced-greenhouse-cycle"].normal.energy_required = data.raw.recipe["bob-advanced-greenhouse-cycle"].normal.energy_required*0.75
+	data.raw.recipe["bob-advanced-greenhouse-cycle"].expensive.energy_required = data.raw.recipe["bob-advanced-greenhouse-cycle"].expensive.energy_required*0.75
+end
+
+data:extend({
+	createConversionRecipe("burner-mining-drill", "electric-mining-drill"),
+	createConversionRecipe("burner-inserter", "inserter"),
+	createConversionRecipe("steel-furnace", "electric-furnace")
+})
 
 if data.raw.item["basic-circuit-board"] then
 	data.raw.recipe["small-lamp"].ingredients = {
@@ -82,6 +99,28 @@ if data.raw.item["basic-circuit-board"] then
       {"iron-plate", 5}
     }
 end
+
+if data.raw.recipe["bob-resin-wood"] then
+	data.raw.recipe["bob-resin-wood"].ingredients = nil
+	data.raw.recipe["bob-resin-wood"].result = nil
+	data.raw.recipe["bob-resin-wood"].result_count = nil
+	
+	data.raw.recipe["bob-resin-wood"].normal = {
+		ingredients = {{"raw-wood", 1}},
+		result = "resin",
+		result_count = 3
+	}
+	data.raw.recipe["bob-resin-wood"].expensive = {
+		ingredients = {{"raw-wood", 2}},
+		result = "resin",
+		result_count = 3
+	}
+end
+
+if data.raw.fluid["ferric-chloride"] then
+	local pow = data.raw.item["iron-powder"]
+	replaceItemInRecipe(data.raw.recipe["ferric-chloride"], "iron-ore", pow and "iron-powder" or "iron-stick", pow and 1 or 2)
+end
 	
 -- fluid color correction
 data.raw["fluid"]["heavy-oil"].base_color = {r=0.906, g=0.376, b=0.145}
@@ -91,6 +130,9 @@ data.raw["fluid"]["petroleum-gas"].base_color = {r=0.741, g=0.741, b=0.741}
 data.raw["fluid"]["petroleum-gas"].flow_color = {r=0.282, g=0.282, b=0.282}
 
 data.raw["fluid"]["sulfuric-acid"].base_color = {r=0, g=0.7, b=0.788}
+
+data.raw["fluid"]["crude-oil"].base_color = {r=0.25, g=0.25, b=0.25}
+data.raw["fluid"]["crude-oil"].flow_color = {r=0.125, g=0.125, b=0.125}
 
 --table.insert(data.raw["heat-pipe"]["heat-pipe"].flags, "placeable-off-grid")
 --table.insert(data.raw["heat-pipe"]["heat-pipe"].flags, "not-on-map")
@@ -134,6 +176,40 @@ if Config.tieredArmor then
 	data.raw.recipe["modular-armor"].ingredients = {{"heavy-armor", 1}, {"advanced-circuit", 30}}
 	data.raw.recipe["power-armor"].ingredients = {{"modular-armor", 1}, {"electric-engine-unit", 20}, {"steel-plate", 20}}
 	table.insert(data.raw.recipe["power-armor-mk2"].ingredients, {"power-armor", 1})
+end
+
+if Config.techFactor ~= 1 then
+	data.raw.technology["automation"].unit.count = data.raw.technology["automation"].unit.count/Config.techFactor
+	data.raw.technology["logistics"].unit.count = data.raw.technology["logistics"].unit.count/(Config.techFactor*2)
+	data.raw.technology["automation-2"].unit.count = data.raw.technology["automation-2"].unit.count/(Config.techFactor/2)
+	data.raw.technology["logistics-2"].unit.count = data.raw.technology["logistics-2"].unit.count/(1+(Config.techFactor-1)/4)
+	data.raw.technology["turrets"].unit.count = data.raw.technology["turrets"].unit.count/(Config.techFactor/2)
+	data.raw.technology["optics"].unit.count = data.raw.technology["optics"].unit.count/(Config.techFactor/2)
+	data.raw.technology["stone-walls"].unit.count = data.raw.technology["stone-walls"].unit.count/(1+(Config.techFactor-1)/4)
+	
+	data.raw.technology["toolbelt"].unit.count = data.raw.technology["toolbelt"].unit.count/(Config.techFactor/2)
+	
+	if data.raw.technology["bob-greenhouse"] then
+		data.raw.technology["bob-greenhouse"].unit.count = data.raw.technology["bob-greenhouse"].unit.count/Config.techFactor
+	end
+	
+	if data.raw.technology["long-inserters-1"] then
+		data.raw.technology["long-inserters-1"].unit.count = data.raw.technology["long-inserters-1"].unit.count/(Config.techFactor*2)
+	end
+	
+	if data.raw.technology["long-reach-research_long-reach-1"] then
+		data.raw.technology["long-reach-research_long-reach-1"].unit.count = data.raw.technology["long-reach-research_long-reach-1"].unit.count/(Config.techFactor/2)
+	end
+	if data.raw.technology["long-reach-research_long-build-1"] then
+		data.raw.technology["long-reach-research_long-build-1"].unit.count = data.raw.technology["long-reach-research_long-build-1"].unit.count/(Config.techFactor/2)
+	end
+	if data.raw.technology["long-mine-research_long-mine-1"] then
+		data.raw.technology["long-mine-research_long-mine-1"].unit.count = data.raw.technology["long-mine-research_long-mine-1"].unit.count/(Config.techFactor/2)
+	end
+	
+	if data.raw.technology["subterranean-logistics-1"] then
+		data.raw.technology["subterranean-logistics-1"].unit.count = 5*math.ceil(data.raw.technology["subterranean-logistics-1"].unit.count/(1+(Config.techFactor-1)/2.5)/5)
+	end
 end
 
 -- tougher endgame
@@ -261,7 +337,11 @@ if Config.harderSilo then
 	data.raw["recipe"]["rocket-fuel"].energy_required = data.raw["recipe"]["rocket-fuel"].energy_required*5
 	table.insert(data.raw["recipe"]["rocket-fuel"].ingredients, {"steel-plate", 2})
 	
-	if data.raw.fluid["hydrogen"] then
+	if data.raw.fluid["hydrazine"] then
+		if not data.raw.technology["rocket-fuel"] then --Bob's is good enough
+			table.insert(data.raw["recipe"]["rocket-fuel"].ingredients, {type="fluid", name = "hydrazine", amount = 100})
+		end
+	elseif data.raw.fluid["hydrogen"] then
 		table.insert(data.raw["recipe"]["rocket-fuel"].ingredients, {type="fluid", name = "hydrogen", amount = 200})
 		table.insert(data.raw["recipe"]["rocket-fuel"].ingredients, {type="fluid", name = "nitrogen", amount = 100})
 		data.raw["recipe"]["rocket-fuel"].category = "chemistry" --to allow 2 fluid inputs
@@ -360,124 +440,6 @@ end
 
 data.raw.unit["medium-biter"].attack_parameters.range = 0.9 --was 1.0, allowing through-wall attacks
 
-if data.raw.recipe["large-accumulator"] then
-		if not Config.harderSilo then
-			local ingredients = {}
-			local accucount = 0
-			for k,item in pairs(data.raw.recipe["satellite"].ingredients) do
-				if item[1] == "accumulator" then
-					accucount = item[2]
-				else
-					table.insert(ingredients, item)
-				end
-			end
-			table.insert(ingredients, {"large-accumulator", math.floor(accucount*0.8)})
-		end
-		
-	data:extend(
-	{
-	  {
-		type = "recipe",
-		name = "large-accumulator-conversion",
-		energy = 8,
-		enabled = "true",
-		ingredients =
-		{
-		  {"iron-plate", 1},
-		  {"battery", 5},
-		  {"accumulator", 1},
-		},
-		result = "large-accumulator"
-	  }
-	})
-
-	if not Config.harderSilo then
-		data:extend(
-		{
-		  {
-			type = "recipe",
-			name = "large-accumulator-satellite",
-			energy = data.raw.recipe["satellite"].energy_required,
-			enabled = "true",
-			ingredients = ingredients--[[
-			{
-			  {"low-density-structure", 100},
-			  {"solar-panel", 100},
-			  {"large-accumulator", 80},
-			  {"radar", 5},
-			  {"processing-unit", 100},
-			  {"rocket-fuel", 50}
-			}--]],
-			result = "satellite"
-		  }
-		})
-	end
-	 
-	table.insert(data.raw.technology["bob-electric-energy-accumulators-2"].effects, {type = "unlock-recipe", recipe = "large-accumulator-conversion"})
-	 
-	if not Config.harderSilo then
-		table.insert(data.raw.technology["rocket-silo"].effects, {type = "unlock-recipe", recipe = "large-accumulator-satellite"})
-	end
-end
-
-if data.raw.recipe["chemical-furnace"] then
-	data:extend(
-	{
-	  {
-		type = "recipe",
-		name = "chemical-furnace-conversion",
-		energy = 8,
-		enabled = "true",
-		ingredients =
-		{
-		  {"electric-furnace", 1},
-		  {"steel-pipe", 5},
-		},
-		result = "chemical-furnace"
-	  }
-	})
-	 
-	 table.insert(data.raw.technology["chemical-processing-3"].effects, {type = "unlock-recipe", recipe = "chemical-furnace-conversion"})
-end
-
-if data.raw.recipe["electric-chemical-mixing-furnace"] and data.raw.recipe["chemical-furnace-conversion"] then
-	data:extend(
-	{
-	  	  {
-		type = "recipe",
-		name = "chemical-furnace-conversion-2",
-		energy = 8,
-		enabled = "true",
-		ingredients =
-		{
-		  {"electric-furnace-2", 1},
-		  {"tungsten-gear-wheel", 10},
-		  {"processing-unit", 5},
-		},
-		result = "electric-chemical-mixing-furnace"
-	  },
-	  	  {
-		type = "recipe",
-		name = "chemical-furnace-conversion-3",
-		energy = 8,
-		enabled = "true",
-		ingredients =
-		{
-		  {"electric-furnace-3", 1},
-		  {"tungsten-pipe", 10},
-		  {"tungsten-gear-wheel", 10},
-		  {"advanced-processing-unit", 5},
-		  {"processing-unit", 5},
-		},
-		result = "electric-chemical-mixing-furnace-2"
-	  },
-	  
-	})
-	 
-	 table.insert(data.raw.technology["chemical-processing-3"].effects, {type = "unlock-recipe", recipe = "chemical-furnace-conversion-2"})
-	 table.insert(data.raw.technology["chemical-processing-3"].effects, {type = "unlock-recipe", recipe = "chemical-furnace-conversion-3"})
-end
-
 if data.raw["electric-energy-interface"]["wind-turbine-2"] then
 	--data.raw["electric-energy-interface"]["wind-turbine-2"].energy_required_source.output_flow_limit = 4--was 1.5
 	data.raw.recipe["wind-turbine-2"].ingredients =
@@ -496,6 +458,18 @@ for name,radar in pairs(data.raw.radar) do --by default radar amplification adds
 			radar.max_distance_of_nearby_sector_revealed = data.raw.radar.radar.max_distance_of_nearby_sector_revealed+math.floor(amp/4)
 			radar.max_distance_of_sector_revealed = radar.max_distance_of_sector_revealed+amp*2
 		end
+	end
+end
+
+for name,belt in pairs(data.raw["underground-belt"]) do
+	if string.find(name, "subterranean", 1, true) then
+		belt.max_distance = 45 --250 is stupidly overpowered
+	end
+end
+
+for name,pipe in pairs(data.raw["pipe-to-ground"]) do
+	if string.find(name, "subterranean", 1, true) then
+		pipe.max_distance = 45 --250 is stupidly overpowered
 	end
 end
 

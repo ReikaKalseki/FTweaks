@@ -5,7 +5,7 @@ if Config.advancedSatellite then
 local recipe = table.deepcopy(data.raw.recipe.satellite)
 local ingredients = {}
 for _,ingredient in pairs(recipe.ingredients) do
-	ingredient = table.deepcopy(ingredient)
+	ingredient = parseIngredient(table.deepcopy(ingredient))
 	log("Parsing ingredient: " .. (ingredient[1] and ingredient[1] or "nil") .. " x " .. (ingredient[2] and ingredient[2] or "nil"))
 	if ingredient[1] == "plutonium" then
 		ingredient[2] = 10

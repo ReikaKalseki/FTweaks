@@ -81,4 +81,19 @@ data:extend({
             default_value = true,
             order = "r",
         },
+        {
+            type = "bool-setting",
+            name = "sane-concrete",
+            setting_type = "startup",
+            default_value = true,
+            order = "r",
+        },
+        {
+            type = "int-setting",
+            name = "tech-demultiply",
+            setting_type = "startup",
+            default_value = 1,
+            min_value = 1,
+            order = "r",
+        },
 })

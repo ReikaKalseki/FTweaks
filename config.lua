@@ -23,3 +23,7 @@ Config.tieredArmor = settings.startup["tiered-armor"].value--true
 Config.woodSludge = settings.startup["wood-sludging"].value--true
 
 Config.advancedSatellite = settings.startup["advanced-satellite"].value--true
+
+Config.saneConcrete = settings.startup["sane-concrete"].value--true
+
+Config.techFactor = settings.startup["tech-demultiply"].value
