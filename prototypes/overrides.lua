@@ -148,6 +148,10 @@ if data.raw["technology"]["fast-loader"] then
 	data.raw["technology"]["loader"].prerequisites = {"railway", "logistics-2"}
 end
 
+if data.raw["technology"]["angels-warehouses"] then
+	table.insert(data.raw["technology"]["angels-warehouses"].prerequisites, "logistics-2")
+end
+
 data.raw["technology"]["flying"].prerequisites = {"engine", "advanced-electronics", "advanced-material-processing"}
 
 if Config.harderNuclear then

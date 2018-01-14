@@ -1,5 +1,35 @@
 require "functions"
 
+local function createVoidRecipe(fluid)
+	if data.raw.fluid[fluid] then
+		local rec = table.deepcopy(data.raw.recipe["void-hydrogen"])
+		
+		rec.name = "void-" .. fluid
+		rec.ingredients[1].name = fluid
+		rec.icon = "__bobplates__/graphics/icons/void.png"
+		if data.raw.fluid.icon then
+			rec.icon = nil
+			rec.icons = {{icon="__bobplates__/graphics/icons/void.png"}, {icon=data.raw.fluid.icon}}
+		end
+		if data.raw.fluid.icons then
+			rec.icon = nil
+			local top = data.raw.fluid.icons[#data.raw.fluid.icons]
+			rec.icons = {{icon="__bobplates__/graphics/icons/void.png"}, {icon=top}}
+		end
+		rec.order = fluid
+		
+		data:extend({
+			rec
+		})
+	end
+end
+
+createVoidRecipe("water")
+createVoidRecipe("pure-water")
+createVoidRecipe("steam")
+createVoidRecipe("air")
+createVoidRecipe("liquid-air")
+
 if data.raw.recipe["large-accumulator"] then
 	log(tostring(Config.harderSilo))
 		if not Config.harderSilo then
