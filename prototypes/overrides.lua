@@ -368,12 +368,20 @@ if data.raw["underground-belt"]["green-underground-belt"] then
 	data.raw["underground-belt"]["green-underground-belt"].max_distance = 30
 	data.raw["underground-belt"]["green-underground-belt"].speed = 0.15
 	data.raw["transport-belt"]["green-transport-belt"].speed = 0.15
+	
+	if data.raw.loader["green-loader"] then
+		data.raw.loader["green-loader"].speed = 0.15
+	end
 end
 
 if data.raw["underground-belt"]["purple-underground-belt"] then
 	data.raw["underground-belt"]["purple-underground-belt"].max_distance = 40
 	data.raw["underground-belt"]["purple-underground-belt"].speed = 0.2
 	data.raw["transport-belt"]["purple-transport-belt"].speed = 0.2
+	
+	if data.raw.loader["purple-loader"] then
+		data.raw.loader["purple-loader"].speed = 0.2
+	end
 end
 
 --[[
