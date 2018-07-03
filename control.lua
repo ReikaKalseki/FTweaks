@@ -4,8 +4,13 @@ function initGlobal(force)
 	if not global.ftweaks then
 		global.ftweaks = {}
 	end
-	if force or global.ftweaks.ranTick == nil then
+	if global.ftweaks.ranTick == nil then
 		global.ftweaks.ranTick = false
+	end
+	
+	if force then
+		remote.call("silo_script", "set_show_launched_without_satellite", false)
+		remote.call("silo_script", "add_tracked_item", "advanced-satellite")
 	end
 end
 
@@ -87,7 +92,7 @@ local function doOneTick()
 	end
 end
 
-initGlobal(true)
+initGlobal(false)
 
 script.on_load(function()
 	

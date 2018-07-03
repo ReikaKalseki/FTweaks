@@ -74,6 +74,15 @@ if Config.saneConcrete then
 	replaceItemInRecipe(data.raw.recipe.concrete, "iron-ore", "iron-stick", 2) --x2 since sticks are 0.5 iron each, this maintains ratios
 end
 
+replaceItemInRecipe(data.raw.recipe["nuclear-reactor"], "concrete", "refined-concrete", 1)
+replaceItemInRecipe(data.raw.recipe["centrifuge"], "concrete", "refined-concrete", 1)
+replaceItemInRecipe(data.raw.recipe["artillery-turret"], "concrete", "refined-concrete", 1)
+replaceItemInRecipe(data.raw.recipe["rocket-silo"], "concrete", "refined-concrete", 1)
+
+if data.raw.item["titanium-plate"] then
+	replaceItemInRecipe(data.raw.recipe["refined-concrete"], "steel-plate", "titanium-plate", 0.4)
+end
+
 if data.raw["assembling-machine"]["bob-greenhouse"] then --buff Bob Greenhouses to compete with TreeFarm
 	data.raw.recipe["bob-basic-greenhouse-cycle"].normal.energy_required = data.raw.recipe["bob-basic-greenhouse-cycle"].normal.energy_required*0.75
 	data.raw.recipe["bob-basic-greenhouse-cycle"].expensive.energy_required = data.raw.recipe["bob-basic-greenhouse-cycle"].expensive.energy_required*0.75
@@ -175,6 +184,8 @@ data:extend(
   },
 })
 
+table.insert(data.raw.player["player"].crafting_categories,"manual-crafting")
+
 if Config.tieredArmor then
 	data.raw.recipe["heavy-armor"].ingredients = {{"copper-plate", 100}, {"steel-plate", 30}, {"light-armor", 1}}
 	data.raw.recipe["modular-armor"].ingredients = {{"heavy-armor", 1}, {"advanced-circuit", 30}}
@@ -252,8 +263,9 @@ if Config.harderSilo then
 	data.raw["recipe"]["satellite"].category = "advanced-crafting"
 	data.raw["recipe"]["rocket-part"].energy_required = 120
 	
-	data.raw["recipe"]["rocket-silo"].category = "manual-crafting"
-	table.insert(data.raw.player["player"].crafting_categories,"manual-crafting")
+	if Config.manualSilo then
+		data.raw["recipe"]["rocket-silo"].category = "manual-crafting"
+	end
 	
 	local satparts = {}
 	local circuitcount = 0

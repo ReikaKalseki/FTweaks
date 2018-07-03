@@ -9,6 +9,8 @@ Config.cheapSteel = settings.startup["cheap-steel"].value--true
 --This enables the harder rocket silo recipe.
 Config.harderSilo = settings.startup["harder-silo"].value--true
 
+Config.manualSilo = settings.startup["manual-silo"].value--true
+
 --This enables an increased difficulty for nuclear power - more tech gating and more expensive research
 Config.harderNuclear = settings.startup["harder-nuclear"].value--true
 

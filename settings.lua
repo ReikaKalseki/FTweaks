@@ -28,6 +28,13 @@ data:extend({
         },
         {
             type = "bool-setting",
+            name = "manual-silo",
+            setting_type = "startup",
+            default_value = true,
+            order = "r",
+        },
+        {
+            type = "bool-setting",
             name = "harder-nuclear",
             setting_type = "startup",
             default_value = true,

@@ -1,7 +1,7 @@
 require "functions"
 
 local function createVoidRecipe(fluid)
-	if data.raw.fluid[fluid] then
+	if data.raw.fluid[fluid] and data.raw.recipe["void-hydrogen"] then
 		local rec = table.deepcopy(data.raw.recipe["void-hydrogen"])
 		
 		rec.name = "void-" .. fluid
@@ -54,7 +54,7 @@ if data.raw.recipe["large-accumulator"] then
 					if item[1] == "accumulator" then
 						accucount = item[2]
 					else
-						table.insert(ingredients, item)
+						table.insert(norm, item)
 					end
 				end
 				table.insert(norm, {"large-accumulator", math.floor(accucount*0.8)})
@@ -65,7 +65,7 @@ if data.raw.recipe["large-accumulator"] then
 					if item[1] == "accumulator" then
 						accucount = item[2]
 					else
-						table.insert(ingredients, item)
+						table.insert(exp, item)
 					end
 				end
 				table.insert(exp, {"large-accumulator", math.floor(accucount*0.8)})
@@ -100,22 +100,14 @@ if data.raw.recipe["large-accumulator"] then
 			name = "large-accumulator-satellite",
 			energy_required = data.raw.recipe["satellite"].energy_required,
 			enabled = "true",
-			ingredients = ingredients--[[
-			{
-			  {"low-density-structure", 100},
-			  {"solar-panel", 100},
-			  {"large-accumulator", 80},
-			  {"radar", 5},
-			  {"processing-unit", 100},
-			  {"rocket-fuel", 50}
-			}--]],
+			ingredients = ingredients,
 			result = "satellite",
-			expensive = (exp and norm) and {
+			expensive = exp and {
 				ingredients = exp,
 				energy_required = data.raw.recipe["satellite"].energy_required,
 				result = "satellite",
 			} or nil,
-			normal = (exp and norm) and {
+			normal = norm and {
 				ingredients = norm,
 				energy_required = data.raw.recipe["satellite"].energy_required,
 				result = "satellite",

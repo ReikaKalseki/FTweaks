@@ -19,12 +19,13 @@ local function changeIngredientInList(list, item, repl, ratio)
 		local ing = list[i]
 		if ing[1] == item then
 			ing[1] = repl
-			ing[2] = ing[2]*ratio
+			ing[2] = math.ceil(ing[2]*ratio)
 		end
 	end
 end
 
 function replaceItemInRecipe(recipe, item, repl, ratio)
+	if not recipe then error(serpent.block("No such recipe found!")) end
 	if recipe.ingredients then
 		changeIngredientInList(recipe.ingredients, item, repl, ratio)
 	end
