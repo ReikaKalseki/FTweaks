@@ -8,7 +8,7 @@ function initGlobal(force)
 		global.ftweaks.ranTick = false
 	end
 	
-	if force then
+	if force and remote.interfaces["silo-script"] then
 		remote.call("silo_script", "set_show_launched_without_satellite", false)
 		remote.call("silo_script", "add_tracked_item", "advanced-satellite")
 	end
