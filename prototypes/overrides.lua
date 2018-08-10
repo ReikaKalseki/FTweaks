@@ -437,6 +437,16 @@ if data.raw.recipe["solder"] then
 	data.raw.recipe["solder"].energy_required = 0.5
 end
 
+if data.raw.tile["frozen-snow-0"] then
+	for i = 0,9 do
+		local name = "frozen-snow-" .. i
+		local tile = data.raw.tile[name]
+		if tile then
+			tile.walking_speed_modifier = math.sqrt(tile.walking_speed_modifier)
+		end
+	end
+end
+
 local function createSpawnerResistance(spawner)
 	local ret = {
 	  {
