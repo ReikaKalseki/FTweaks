@@ -1,5 +1,9 @@
 require "config"
 
+function improveAttribute(object, param, newval)
+	object[param] = math.max(object[param], newval)
+end
+
 function increaseStackSize(name, amt)
 	local item = data.raw.item[name]
 	if not item then
@@ -35,6 +39,40 @@ function replaceItemInRecipe(recipe, item, repl, ratio)
 	if recipe.expensive and recipe.expensive.ingredients then
 		changeIngredientInList(recipe.expensive.ingredients, item, repl, ratio)
 	end
+end
+
+--returns nil if none, not {}
+local function buildRecipeSurplus(name1, name2, list1, list2)
+	local counts = {}
+	local ret = nil
+	for i = 1,#list1 do
+		local ing = parseIngredient(list1[i])
+		--log("Parsing input ingredient: " .. (ing[1] and ing[1] or "nil") .. " x " .. (ing[2] and ing[2] or "nil"))
+		if #ing > 0 then
+			--log(#ing .. " > " .. tostring(ing))
+			counts[ing[1]] = (counts[ing[1]] and counts[ing[1]] or 0)+(ing[2] and ing[2] or 1) -- += in case recipe specifies an ingredient multiple times
+		else
+			log("Found empty entry in recipe " .. name1 .. "!")
+		end
+	end
+	for i = 1,#list2 do
+		local ing = parseIngredient(list2[i])
+		--log("Parsing output ingredient: " .. (ing[1] and ing[1] or "nil") .. " x " .. (ing[2] and ing[2] or "nil"))
+		if #ing > 0 then
+			if counts[ing[1]] then
+				counts[ing[1]] = counts[ing[1]]-ing[2]
+			end
+		else
+			log("Found empty entry in recipe " .. name2 .. "!")
+		end
+	end
+	for item,amt in pairs(counts) do
+		if counts[item] > 0 and data.raw.item[item] then
+			if not ret then ret = {} end
+			ret[item] = amt
+		end
+	end
+	return ret
 end
 
 local function buildRecipeDifference(name1, name2, list1, list2)
@@ -88,22 +126,29 @@ function createConversionRecipe(from, to, register, tech)
 	local exp = nil
 	local norm = nil
 	
+	local e_list = nil
+	local e_exp = nil
+	local e_norm = nil
+	
 	local prev = rec1.expensive and rec1.expensive.result or rec1.result
 	
 	if rec1.ingredients and rec2.ingredients then
 		list = buildRecipeDifference(from, to, rec1.ingredients, rec2.ingredients)
+		e_list = buildRecipeSurplus(from, to, rec1.ingredients, rec2.ingredients)
 	end
 	
 	if rec1.expensive or rec2.expensive then
 		local exp1 = rec1.expensive and rec1.expensive.ingredients or rec1.ingredients
 		local exp2 = rec2.expensive and rec2.expensive.ingredients or rec2.ingredients
 		exp = buildRecipeDifference(from, to, exp1, exp2)
+		e_exp = buildRecipeSurplus(from, to, exp1, exp2)
 	end
 	
 	if rec1.normal or rec2.normal then
 		local norm1 = rec1.normal and rec1.normal.ingredients or rec1.ingredients
 		local norm2 = rec2.normal and rec2.normal.ingredients or rec2.ingredients
 		norm = buildRecipeDifference(from, to, norm1, norm2)
+		e_norm = buildRecipeSurplus(from, to, norm1, norm2)
 	end
 	
 	if list then
@@ -119,11 +164,40 @@ function createConversionRecipe(from, to, register, tech)
 	local ret = table.deepcopy(rec2)
 	ret.name = name
 	ret.ingredients = list
+	local main = rec1.result and rec1.result or rec1.normal.result
+	local result = rec2.result and rec2.result or rec2.normal.result
+	ret.localised_name = {"conversion-recipe.name", {"entity-name." .. main}, {"entity-name." .. result}}
+	ret.icons = {{icon = ret.icon and ret.icon or data.raw.item[result].icon, icon_size = ret.icon_size and ret.icon_size or data.raw.item[result].icon_size}, {icon = "__FTweaks__/graphics/icons/conversion_overlay.png", icon_size = 32}}
+	if not ret.icon then if data.raw.item[result] then ret.icon = data.raw.item[result].icon else log("Could not create icon for conversion recipe '" .. name .. "'! No such item '" .. result .. "'") end end
+	if e_list then
+		ret.results = {{type = "item", name = ret.result, amount = ret.result_count and ret.result_count or 1}}
+		for type,count in pairs(e_list) do
+			table.insert(ret.results, {type = "item", name = type, amount = count})
+		end
+		ret.result = nil
+		ret.subgroup = data.raw.item[result].subgroup
+	end
 	if ret.normal then
 		ret.normal.ingredients = norm
+		if e_norm then
+			ret.normal.results = {{type = "item", name = ret.normal.result, amount = ret.normal.result_count and ret.normal.result_count or 1}}
+			for type,count in pairs(e_norm) do
+				table.insert(ret.normal.results, {type = "item", name = type, amount = count})
+			end
+			ret.normal.result = nil
+			ret.subgroup = data.raw.item[result].subgroup
+		end
 	end
 	if ret.expensive then
-		ret.expensive.ingredients = norm
+		ret.expensive.ingredients = exp
+		if e_exp then
+			ret.expensive.results = {{type = "item", name = ret.expensive.result, amount = ret.expensive.result_count and ret.expensive.result_count or 1}}
+			for type,count in pairs(e_exp) do
+				table.insert(ret.expensive.results, {type = "item", name = type, amount = count})
+			end
+			ret.expensive.result = nil
+			ret.subgroup = data.raw.item[result].subgroup
+		end
 	end
 	
 	if data.raw.item["basic-circuit-board"] then

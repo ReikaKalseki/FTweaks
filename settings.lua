@@ -103,4 +103,18 @@ data:extend({
             min_value = 1,
             order = "r",
         },
+        {
+            type = "bool-setting",
+            name = "split-gun-turret",
+            setting_type = "startup",
+            default_value = true,
+            order = "r",
+        },
+        {
+            type = "bool-setting",
+            name = "split-red-science",
+            setting_type = "startup",
+            default_value = true,
+            order = "r",
+        },
 })

@@ -130,6 +130,40 @@ if data.raw.fluid["ferric-chloride"] then
 	local pow = data.raw.item["iron-powder"]
 	replaceItemInRecipe(data.raw.recipe["ferric-chloride"], "iron-ore", pow and "iron-powder" or "iron-stick", pow and 1 or 2)
 end
+
+if Config.gunTurretRecipes then
+	local recipe = table.deepcopy(data.raw.recipe["gun-turret"])
+	if recipe.energy_required then recipe.energy_required = 0.25*math.floor(4*recipe.energy_required*0.5) end
+	if recipe.normal then recipe.normal.energy_required = 0.25*math.floor(4*recipe.normal.energy_required*0.4) end
+	if recipe.expensive then recipe.expensive.energy_required = 0.25*math.floor(4*recipe.expensive.energy_required*0.6) end
+	recipe.category = "manual-crafting"
+	recipe.name = "manual-gun-turret"
+	recipe.localised_name = {"recipe-name.manual-gun-turret"}
+	data:extend({recipe})
+	table.insert(data.raw.technology.turrets.effects, {type = "unlock-recipe", recipe = recipe.name})
+	data.raw.recipe["gun-turret"].category = "non-manual-crafting"
+	replaceItemInRecipe(data.raw.recipe["gun-turret"], "iron-plate", "iron-plate", 0.8)
+	replaceItemInRecipe(data.raw.recipe["gun-turret"], "iron-gear-wheel", "iron-gear-wheel", 0.9)
+	replaceItemInRecipe(data.raw.recipe["gun-turret"], "copper-plate", "copper-plate", 0.75)
+end
+
+if Config.redScienceRecipes then
+	local recipe = table.deepcopy(data.raw.recipe["science-pack-1"])
+	if recipe.energy_required then recipe.energy_required = 0.25*math.floor(4*recipe.energy_required*0.3) end
+	if recipe.normal then recipe.normal.energy_required = 0.25*math.floor(4*recipe.normal.energy_required*0.2) end
+	if recipe.expensive then recipe.expensive.energy_required = 0.25*math.floor(4*recipe.expensive.energy_required*0.5) end
+	recipe.category = "manual-crafting"
+	recipe.name = "manual-science-pack-1"
+	recipe.localised_name = {"recipe-name.manual-science-pack-1"}
+	data:extend({recipe})
+	--table.insert(data.raw.technology.turrets.effects, {type = "unlock-recipe", recipe = recipe.name})
+	data.raw.recipe["science-pack-1"].category = "non-manual-crafting"
+	
+	 --keep ratios on this; also, since costs are 1, cannot simply multiply -> have to do this:
+	 data.raw.recipe["science-pack-1"].result_count = 5
+	replaceItemInRecipe(data.raw.recipe["science-pack-1"], "iron-gear-wheel", "iron-gear-wheel", 4)
+	replaceItemInRecipe(data.raw.recipe["science-pack-1"], "copper-plate", "copper-plate", 4)
+end
 	
 -- fluid color correction
 data.raw["fluid"]["heavy-oil"].base_color = {r=0.906, g=0.376, b=0.145}
@@ -151,8 +185,8 @@ if data.raw["technology"]["fast-loader"] then
 	table.insert(data.raw["technology"]["fast-loader"].prerequisites,"loader")
 	table.insert(data.raw["technology"]["express-loader"].prerequisites,"fast-loader")
 	if data.raw["technology"]["green-loader"] then
-		table.insert(data.raw["technology"]["green-loader"].prerequisites,"express-loader")
-		table.insert(data.raw["technology"]["purple-loader"].prerequisites,"green-loader")
+		table.insert(data.raw["technology"]["purple-loader"].prerequisites,"express-loader")
+		table.insert(data.raw["technology"]["green-loader"].prerequisites,"purple-loader")
 	end
 	data.raw["technology"]["loader"].prerequisites = {"railway", "logistics-2"}
 end
@@ -175,14 +209,6 @@ end
 table.insert(data.raw["technology"]["electric-energy-distribution-2"].prerequisites,"advanced-electronics")
 
 data.raw.item["rocket-silo"].subgroup = "production-machine"
-
-data:extend(
-{
-  {
-    type = "recipe-category",
-    name = "manual-crafting"
-  },
-})
 
 table.insert(data.raw.player["player"].crafting_categories,"manual-crafting")
 
@@ -223,7 +249,11 @@ if Config.techFactor ~= 1 then
 	end
 	
 	if data.raw.technology["subterranean-logistics-1"] then
-		data.raw.technology["subterranean-logistics-1"].unit.count = 5*math.ceil(data.raw.technology["subterranean-logistics-1"].unit.count/(1+(Config.techFactor-1)/2.5)/5)
+		data.raw.technology["subterranean-logistics-1"].unit.count = 5*math.ceil(data.raw.technology["subterranean-logistics-1"].unit.count/(1+(Config.techFactor-1)/4)/5)
+	end
+	
+	if data.raw.technology["turret-monitoring"] then
+		data.raw.technology["turret-monitoring"].unit.count = data.raw.technology["turret-monitoring"].unit.count/(Config.techFactor/2)
 	end
 end
 
@@ -279,12 +309,10 @@ if Config.harderSilo then
 		if item[1] == "solar-panel" and data.raw.item["solar-panel-3"] then
 			item[1] = "solar-panel-3"
 		end
-		if item[1] == "solar-panel" and data.raw.item["solar-panel-5"] then
-			item[1] = "solar-panel-5"
-		end
 		if item[1] == "processing-unit" then
 			circuitcount = item[2]
 		end
+		log("Adding satellite ingredient: " .. (item[1] and item[1] or "nil") .. " x " .. (item[2] and item[2] or "nil"))
 		table.insert(satparts, item)
 	end
 	if data.raw.item["advanced-processing-unit"] then
@@ -294,7 +322,6 @@ if Config.harderSilo then
 		table.insert(satparts, {"plutonium", 2})
 		table.insert(data.raw.technology["rocket-silo"].prerequisites, "kovarex-enrichment-process")
 	end
-	table.insert(satparts, item)
 	
 	data.raw["recipe"]["satellite"].ingredients = satparts
 	for i = 8,3,-1 do
@@ -376,36 +403,36 @@ if data.raw["technology"]["uranium-processing"] then
 	end
 end
 
-if data.raw["underground-belt"]["green-underground-belt"] then
-	data.raw["underground-belt"]["green-underground-belt"].max_distance = 30
-	data.raw["underground-belt"]["green-underground-belt"].speed = 0.15
-	data.raw["transport-belt"]["green-transport-belt"].speed = 0.15
+if data.raw["underground-belt"]["turbo-underground-belt"] then
+	improveAttribute(data.raw["underground-belt"]["turbo-underground-belt"], "max_distance", 30)
+	improveAttribute(data.raw["underground-belt"]["turbo-underground-belt"], "speed", 0.15)
+	improveAttribute(data.raw["transport-belt"]["turbo-transport-belt"], "speed", 0.15)
 	
-	if data.raw.loader["green-loader"] then
-		data.raw.loader["green-loader"].speed = 0.15
+	if data.raw.loader["purple-loader"] then --they got swapped by Bob
+		improveAttribute(data.raw.loader["purple-loader"], "speed", 0.15)
 	end
 end
 
-if data.raw["underground-belt"]["purple-underground-belt"] then
-	data.raw["underground-belt"]["purple-underground-belt"].max_distance = 40
-	data.raw["underground-belt"]["purple-underground-belt"].speed = 0.2
-	data.raw["transport-belt"]["purple-transport-belt"].speed = 0.2
+if data.raw["underground-belt"]["ultimate-underground-belt"] then
+	improveAttribute(data.raw["underground-belt"]["ultimate-underground-belt"], "max_distance", 40)
+	improveAttribute(data.raw["underground-belt"]["ultimate-underground-belt"], "speed", 0.2)
+	improveAttribute(data.raw["transport-belt"]["ultimate-transport-belt"], "speed", 0.2)
 	
-	if data.raw.loader["purple-loader"] then
-		data.raw.loader["purple-loader"].speed = 0.2
+	if data.raw.loader["green-loader"] then
+		improveAttribute(data.raw.loader["green-loader"], "speed", 0.2)
 	end
 end
 
 --[[
 if data.raw["pipe"]["stone-pipe"] then
-	data.raw["pipe"]["stone-pipe"].fluid_box.base_area = 4
+	improveAttribute(data.raw["pipe"]["stone-pipe"].fluid_box, "base_area", 4)
 end
 if data.raw["pipe-to-ground"]["stone-pipe-to-ground"] then
-	data.raw["pipe-to-ground"]["stone-pipe-to-ground"].fluid_box.base_area = 4
+	improveAttribute(data.raw["pipe-to-ground"]["stone-pipe-to-ground"].fluid_box, "base_area", 4)
 end
 --]]
 
-data.raw["assembling-machine"]["assembling-machine-3"].crafting_speed = 1.5 --vanilla is 1.25, which is LESS than a tier2 with the four speed modules
+improveAttribute(data.raw["assembling-machine"]["assembling-machine-3"], "crafting_speed", 1.5) --vanilla is 1.25, which is LESS than a tier2 with the four speed modules
 
 --quickfix for getting fluids out of pipes; comment back out when done
 --[[
@@ -419,14 +446,14 @@ end
 
 --[[
 if data.raw["boiler"]["boiler-2"] then
-	data.raw["boiler"]["boiler-2"].fluid_box.base_area = 2
-	data.raw["boiler"]["boiler-3"].fluid_box.base_area = 4
-	data.raw["boiler"]["boiler-4"].fluid_box.base_area = 8
+	improveAttribute(data.raw["boiler"]["boiler-2"].fluid_box, "base_area", 2)
+	improveAttribute(data.raw["boiler"]["boiler-3"].fluid_box, "base_area", 4)
+	improveAttribute(data.raw["boiler"]["boiler-4"].fluid_box, "base_area", 8)
 end
 --]]
 
 if data.raw.locomotive["bob-diesel-locomotive-3"] then
-	data.raw.locomotive["bob-diesel-locomotive-3"].max_speed = 3
+	improveAttribute(data.raw.locomotive["bob-diesel-locomotive-3"], "max_speed", 3)
 end
 
 if data.raw.recipe["basic-circuit-board"] then

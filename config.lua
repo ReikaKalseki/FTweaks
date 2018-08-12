@@ -29,3 +29,7 @@ Config.advancedSatellite = settings.startup["advanced-satellite"].value--true
 Config.saneConcrete = settings.startup["sane-concrete"].value--true
 
 Config.techFactor = settings.startup["tech-demultiply"].value
+
+Config.gunTurretRecipes = settings.startup["split-gun-turret"].value
+
+Config.redScienceRecipes = settings.startup["split-red-science"].value
