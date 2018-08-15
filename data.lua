@@ -15,14 +15,3 @@ data:extend(
     name = "non-manual-crafting"
   },
 })
-
-for _,e in pairs(data.raw["assembling-machine"]) do
-	local recipes = false
-	for _,cat in pairs(e.crafting_categories) do
-		if cat == "crafting" then
-			recipes = true
-			break
-		end
-	end
-	table.insert(e.crafting_categories, "non-manual-crafting")
-end

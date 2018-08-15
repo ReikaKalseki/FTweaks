@@ -50,6 +50,9 @@ if Config.stackSize then
 
 	increaseStackSize("rocket-fuel", 50)
 	increaseStackSize("low-density-structure", 50)
+	
+	increaseStackSize("infinity-chest", 1000)
+	increaseStackSize("electric-energy-interface", 1000)
 end
 
 -- Cheaper Steel
@@ -129,6 +132,20 @@ end
 if data.raw.fluid["ferric-chloride"] then
 	local pow = data.raw.item["iron-powder"]
 	replaceItemInRecipe(data.raw.recipe["ferric-chloride"], "iron-ore", pow and "iron-powder" or "iron-stick", pow and 1 or 2)
+end
+
+for name,e in pairs(data.raw["assembling-machine"]) do
+	local recipes = false
+	for _,cat in pairs(e.crafting_categories) do
+		if cat == "crafting" then
+			recipes = true
+			break
+		end
+	end
+	if recipes then
+		log("Added crafting category 'non-manual' to " .. name)
+		table.insert(e.crafting_categories, "non-manual-crafting")
+	end
 end
 
 if Config.gunTurretRecipes then
@@ -596,6 +613,7 @@ if data.raw.car["heli-entity-_-"] then
 			end
 		end
 	end
+	table.insert(data.raw.technology["heli-technology"].prerequisites, "rocketry") --since has a rocket launcher in the recipe
 end
 
 if data.raw.technology["worker-robot-battery-1"] then

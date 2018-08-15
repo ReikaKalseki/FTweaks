@@ -167,8 +167,23 @@ function createConversionRecipe(from, to, register, tech)
 	local main = rec1.result and rec1.result or rec1.normal.result
 	local result = rec2.result and rec2.result or rec2.normal.result
 	ret.localised_name = {"conversion-recipe.name", {"entity-name." .. main}, {"entity-name." .. result}}
-	ret.icons = {{icon = ret.icon and ret.icon or data.raw.item[result].icon, icon_size = ret.icon_size and ret.icon_size or data.raw.item[result].icon_size}, {icon = "__FTweaks__/graphics/icons/conversion_overlay.png", icon_size = 32}}
-	if not ret.icon then if data.raw.item[result] then ret.icon = data.raw.item[result].icon else log("Could not create icon for conversion recipe '" .. name .. "'! No such item '" .. result .. "'") end end
+	local orig_icon_src = rec2
+	if not (orig_icon_src.icon or orig_icon_src.icons) then
+		orig_icon_src = data.raw.item[result]
+	end
+	if not (orig_icon_src.icon or orig_icon_src.icons) then
+		error("Could not find an icon for " .. rec2.name .. ", in either the recipe or its produced item! This item is invalid and would have crashed the game anyways!")
+	end
+	local ico = orig_icon_src.icon and orig_icon_src.icon or orig_icon_src.icons[1].icon
+	local icosz = orig_icon_src.icon_size and orig_icon_src.icon_size or orig_icon_src.icons[1].icon_size
+	ret.icons = {{icon = ico, icon_size = icosz}, {icon = "__FTweaks__/graphics/icons/conversion_overlay.png", icon_size = 32}}
+	if not ret.icon then
+		if data.raw.item[result] then
+			ret.icon = data.raw.item[result].icon
+		else
+			log("Could not create icon for conversion recipe '" .. name .. "'! No such item '" .. result .. "'")
+		end
+	end
 	if e_list then
 		ret.results = {{type = "item", name = ret.result, amount = ret.result_count and ret.result_count or 1}}
 		for type,count in pairs(e_list) do
