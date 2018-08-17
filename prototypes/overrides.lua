@@ -84,6 +84,17 @@ replaceItemInRecipe(data.raw.recipe["rocket-silo"], "concrete", "refined-concret
 
 if data.raw.item["titanium-plate"] then
 	replaceItemInRecipe(data.raw.recipe["refined-concrete"], "steel-plate", "titanium-plate", 0.4)
+	local conc2 = table.deepcopy(data.raw.technology.concrete)
+	conc2.name = "concrete-2"
+	conc2.prerequisites = {"concrete", "titanium-processing"}
+	conc2.effects = {{type = "unlock-recipe", recipe = "refined-concrete"}, {type = "unlock-recipe", recipe = "refined-hazard-concrete"}}
+	for i = #data.raw.technology.concrete.effects,1,-1 do
+		local effect = data.raw.technology.concrete.effects[i]
+		if effect.type == "unlock-recipe" and (effect.recipe == "refined-concrete" or effect.recipe == "refined-hazard-concrete") then
+			table.remove(data.raw.technology.concrete.effects, i)
+		end
+	end
+	data:extend({conc2})
 end
 
 if data.raw["assembling-machine"]["bob-greenhouse"] then --buff Bob Greenhouses to compete with TreeFarm
