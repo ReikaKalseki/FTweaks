@@ -137,7 +137,6 @@ end
 --local strees = {}
 
 script.on_event(defines.events.on_tick, function(event)
-	initGlobal(false)
 	if not global.ftweaks.ranTick then
 		doOneTick()
 		global.ftweaks.ranTick = true

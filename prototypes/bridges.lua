@@ -1,4 +1,5 @@
 require "functions"
+require "config"
 
 local function createVoidRecipe(fluid)
 	if data.raw.fluid[fluid] and data.raw.recipe["void-hydrogen"] then
@@ -251,4 +252,99 @@ if data.raw.technology["subterranean-logistics-1"] then
 	--table.insert(data.raw.technology["subterranean-logistics-1"].effects, {type = "unlock-recipe", recipe = rec1.name})
 	--table.insert(data.raw.technology["subterranean-logistics-2"].effects, {type = "unlock-recipe", recipe = rec2.name})
 	--table.insert(data.raw.technology["subterranean-logistics-3"].effects, {type = "unlock-recipe", recipe = rec1.name})
+	
+	createConversionRecipe("subterranean-belt", "underground-belt", true, "subterranean-logistics-1")
+end
+
+if data.raw.technology["cobalt-processing"] then
+	splitTech("cobalt-processing", {"sulfur-processing"}, {"cobalt-plate", "cobalt-steel-alloy", "cobalt-steel-gear-wheel", "cobalt-steel-bearing-ball", "cobalt-steel-bearing", "cobalt-axe"})
+end
+
+if data.raw["assembling-machine"]["mixing-steel-furnace"] then
+	createConversionRecipe("mixing-furnace", "mixing-steel-furnace", true, "mixing-steel-furnace")
+end
+
+if data.raw["assembling-machine"]["chemical-steel-furnace"] then
+	createConversionRecipe("chemical-boiler", "chemical-steel-furnace", true, "chemical-processing-2")
+end
+
+if data.raw.technology.cathodes then
+	local repl = {}
+	for _,prereq in pairs (data.raw.technology.cathodes.prerequisites) do
+		if prereq == "advanced-electronics" then
+			table.insert(repl, "circuit-network")
+		else
+			table.insert(repl, prereq)
+		end
+	end
+	data.raw.technology.cathodes.prerequisites = repl
+end
+
+if data.raw.technology["heli-technology"] then
+	local repl = {}
+	local flag = false
+	for _,prereq in pairs (data.raw.technology["heli-technology"].prerequisites) do
+		if prereq == "advanced-electronics" then
+			table.insert(repl, "advanced-electronics-2")
+			flag = true
+		else
+			table.insert(repl, prereq)
+		end
+	end
+	if not flag then
+		table.insert(repl, "advanced-electronics-2")
+	end
+	data.raw.technology["heli-technology"].prerequisites = repl
+end
+
+if Config.tieredBobRobots and data.raw.item["robot-brain-logistic"] then --also do with robot frames and the tools
+	for i = 1,3 do
+		local suff1 = i == 1 and "" or ("-" .. i)
+		local suff2 = "-" .. (i+1)
+		turnRecipeIntoConversion("robot-brain-logistic" .. suff1, "robot-brain-logistic" .. suff2)
+		turnRecipeIntoConversion("robot-brain-construction" .. suff1, "robot-brain-construction" .. suff2)
+		turnRecipeIntoConversion("robot-tool-logistic" .. suff1, "robot-tool-logistic" .. suff2)
+		turnRecipeIntoConversion("robot-tool-construction" .. suff1, "robot-tool-construction" .. suff2)
+		turnRecipeIntoConversion("flying-robot-frame" .. suff1, "flying-robot-frame" .. suff2)
+	end
+	
+	--[[
+	createConversionRecipe("robot-brain-logistic" .. suff1, "robot-brain-logistic" .. suff2, true, "bob-robots-" .. i)
+	createConversionRecipe("robot-brain-logistic-2", "robot-brain-logistic-3", true, "bob-robots-2")
+	createConversionRecipe("robot-brain-logistic-3", "robot-brain-logistic-4", true, "bob-robots-3")
+	
+	createConversionRecipe("robot-brain-construction", "robot-brain-construction-2", true, "bob-robots-1")
+	createConversionRecipe("robot-brain-construction-2", "robot-brain-construction-3", true, "bob-robots-2")
+	createConversionRecipe("robot-brain-construction-3", "robot-brain-construction-4", true, "bob-robots-3")
+	--]]
+end
+
+if Config.woodSludge and data.raw.item["wooden-gear"] then
+data:extend({
+  {
+    type = "recipe",
+    name = "wood-gear-sludge",
+    category = "oil-processing",
+    enabled = false,
+    energy_required = 2.5,
+    ingredients =
+    {
+      {type="item", name="wooden-gear", amount=8},
+      {type="fluid", name="sulfuric-acid", amount=25},
+      {type="fluid", name="steam", amount=30}
+    },
+    results=
+    {
+      {type="fluid", name="heavy-oil", amount=15},
+      {type="fluid", name="light-oil", amount=35},
+      --{type="item", name="coal", amount=1}
+    },
+    icon = "__FTweaks__/graphics/icons/wood-sludge.png",
+	icon_size = 32,
+    subgroup = "fluid-recipes",
+    order = "a[oil-processing]-c[wood-sludge]",
+    allow_decomposition = false
+  },
+})
+table.insert(data.raw.technology["wood-sludge"].effects, {type = "unlock-recipe", recipe = "wood-gear-sludge"})
 end

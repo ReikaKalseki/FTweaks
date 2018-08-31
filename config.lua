@@ -33,3 +33,5 @@ Config.techFactor = settings.startup["tech-demultiply"].value
 Config.gunTurretRecipes = settings.startup["split-gun-turret"].value
 
 Config.redScienceRecipes = settings.startup["split-red-science"].value
+
+Config.tieredBobRobots = settings.startup["tiered-bob-robots"].value

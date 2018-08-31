@@ -12,6 +12,77 @@ function increaseStackSize(name, amt)
 	item.stack_size = math.max(item.stack_size, amt)
 end
 
+local function listHasValue(list, val)
+	for _,entry in pairs(list) do
+		if entry == val then return true end
+	end
+end
+
+function splitTech(tech, prereqs, recipesToMove)
+	local base = data.raw.technology[tech]
+	local tech2 = table.deepcopy(base)
+	local a, b = string.find(tech, "-", 1, true)
+	local number = b and tonumber(string.sub(tech, b+1)) or nil
+	--error("Number " .. number .. " from " .. tech)
+	tech2.name = number and (tech .. "-" .. (number+1)) or (tech .. "-2")
+	--log(tech2.name .. " from " .. tech)
+	tech2.prerequisites = prereqs
+	table.insert(prereqs, tech)
+	tech2.effects = {}
+	for _,recipe in pairs(recipesToMove) do
+		table.insert(tech2.effects, {type = "unlock-recipe", recipe = recipe})
+	end
+	--for k,v in pairs(recipesToMove) do log(v) end
+	local keep = {}
+	for _,effect in pairs(base.effects) do
+		--log("Checking if list has " .. effect.recipe)
+		if effect.type == "unlock-recipe" and listHasValue(recipesToMove, effect.recipe) then
+			
+		else
+			table.insert(keep, effect)
+		end
+	end
+	base.effects = keep
+	data:extend({tech2})
+end
+
+local function getPrereqTechForPack(pack) --this is going to change in 0.17 to a dedicated tech for each
+	if pack == "science-pack-2" then
+		return "chemical-processing-2"
+	elseif pack == "science-pack-3" then
+		return "advanced-electronics"
+	elseif pack == "military-science-pack" then
+		return "military-2"
+	elseif pack == "logistic-science-pack" then
+		return "logistics-3"
+	elseif pack == "high-tech-science-pack" then
+		return "advanced-electronics-2"
+	elseif pack == "production-science-pack" then
+		return "advanced-material-processing-2"
+	elseif pack == "space-science-pack" then
+		return "rocket-silo"
+	end
+end
+
+function addSciencePackToTech(techname, pack)
+	local tech = data.raw.technology[techname]
+	if not tech then return end
+	local prereq = getPrereqTechForPack(pack)
+	if prereq and data.raw.technology[prereq] then
+		table.insert(tech.prerequisites, prereq)
+	end
+	table.insert(tech.unit.ingredients, {pack, 1})
+end
+
+function turnRecipeIntoConversion(from, to)
+	local tgt = data.raw.recipe[to]
+	if not tgt then return end
+	local rec = createConversionRecipe(from, to, false)
+	tgt.ingredients = rec.ingredients
+	if tgt.normal then tgt.normal.ingredients = rec.normal.ingredients end
+	if tgt.expensive then tgt.expensive.ingredients = rec.expensive.ingredients end
+end
+
 function parseIngredient(entry)
 	local type = entry.name and entry.name or entry[1]
 	local amt = entry.amount and entry.amount or entry[2]
@@ -39,6 +110,20 @@ function replaceItemInRecipe(recipe, item, repl, ratio)
 	if recipe.expensive and recipe.expensive.ingredients then
 		changeIngredientInList(recipe.expensive.ingredients, item, repl, ratio)
 	end
+end
+
+function moveRecipe(recipe, from, to)
+	local tech = data.raw.technology[from]
+	local effects = {}
+	for _,effect in pairs(tech.effects) do
+		if effect.type == "unlock-recipe" and effect.recipe == recipe then
+		
+		else
+			table.insert(effects, effect)
+		end
+	end
+	tech.effects = effects
+	table.insert(data.raw.technology[to].effects, {type = "unlock-recipe", recipe = recipe})
 end
 
 --returns nil if none, not {}
@@ -218,6 +303,9 @@ function createConversionRecipe(from, to, register, tech)
 	if data.raw.item["basic-circuit-board"] then
 		replaceItemInRecipe(ret, "electronic-circuit", "basic-circuit-board", 1)
 	end
+	
+	ret.allow_decomposition = false
+	ret.allow_as_intermediate = false
 	
 	if register then
 		data:extend({ret})

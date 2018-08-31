@@ -63,6 +63,10 @@ if Config.cheapSteel then
 	data.raw.recipe["steel-plate"].expensive.ingredients = {{"iron-plate", 4}}
 end
 
+if data.raw.ammo["ammo-nano-constructors"] then
+	improveAttribute(data.raw.ammo["ammo-nano-constructors"], "magazine_size", 25) --from 10
+end
+
 --[[
 if Config.coalInSteel then
 	table.insert(data.raw.recipe["steel-plate"].normal.ingredients, {"coal", 1}) --requires new input slot
@@ -84,17 +88,7 @@ replaceItemInRecipe(data.raw.recipe["rocket-silo"], "concrete", "refined-concret
 
 if data.raw.item["titanium-plate"] then
 	replaceItemInRecipe(data.raw.recipe["refined-concrete"], "steel-plate", "titanium-plate", 0.4)
-	local conc2 = table.deepcopy(data.raw.technology.concrete)
-	conc2.name = "concrete-2"
-	conc2.prerequisites = {"concrete", "titanium-processing"}
-	conc2.effects = {{type = "unlock-recipe", recipe = "refined-concrete"}, {type = "unlock-recipe", recipe = "refined-hazard-concrete"}}
-	for i = #data.raw.technology.concrete.effects,1,-1 do
-		local effect = data.raw.technology.concrete.effects[i]
-		if effect.type == "unlock-recipe" and (effect.recipe == "refined-concrete" or effect.recipe == "refined-hazard-concrete") then
-			table.remove(data.raw.technology.concrete.effects, i)
-		end
-	end
-	data:extend({conc2})
+	splitTech("concrete", {"titanium-processing"}, {"refined-concrete", "refined-hazard-concrete"})
 end
 
 if data.raw["assembling-machine"]["bob-greenhouse"] then --buff Bob Greenhouses to compete with TreeFarm
@@ -104,11 +98,20 @@ if data.raw["assembling-machine"]["bob-greenhouse"] then --buff Bob Greenhouses 
 	data.raw.recipe["bob-advanced-greenhouse-cycle"].expensive.energy_required = data.raw.recipe["bob-advanced-greenhouse-cycle"].expensive.energy_required*0.75
 end
 
+addSciencePackToTech("nickel-processing", "science-pack-2")
+addSciencePackToTech("gold-processing", "science-pack-3")
+addSciencePackToTech("silver-processing", "science-pack-3")
+addSciencePackToTech("zinc-processing", "science-pack-3")
+addSciencePackToTech("lithium-processing", "science-pack-3")
+addSciencePackToTech("tungsten-processing", "high-tech-science-pack")
+addSciencePackToTech("titanium-processing", "production-science-pack")
+
 data:extend({
 	createConversionRecipe("burner-mining-drill", "electric-mining-drill"),
 	createConversionRecipe("burner-inserter", "inserter"),
 	createConversionRecipe("steel-furnace", "electric-furnace")
 })
+createConversionRecipe("stone-furnace", "steel-furnace", true, "advanced-material-processing")
 
 if data.raw.item["basic-circuit-board"] then
 	data.raw.recipe["small-lamp"].ingredients = {
@@ -189,6 +192,11 @@ if Config.redScienceRecipes then
 	
 	 --keep ratios on this; also, since costs are 1, cannot simply multiply -> have to do this:
 	 data.raw.recipe["science-pack-1"].result_count = 5
+	data.raw.recipe["science-pack-1"].energy_required = data.raw.recipe["science-pack-1"].energy_required*5 --to keep time/output the same
+	if data.raw.recipe["science-pack-1"].normal then
+		data.raw.recipe["science-pack-1"].normal.energy_required = data.raw.recipe["science-pack-1"].normal.energy_required*5
+		data.raw.recipe["science-pack-1"].expensive.energy_required = data.raw.recipe["science-pack-1"].expensive.energy_required*5
+	end
 	replaceItemInRecipe(data.raw.recipe["science-pack-1"], "iron-gear-wheel", "iron-gear-wheel", 4)
 	replaceItemInRecipe(data.raw.recipe["science-pack-1"], "copper-plate", "copper-plate", 4)
 end
@@ -224,6 +232,8 @@ if data.raw["technology"]["angels-warehouses"] then
 end
 
 data.raw["technology"]["flying"].prerequisites = {"engine", "advanced-electronics", "advanced-material-processing"}
+
+moveRecipe("poison-capsule", "military-3", "military-2") --why was this even mil3
 
 if Config.harderNuclear then
 	data.raw["technology"]["nuclear-power"].prerequisites = {"advanced-electronics-2", "concrete", "advanced-material-processing-2", "electric-energy-distribution-2", "circuit-network", "robotics"}
@@ -480,6 +490,31 @@ if data.raw["boiler"]["boiler-2"] then
 end
 --]]
 
+if data.raw.fluid["nitric-oxide"] then
+	data:extend({
+	  {
+		type = "recipe",
+		name = "nitric-oxide-decomposition",
+		category = "chemistry",
+		--order = "f[plastic-bar]-f[venting]",
+		icon = data.raw.fluid["nitric-oxide"].icon,
+		icon_size = 32,
+		energy_required = 0.8,
+		enabled = "false",
+		subgroup = "bob-fluid",
+		ingredients = {
+		  {type="fluid", name="nitric-oxide", amount=20},
+		  {type="fluid", name="hydrogen", amount=20},
+		},
+		results = {
+		  {type="fluid", name="water", amount=20},
+		  {type="fluid", name="nitrogen", amount=10},
+		},
+	  },
+	})
+	table.insert(data.raw.technology["nitrogen-processing"].effects, {type = "unlock-recipe", recipe = "nitric-oxide-decomposition"})
+end
+
 if data.raw.locomotive["bob-diesel-locomotive-3"] then
 	improveAttribute(data.raw.locomotive["bob-diesel-locomotive-3"], "max_speed", 3)
 end
@@ -525,6 +560,22 @@ end
 
 for name,spawner in pairs(data.raw["unit-spawner"]) do
 	spawner.resistances = createSpawnerResistance(spawner)
+end
+
+for name,worm in pairs(data.raw.turret) do
+	if string.find(name, "worm") then
+		if worm.resistances then
+			local resist = {}
+			for _,r in pairs(worm.resistances) do
+				if r.type == "poison" then
+				
+				else
+					table.insert(resist, r)
+				end
+			end
+			worm.resistances = resist
+		end
+	end
 end
 
 data.raw.unit["medium-biter"].attack_parameters.range = 0.9 --was 1.0, allowing through-wall attacks
