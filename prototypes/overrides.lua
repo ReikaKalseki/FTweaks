@@ -233,6 +233,8 @@ end
 
 data.raw["technology"]["flying"].prerequisites = {"engine", "advanced-electronics", "advanced-material-processing"}
 
+table.insert(data.raw["technology"]["power-armor"].prerequisites, "military-3")
+
 moveRecipe("poison-capsule", "military-3", "military-2") --why was this even mil3
 
 if Config.harderNuclear then
@@ -265,6 +267,7 @@ if Config.techFactor ~= 1 then
 	data.raw.technology["turrets"].unit.count = data.raw.technology["turrets"].unit.count/(Config.techFactor/2)
 	data.raw.technology["optics"].unit.count = data.raw.technology["optics"].unit.count/(Config.techFactor/2)
 	data.raw.technology["stone-walls"].unit.count = data.raw.technology["stone-walls"].unit.count/(1+(Config.techFactor-1)/4)
+	data.raw.technology["gates"].unit.count = data.raw.technology["gates"].unit.count/(1+(Config.techFactor-1)/2)
 	
 	data.raw.technology["toolbelt"].unit.count = data.raw.technology["toolbelt"].unit.count/(Config.techFactor/2)
 	
@@ -294,6 +297,8 @@ if Config.techFactor ~= 1 then
 		data.raw.technology["turret-monitoring"].unit.count = data.raw.technology["turret-monitoring"].unit.count/(Config.techFactor/2)
 	end
 end
+
+improveAttribute(data.raw.gun["rocket-launcher"].attack_parameters, "range", 35)--from 22; compare with poison capsule at 25 and  T2 flamethrower at 30
 
 -- tougher endgame
 if Config.harderSilo then
