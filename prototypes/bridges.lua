@@ -269,32 +269,13 @@ if data.raw["assembling-machine"]["chemical-steel-furnace"] then
 end
 
 if data.raw.technology.cathodes then
-	local repl = {}
-	for _,prereq in pairs (data.raw.technology.cathodes.prerequisites) do
-		if prereq == "advanced-electronics" then
-			table.insert(repl, "circuit-network")
-		else
-			table.insert(repl, prereq)
-		end
-	end
-	data.raw.technology.cathodes.prerequisites = repl
+	replaceTechPrereq("cathodes", "advanced-electronics", "circuit-network")
 end
 
 if data.raw.technology["heli-technology"] then
-	local repl = {}
-	local flag = false
-	for _,prereq in pairs (data.raw.technology["heli-technology"].prerequisites) do
-		if prereq == "advanced-electronics" then
-			table.insert(repl, "advanced-electronics-2")
-			flag = true
-		else
-			table.insert(repl, prereq)
-		end
+	if not replaceTechPrereq("heli-technology", "advanced-electronics", "advanced-electronics-2") then
+		table.insert(data.raw.technology["heli-technology"].prerequisites, "advanced-electronics-2")
 	end
-	if not flag then
-		table.insert(repl, "advanced-electronics-2")
-	end
-	data.raw.technology["heli-technology"].prerequisites = repl
 end
 
 if Config.tieredBobRobots and data.raw.item["robot-brain-logistic"] then --also do with robot frames and the tools
@@ -347,4 +328,16 @@ data:extend({
   },
 })
 table.insert(data.raw.technology["wood-sludge"].effects, {type = "unlock-recipe", recipe = "wood-gear-sludge"})
+end
+
+if data.raw.technology["electric-pole-2"] then
+	replaceTechPrereq("electric-pole-2", "zinc-processing", "invar-processing")
+	
+	replaceItemInRecipe(data.raw.recipe["medium-electric-pole-2"], "brass-alloy", "invar-alloy", 1)
+	replaceItemInRecipe(data.raw.recipe["big-electric-pole-2"], "brass-alloy", "invar-alloy", 1)
+	
+	replaceTechPrereq("electric-pole-3", "titanium-processing", "cobalt-processing")
+	
+	replaceItemInRecipe(data.raw.recipe["medium-electric-pole-3"], "titanium-plate", "cobalt-steel-alloy", 1)
+	replaceItemInRecipe(data.raw.recipe["big-electric-pole-3"], "titanium-plate", "cobalt-steel-alloy", 1)
 end

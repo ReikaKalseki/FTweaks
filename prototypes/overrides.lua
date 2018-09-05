@@ -233,7 +233,15 @@ end
 
 data.raw["technology"]["flying"].prerequisites = {"engine", "advanced-electronics", "advanced-material-processing"}
 
-table.insert(data.raw["technology"]["power-armor"].prerequisites, "military-3")
+local flag = true
+for _,prereq in pairs(data.raw["technology"]["power-armor"].prerequisites) do
+	if prereq == "military-3" then
+		flag = false
+	end
+end
+if flag then
+	table.insert(data.raw["technology"]["power-armor"].prerequisites, "military-3")
+end
 
 moveRecipe("poison-capsule", "military-3", "military-2") --why was this even mil3
 

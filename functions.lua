@@ -74,6 +74,21 @@ function addSciencePackToTech(techname, pack)
 	table.insert(tech.unit.ingredients, {pack, 1})
 end
 
+function replaceTechPrereq(tech, old, new)
+	local repl = {}
+	local flag = false
+	for _,prereq in pairs (data.raw.technology[tech].prerequisites) do
+		if prereq == old then
+			table.insert(repl, new)
+			flag = true
+		else
+			table.insert(repl, prereq)
+		end
+	end
+	data.raw.technology[tech].prerequisites = repl
+	return flag
+end
+
 function turnRecipeIntoConversion(from, to)
 	local tgt = data.raw.recipe[to]
 	if not tgt then return end
@@ -91,10 +106,21 @@ end
 
 local function changeIngredientInList(list, item, repl, ratio)
 	for i = 1,#list do
-		local ing = list[i]
+		local ing = parseIngredient(list[i])
+		--[[
+		if ing[1] then
+			log("Pos " .. i .. ": " .. ing[1] .. " x" .. ing[2] .. " for " .. item .. "->" .. repl)
+		else
+			log("Pos " .. i .. " is invalid!")
+		end--]]
+		--log("Comparing '" .. ing[1] .. "' and '" .. item .. "': " .. (ing[1] == item and "true" or "false"))
 		if ing[1] == item then
 			ing[1] = repl
 			ing[2] = math.ceil(ing[2]*ratio)
+			ing.name = repl
+			ing.amount = ing[2]
+			list[i] = ing
+			break
 		end
 	end
 end

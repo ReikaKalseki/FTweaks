@@ -1,0 +1,26 @@
+---------------------------------------------------------------------------------------------------
+Version: 1.0.135
+Date: Sep 5 2018
+	- Fixed crash with "More Techs"
+	- Made Bob T2 electric poles easier to get - Replaced brass with invar
+---------------------------------------------------------------------------------------------------
+Version: 1.0.132
+Date: Sep 2 2018
+	- Increased rocket launcher range to 35 from 22
+	- Gate technology is now cheaper on harder tech costs
+	- Nano constructors now last 2.5x longer
+	- Added some science packs and their techs as prerequisites for later-game Bob ore processing
+	- Added conversion recipes for stone/basic furnaces into their steel variants
+	- Conversion recipes are no longer used by manual crafting as intermediates
+	- Fixed "automatic" version of red science pack recipe giving 5x the yield-per-time
+	- Moved poison capsule to military 2
+	- Added a recipe to decompose nitric oxide to water and nitrogen
+	- Split BobMods cobalt processing into two techs, the later one for alloying
+	- Made "cathodes" tech for Nixie Tubes easier - no advanced electronics, only circuit network
+	- Helicopters mod tech now requires advanced electronics 2
+	- Added option to make BobMod robot parts require successive crafting and upgrading like other things do - recipes tweaked to keep total cost the same
+	- RubberBelts wooden gear can now be sludged into oil products like raw wood can
+---------------------------------------------------------------------------------------------------
+Version: 1.0.120
+Date: Aug 21 2018
+	- Split concrete tech into two, the later of which unlocks refined concrete
