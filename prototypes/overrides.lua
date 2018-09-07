@@ -267,6 +267,11 @@ if Config.tieredArmor then
 	table.insert(data.raw.recipe["power-armor-mk2"].ingredients, {"power-armor", 1})
 end
 
+local function sigFig(num, figures)
+    local x = figures - math.ceil(math.log10(math.abs(num)))
+    return (math.floor(num*10^x+0.5)/10^x)
+end
+
 if Config.techFactor ~= 1 then
 	data.raw.technology["automation"].unit.count = data.raw.technology["automation"].unit.count/Config.techFactor
 	data.raw.technology["logistics"].unit.count = data.raw.technology["logistics"].unit.count/(Config.techFactor*2)
@@ -303,6 +308,18 @@ if Config.techFactor ~= 1 then
 	
 	if data.raw.technology["turret-monitoring"] then
 		data.raw.technology["turret-monitoring"].unit.count = data.raw.technology["turret-monitoring"].unit.count/(Config.techFactor/2)
+	end
+	
+	if data.raw.technology["turret-range-1"] then
+		for i = 1,10 do
+			local f1 = 2*i/2
+			local f2 = f1-1
+			local f = 1+(Config.techFactor-1)*(1-f2/f1)
+			local amt = data.raw.technology["turret-range-" .. i].unit.count/f
+			amt = sigFig(amt, 2)
+			--log(i .. " => " .. f .. " so " .. data.raw.technology["turret-range-" .. i].unit.count .. " => " .. amt)
+			data.raw.technology["turret-range-" .. i].unit.count = amt
+		end
 	end
 end
 
