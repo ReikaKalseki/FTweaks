@@ -35,3 +35,7 @@ Config.gunTurretRecipes = settings.startup["split-gun-turret"].value
 Config.redScienceRecipes = settings.startup["split-red-science"].value
 
 Config.tieredBobRobots = settings.startup["tiered-bob-robots"].value
+
+Config.cheaperBelts = settings.startup["cheaper-belts"].value
+
+Config.splitHelicopter = false--settings.startup["split-helicopter"].value

@@ -81,6 +81,11 @@ if Config.saneConcrete then
 	replaceItemInRecipe(data.raw.recipe.concrete, "iron-ore", "iron-stick", 2) --x2 since sticks are 0.5 iron each, this maintains ratios
 end
 
+if data.raw.technology["inserter-stack-size-bonus-1"] then
+	table.insert(data.raw.technology["stack-inserter"].prerequisites, "inserter-stack-size-bonus-1")
+	data.raw.technology["stack-inserter"].effects[3].modifier = 3
+end
+
 replaceItemInRecipe(data.raw.recipe["nuclear-reactor"], "concrete", "refined-concrete", 1)
 replaceItemInRecipe(data.raw.recipe["centrifuge"], "concrete", "refined-concrete", 1)
 replaceItemInRecipe(data.raw.recipe["artillery-turret"], "concrete", "refined-concrete", 1)
@@ -243,6 +248,8 @@ if flag then
 	table.insert(data.raw["technology"]["power-armor"].prerequisites, "military-3")
 end
 
+table.insert(data.raw["technology"]["logistic-robotics"].prerequisites, "logistics-3")
+
 moveRecipe("poison-capsule", "military-3", "military-2") --why was this even mil3
 
 if Config.harderNuclear then
@@ -273,41 +280,55 @@ local function sigFig(num, figures)
 end
 
 if Config.techFactor ~= 1 then
-	data.raw.technology["automation"].unit.count = data.raw.technology["automation"].unit.count/Config.techFactor
-	data.raw.technology["logistics"].unit.count = data.raw.technology["logistics"].unit.count/(Config.techFactor*2)
-	data.raw.technology["automation-2"].unit.count = data.raw.technology["automation-2"].unit.count/(Config.techFactor/2)
-	data.raw.technology["logistics-2"].unit.count = data.raw.technology["logistics-2"].unit.count/(1+(Config.techFactor-1)/4)
-	data.raw.technology["turrets"].unit.count = data.raw.technology["turrets"].unit.count/(Config.techFactor/2)
-	data.raw.technology["optics"].unit.count = data.raw.technology["optics"].unit.count/(Config.techFactor/2)
-	data.raw.technology["stone-walls"].unit.count = data.raw.technology["stone-walls"].unit.count/(1+(Config.techFactor-1)/4)
-	data.raw.technology["gates"].unit.count = data.raw.technology["gates"].unit.count/(1+(Config.techFactor-1)/2)
-	
-	data.raw.technology["toolbelt"].unit.count = data.raw.technology["toolbelt"].unit.count/(Config.techFactor/2)
+	reduceTechnologyCost("automation", 1)
+	reduceTechnologyCost("logistics", 0.5)
+	reduceTechnologyCost("automation-2", 2)
+	reduceTechnologyCost("logistics-2", 4)
+	reduceTechnologyCost("turrets", 2)
+	reduceTechnologyCost("optics", 2)
+	reduceTechnologyCost("stone-walls", 4)
+	reduceTechnologyCost("gates", 2)
+	reduceTechnologyCost("toolbelt", 2)
 	
 	if data.raw.technology["bob-greenhouse"] then
-		data.raw.technology["bob-greenhouse"].unit.count = data.raw.technology["bob-greenhouse"].unit.count/Config.techFactor
+		reduceTechnologyCost("bob-greenhouse", 1)
 	end
 	
 	if data.raw.technology["long-inserters-1"] then
-		data.raw.technology["long-inserters-1"].unit.count = data.raw.technology["long-inserters-1"].unit.count/(Config.techFactor*2)
+		reduceTechnologyCost("long-inserters-1", 0.5)
 	end
 	
 	if data.raw.technology["long-reach-research_long-reach-1"] then
-		data.raw.technology["long-reach-research_long-reach-1"].unit.count = data.raw.technology["long-reach-research_long-reach-1"].unit.count/(Config.techFactor/2)
+		reduceTechnologyCost("long-reach-research_long-reach-1", 2)
 	end
 	if data.raw.technology["long-reach-research_long-build-1"] then
-		data.raw.technology["long-reach-research_long-build-1"].unit.count = data.raw.technology["long-reach-research_long-build-1"].unit.count/(Config.techFactor/2)
+		reduceTechnologyCost("long-reach-research_long-build-1", 2)
 	end
 	if data.raw.technology["long-mine-research_long-mine-1"] then
-		data.raw.technology["long-mine-research_long-mine-1"].unit.count = data.raw.technology["long-mine-research_long-mine-1"].unit.count/(Config.techFactor/2)
+		reduceTechnologyCost("long-mine-research_long-mine-1", 2)
 	end
 	
 	if data.raw.technology["subterranean-logistics-1"] then
-		data.raw.technology["subterranean-logistics-1"].unit.count = 5*math.ceil(data.raw.technology["subterranean-logistics-1"].unit.count/(1+(Config.techFactor-1)/4)/5)
+		reduceTechnologyCost("subterranean-logistics-1", 5)
 	end
 	
 	if data.raw.technology["turret-monitoring"] then
-		data.raw.technology["turret-monitoring"].unit.count = data.raw.technology["turret-monitoring"].unit.count/(Config.techFactor/2)
+		reduceTechnologyCost("turret-monitoring", 2)
+	end
+	
+	if data.raw.technology["heli-technology"] then
+		reduceTechnologyCost("heli-technology", 2)
+	end
+	
+	for i = 1,8 do
+		local tech = data.raw.technology["inserter-capacity-bonus-" .. i]
+		if tech then
+			if tech.unit.count then
+				reduceTechnologyCost(tech, 1+(i-1)/2)
+			elseif tech.unit.count_formula then
+				tech.unit.count_formula = "2^(L-8)*500"
+			end
+		end
 	end
 	
 	if data.raw.technology["turret-range-1"] then
@@ -323,7 +344,7 @@ if Config.techFactor ~= 1 then
 	end
 end
 
-improveAttribute(data.raw.gun["rocket-launcher"].attack_parameters, "range", 35)--from 22; compare with poison capsule at 25 and  T2 flamethrower at 30
+improveAttribute(data.raw.gun["rocket-launcher"].attack_parameters, "range", 35)--from 22; compare with poison capsule at 25 and T2 flamethrower at 30
 
 -- tougher endgame
 if Config.harderSilo then
@@ -501,6 +522,8 @@ end
 --]]
 
 improveAttribute(data.raw["assembling-machine"]["assembling-machine-3"], "crafting_speed", 1.5) --vanilla is 1.25, which is LESS than a tier2 with the four speed modules
+
+replaceItemInRecipe(data.raw.recipe["solar-panel-equipment"], "solar-panel", "solar-panel", 0.4) --from 5 to 2
 
 --quickfix for getting fluids out of pipes; comment back out when done
 --[[
@@ -705,7 +728,6 @@ if data.raw.car["heli-entity-_-"] then
 			end
 		end
 	end
-	table.insert(data.raw.technology["heli-technology"].prerequisites, "rocketry") --since has a rocket launcher in the recipe
 end
 
 if data.raw.technology["worker-robot-battery-1"] then

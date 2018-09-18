@@ -256,6 +256,62 @@ if data.raw.technology["subterranean-logistics-1"] then
 	createConversionRecipe("subterranean-belt", "underground-belt", true, "subterranean-logistics-1")
 end
 
+if data.raw.tool["logistic-science-pack"] then
+	table.insert(data.raw["technology"]["logistics-3"].prerequisites, "robotics")
+end
+
+if data.raw.item["steel-gear-wheel"] then
+	replaceItemInRecipe("express-transport-belt", "iron-gear-wheel", "steel-gear-wheel", Config.cheaperBelts and 0.35 or 0.5) --0.5 to keep the iron cost the same
+	addItemToRecipe("express-transport-belt", "steel-bearing", Config.cheaperBelts and 2 or 4, Config.cheaperBelts and 2 or 5)
+	if data.raw.item["cobalt-steel-gear-wheel"] then
+		replaceItemInRecipe("turbo-transport-belt", "titanium-gear-wheel", "cobalt-steel-gear-wheel", 1)
+		replaceItemInRecipe("turbo-transport-belt", "titanium-bearing", "cobalt-steel-bearing", 1)
+	end
+end
+
+if Config.cheaperBelts and data.raw.item["ultimate-transport-belt"] then
+	replaceItemInRecipe("ultimate-transport-belt", "nitinol-gear-wheel", "nitinol-gear-wheel", 0.4)
+	replaceItemInRecipe("ultimate-transport-belt", "nitinol-bearing", "nitinol-bearing", 0.4)
+	
+	local gear = nil
+	local bearing = nil
+	if data.raw.item["cobalt-steel-gear-wheel"] then
+		gear = replaceItemInRecipe("turbo-transport-belt", "cobalt-steel-gear-wheel", "cobalt-steel-gear-wheel", 0.4)
+		bearing = replaceItemInRecipe("turbo-transport-belt", "cobalt-steel-bearing", "cobalt-steel-bearing", 0.4)
+	else
+		gear = replaceItemInRecipe("turbo-transport-belt", "titanium-gear-wheel", "titanium-gear-wheel", 0.4)
+		bearing = replaceItemInRecipe("turbo-transport-belt", "titanium-bearing", "titanium-bearing", 0.4)
+	end
+	
+	if gear[2] == 0 then gear[2] = gear[1] end
+	if gear[3] == 0 then gear[3] = gear[1] end
+	if bearing[2] == 0 then bearing[2] = bearing[1] end
+	if bearing[3] == 0 then bearing[3] = bearing[1] end
+	
+	log(serpent.block(gear))
+	log(serpent.block(bearing))
+	
+	local rec = data.raw.recipe["express-transport-belt"]
+	if rec.ingredients then
+		for _,ing in pairs(rec.ingredients) do
+			if ing[1] == "steel-bearing" then ing[2] = bearing[1] end
+			if ing[1] == "steel-gear-wheel" then ing[2] = gear[1] end
+		end
+	end
+	if rec.normal and rec.normal.ingredients then
+		for _,ing in pairs(rec.normal.ingredients) do
+			if ing[1] == "steel-bearing" then ing[2] = bearing[2] end
+			if ing[1] == "steel-gear-wheel" then ing[2] = gear[2] end
+		end
+	end
+	if rec.expensive and rec.expensive.ingredients then
+		for _,ing in pairs(rec.expensive.ingredients) do
+			if ing[1] == "steel-bearing" then ing[2] = bearing[3] end
+			if ing[1] == "steel-gear-wheel" then ing[2] = gear[3] end
+		end
+	end
+end
+
 if data.raw.technology["cobalt-processing"] then
 	splitTech("cobalt-processing", {"sulfur-processing"}, {"cobalt-plate", "cobalt-steel-alloy", "cobalt-steel-gear-wheel", "cobalt-steel-bearing-ball", "cobalt-steel-bearing", "cobalt-axe"})
 end
@@ -273,8 +329,29 @@ if data.raw.technology.cathodes then
 end
 
 if data.raw.technology["heli-technology"] then
-	if not replaceTechPrereq("heli-technology", "advanced-electronics", "advanced-electronics-2") then
-		table.insert(data.raw.technology["heli-technology"].prerequisites, "advanced-electronics-2")
+	local tech = data.raw.technology["heli-technology"]
+	if Config.splitHelicopter then
+		local basic = table.deepcopy(tech)
+		basic.name = "heli-technology-basic"
+		basic.effects[1].recipe = "helicopter-basic"
+		table.remove(basic.unit.ingredients, 3)
+		basic.unit.count = math.floor(basic.unit.count*0.4)
+		basic.prerequisites = {"flight", "electronics"}
+		data:extend({basic})
+		table.insert(tech.prerequisites, "heli-technology-basic")
+	end
+	if not replaceTechPrereq(tech, "advanced-electronics", "advanced-electronics-2") then
+		table.insert(tech.prerequisites, "advanced-electronics-2")
+	end
+	table.insert(tech.prerequisites, "rocketry") --since has a rocket launcher in the recipe
+	
+	if listHasValue(data.raw.technology["advanced-electronics-2"].prerequisites, "gold-processing") and mods["Oreverhaul"] then --ie bob logic boards, + oreverhaul means gold is VERY late, later than the heli should be
+		replaceTechPrereq(tech, "advanced-electronics-2", "advanced-electronics")
+		replaceItemInRecipe(tech.effects[1].recipe, "processing-unit", "advanced-circuit", 1)
+	end
+	
+	for _,ing in pairs(tech.unit.ingredients) do
+		ing[2] = 1
 	end
 end
 

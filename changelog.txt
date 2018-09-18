@@ -1,4 +1,11 @@
 ---------------------------------------------------------------------------------------------------
+Version: 1.0.148
+Date: Sep 18 2018
+	- Made solar panel equipment cheaper
+	- BobMod belt recipes now progress more smoothly
+	- Added option to make high-tier belts cheaper
+	- Made stack inserters more useful when they first are unlocked (greater initial capacity)
+---------------------------------------------------------------------------------------------------
 Version: 1.0.138
 Date: Sep 7 2018
 	- Added EGCombat turret range tech to the "tech demultiply" list

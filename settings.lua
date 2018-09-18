@@ -124,4 +124,18 @@ data:extend({
             default_value = true,
             order = "r",
         },
+        {
+            type = "bool-setting",
+            name = "cheaper-belts",
+            setting_type = "startup",
+            default_value = true,
+            order = "r",
+        },--[[
+        {
+            type = "bool-setting",
+            name = "split-helicopter",
+            setting_type = "startup",
+            default_value = true,
+            order = "r",
+        },--]]
 })

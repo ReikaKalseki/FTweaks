@@ -1,5 +1,19 @@
 require "config"
 
+function reduceTechnologyCost(tech, factorAmount)
+	if type(tech) == "string" then tech = data.raw.technology[tech] end
+	if not tech then error(serpent.block("No such technology found! " .. debug.traceback())) end
+	if not tech.unit.count then error("Tech " .. tech.name .. " has no science pack cost!") end
+	local f = factorAmount > 1 and (1+((Config.techFactor-1)/factorAmount)) or Config.techFactor/factorAmount
+	local new = math.max(1, math.ceil(tech.unit.count/f))
+	if new > 5 then
+		new = math.max(1, 5*math.floor(new/5+0.5)) --round to nearest 5
+	end
+	--multiply since those ones are the "effective" costs:
+	log("Adjusted cost of technology '" .. tech.name .. "'; for a tech cost factor of " .. Config.techFactor .. "x, comultiplied through " .. factorAmount .. " to " .. f .. "x: Count changed from " .. tech.unit.count*Config.techFactor .. " to " .. new*Config.techFactor)
+	tech.unit.count = new
+end
+
 function improveAttribute(object, param, newval)
 	object[param] = math.max(object[param], newval)
 end
@@ -12,7 +26,7 @@ function increaseStackSize(name, amt)
 	item.stack_size = math.max(item.stack_size, amt)
 end
 
-local function listHasValue(list, val)
+function listHasValue(list, val)
 	for _,entry in pairs(list) do
 		if entry == val then return true end
 	end
@@ -75,9 +89,11 @@ function addSciencePackToTech(techname, pack)
 end
 
 function replaceTechPrereq(tech, old, new)
+	if type(tech) == "string" then tech = data.raw.technology[tech] end
+	if not tech then error(serpent.block("No such technology found! " .. debug.traceback())) end
 	local repl = {}
 	local flag = false
-	for _,prereq in pairs (data.raw.technology[tech].prerequisites) do
+	for _,prereq in pairs (tech.prerequisites) do
 		if prereq == old then
 			table.insert(repl, new)
 			flag = true
@@ -85,7 +101,7 @@ function replaceTechPrereq(tech, old, new)
 			table.insert(repl, prereq)
 		end
 	end
-	data.raw.technology[tech].prerequisites = repl
+	tech.prerequisites = repl
 	return flag
 end
 
@@ -104,7 +120,7 @@ function parseIngredient(entry)
 	return {type, amt}
 end
 
-local function changeIngredientInList(list, item, repl, ratio)
+local function changeIngredientInList(list, item, repl, ratio, skipError)
 	for i = 1,#list do
 		local ing = parseIngredient(list[i])
 		--[[
@@ -120,21 +136,44 @@ local function changeIngredientInList(list, item, repl, ratio)
 			ing.name = repl
 			ing.amount = ing[2]
 			list[i] = ing
-			break
+			return ing.amount
 		end
+	end
+	if skipError then
+		--log("No such item '" .. item .. "' in recipe!\n" .. debug.traceback())
+		return 0
+	else
+		error("No such item '" .. item .. "' in recipe!\n" .. debug.traceback())
 	end
 end
 
-function replaceItemInRecipe(recipe, item, repl, ratio)
-	if not recipe then error(serpent.block("No such recipe found!")) end
+function replaceItemInRecipe(recipe, item, repl, ratio, skipError)
+	if type(recipe) == "string" then recipe = data.raw.recipe[recipe] end
+	if not recipe then error(serpent.block("No such recipe found! " .. debug.traceback())) end
+	local def, norm, exp = 0, 0, 0
 	if recipe.ingredients then
-		changeIngredientInList(recipe.ingredients, item, repl, ratio)
+		def = changeIngredientInList(recipe.ingredients, item, repl, ratio, skipError)
 	end
 	if recipe.normal and recipe.normal.ingredients then
-		changeIngredientInList(recipe.normal.ingredients, item, repl, ratio)
+		norm = changeIngredientInList(recipe.normal.ingredients, item, repl, ratio, skipError)
 	end
 	if recipe.expensive and recipe.expensive.ingredients then
-		changeIngredientInList(recipe.expensive.ingredients, item, repl, ratio)
+		exp = changeIngredientInList(recipe.expensive.ingredients, item, repl, ratio, skipError)
+	end
+	return {def, norm, exp}
+end
+
+function addItemToRecipe(recipe, item, amountnormal, amountexpensive)
+	if type(recipe) == "string" then recipe = data.raw.recipe[recipe] end
+	if not recipe then error(serpent.block("No such recipe found!")) end
+	if recipe.ingredients then
+		table.insert(recipe.ingredients, {item, amountnormal})
+	end
+	if recipe.normal and recipe.normal.ingredients then
+		table.insert(recipe.normal.ingredients, {item, amountnormal})
+	end
+	if recipe.expensive and recipe.expensive.ingredients then
+		table.insert(recipe.expensive.ingredients, {item, amountexpensive and amountexpensive or amountnormal})
 	end
 end
 
@@ -327,7 +366,7 @@ function createConversionRecipe(from, to, register, tech)
 	end
 	
 	if data.raw.item["basic-circuit-board"] then
-		replaceItemInRecipe(ret, "electronic-circuit", "basic-circuit-board", 1)
+		replaceItemInRecipe(ret, "electronic-circuit", "basic-circuit-board", 1, true)
 	end
 	
 	ret.allow_decomposition = false
