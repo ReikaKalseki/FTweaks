@@ -95,7 +95,28 @@ end
 initGlobal(false)
 
 script.on_load(function()
-	
+	commands.add_command("countScience", {"cmd.count-science-help"}, function(event)
+		local count = 0
+		local player = game.players[event.player_index]
+		local packs = {}
+		for name,tech in pairs(player.force.technologies) do
+			if tech.researched then
+				for _,ing in pairs(tech.research_unit_ingredients) do
+					local has = packs[ing.name] and packs[ing.name] or 0
+					packs[ing.name] = has+ing.amount*tech.research_unit_count
+				end
+				--player.print("Researched tech " .. name .. ", cost = " .. tech.research_unit_count)
+				count = count+1
+			end
+		end
+
+		for name,count in pairs(packs) do
+			player.print("Spent " .. count .. " of " .. name)
+			log(player.name .. " spent " .. count .. " of " .. name)
+		end
+		player.print("Researched " .. count .. " technologies.")
+		log("Researched " .. count .. " technologies.")
+	end)
 end)
 
 script.on_init(function()
@@ -142,31 +163,6 @@ script.on_event(defines.events.on_tick, function(event)
 		global.ftweaks.ranTick = true
 		game.print("FTweaks: Game state changed; reloading caches.")
 	end
-	--[[
-	local player = game.players["Reika"]
-	local trees = player.surface.find_entities_filtered({type="tree", area = {{player.position.x-50, player.position.y-50}, {player.position.x+50, player.position.y+50}}})
-	for _,tree in pairs(trees) do
-		local flag = true
-		for _,tree2 in pairs(strees) do
-			if tree2.position.x == tree.position.x and tree2.position.y == tree.position.y then
-				flag = false
-			end
-		end
-		if flag then
-			local pos = tree.position
-			local name = tree.name
-			local dir = tree.direction
-			local force = tree.force
-			tree.destroy()
-			table.insert(strees, player.surface.create_entity({name=name, position=pos, direction=dir, force=force, fast_replace = true}))
-		end
-	end
-	--]]
-	--[[
-	if game.tick%900 == 0 and game.players.Reika then
-		convertDirtyOre(game.players["Reika"])
-	end
-	--]]
 end)
 
 script.on_event(defines.events.on_player_joined_game, function(event)

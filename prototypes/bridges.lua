@@ -261,12 +261,31 @@ if data.raw.tool["logistic-science-pack"] then
 end
 
 if data.raw.item["steel-gear-wheel"] then
-	replaceItemInRecipe("express-transport-belt", "iron-gear-wheel", "steel-gear-wheel", Config.cheaperBelts and 0.35 or 0.5) --0.5 to keep the iron cost the same
-	addItemToRecipe("express-transport-belt", "steel-bearing", Config.cheaperBelts and 2 or 4, Config.cheaperBelts and 2 or 5)
-	if data.raw.item["cobalt-steel-gear-wheel"] then
-		replaceItemInRecipe("turbo-transport-belt", "titanium-gear-wheel", "cobalt-steel-gear-wheel", 1)
-		replaceItemInRecipe("turbo-transport-belt", "titanium-bearing", "cobalt-steel-bearing", 1)
+	local express = {"express-transport-belt", "express-underground-belt", "express-splitter"}
+
+	for _,rec in pairs(express) do
+		replaceItemInRecipe(rec, "iron-gear-wheel", "steel-gear-wheel", Config.cheaperBelts and 0.35 or 0.5, true) --0.5 to keep the iron cost the same
+		local bearings = Config.cheaperBelts and 2 or 4, Config.cheaperBelts and 2 or 5
+		if rec == "express-underground-belt" then bearings = bearings*3 end
+		addItemToRecipe(rec, "steel-bearing", bearings)
 	end
+	if data.raw.item["cobalt-steel-gear-wheel"] and data.raw.recipe["turbo-transport-belt"] then
+		local turbo = {"turbo-transport-belt", "turbo-underground-belt", "turbo-splitter"}
+	
+		for _,rec in pairs(turbo) do
+			replaceItemInRecipe(rec, "titanium-gear-wheel", "cobalt-steel-gear-wheel", 1, true)
+			replaceItemInRecipe(rec, "titanium-bearing", "cobalt-steel-bearing", 1, true)
+		end
+	end
+end
+
+if data.raw.technology["cobalt-processing"] then
+	splitTech("cobalt-processing", {"sulfur-processing"}, {"cobalt-plate", "cobalt-steel-alloy", "cobalt-steel-gear-wheel", "cobalt-steel-bearing-ball", "cobalt-steel-bearing", "cobalt-axe"})
+	addSciencePackToTech("cobalt-processing-2", "science-pack-3")
+end
+
+if data.raw.recipe["electric-furnace-2"] then
+	replaceItemInRecipe("electric-furnace-2", "tungsten-plate", "cobalt-steel-alloy", 1)
 end
 
 if Config.cheaperBelts and data.raw.item["ultimate-transport-belt"] then
@@ -278,6 +297,7 @@ if Config.cheaperBelts and data.raw.item["ultimate-transport-belt"] then
 	if data.raw.item["cobalt-steel-gear-wheel"] then
 		gear = replaceItemInRecipe("turbo-transport-belt", "cobalt-steel-gear-wheel", "cobalt-steel-gear-wheel", 0.4)
 		bearing = replaceItemInRecipe("turbo-transport-belt", "cobalt-steel-bearing", "cobalt-steel-bearing", 0.4)
+		replaceTechPrereq("bob-logistics-4", "titanium-processing", "cobalt-processing-2")
 	else
 		gear = replaceItemInRecipe("turbo-transport-belt", "titanium-gear-wheel", "titanium-gear-wheel", 0.4)
 		bearing = replaceItemInRecipe("turbo-transport-belt", "titanium-bearing", "titanium-bearing", 0.4)
@@ -287,9 +307,6 @@ if Config.cheaperBelts and data.raw.item["ultimate-transport-belt"] then
 	if gear[3] == 0 then gear[3] = gear[1] end
 	if bearing[2] == 0 then bearing[2] = bearing[1] end
 	if bearing[3] == 0 then bearing[3] = bearing[1] end
-	
-	log(serpent.block(gear))
-	log(serpent.block(bearing))
 	
 	local rec = data.raw.recipe["express-transport-belt"]
 	if rec.ingredients then
@@ -312,10 +329,6 @@ if Config.cheaperBelts and data.raw.item["ultimate-transport-belt"] then
 	end
 end
 
-if data.raw.technology["cobalt-processing"] then
-	splitTech("cobalt-processing", {"sulfur-processing"}, {"cobalt-plate", "cobalt-steel-alloy", "cobalt-steel-gear-wheel", "cobalt-steel-bearing-ball", "cobalt-steel-bearing", "cobalt-axe"})
-end
-
 if data.raw["assembling-machine"]["mixing-steel-furnace"] then
 	createConversionRecipe("mixing-furnace", "mixing-steel-furnace", true, "mixing-steel-furnace")
 end
@@ -326,6 +339,24 @@ end
 
 if data.raw.technology.cathodes then
 	replaceTechPrereq("cathodes", "advanced-electronics", "circuit-network")
+end
+
+if data.raw.technology["express-loader"] and data.raw.tool["logistic-science-pack"] then
+	replaceTechPack("express-loader", "production-science-pack", "logistic-science-pack")
+end
+
+if data.raw.technology["purple-loader"] then
+	local t = {data.raw.technology["loader"], data.raw.technology["fast-loader"], data.raw.technology["express-loader"], data.raw.technology["purple-loader"], data.raw.technology["green-loader"]}
+	t[1].unit.count = math.min(t[1].unit.count, 100)
+	t[5].unit.count = math.max(t[5].unit.count, 500)
+	local diff = t[5].unit.count-t[1].unit.count
+	local step = diff/4
+	for i = 2,#t do
+		local tech = t[i]
+		local cost = (i-1)*step+t[1].unit.count
+		cost = 50*math.floor(cost/50+0.5)
+		tech.unit.count = cost
+	end
 end
 
 if data.raw.technology["heli-technology"] then
@@ -408,7 +439,7 @@ table.insert(data.raw.technology["wood-sludge"].effects, {type = "unlock-recipe"
 end
 
 if data.raw.technology["electric-pole-2"] then
-	replaceTechPrereq("electric-pole-2", "zinc-processing", "invar-processing")
+	replaceTechPrereq("electric-pole-2", "zinc-processing", data.raw.technology["angels-invar-smelting-1"] and "angels-invar-smelting-1" or "invar-processing")
 	
 	replaceItemInRecipe(data.raw.recipe["medium-electric-pole-2"], "brass-alloy", "invar-alloy", 1)
 	replaceItemInRecipe(data.raw.recipe["big-electric-pole-2"], "brass-alloy", "invar-alloy", 1)

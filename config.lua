@@ -39,3 +39,7 @@ Config.tieredBobRobots = settings.startup["tiered-bob-robots"].value
 Config.cheaperBelts = settings.startup["cheaper-belts"].value
 
 Config.splitHelicopter = false--settings.startup["split-helicopter"].value
+
+Config.coalSludge = settings.startup["coal-decomposition"].value--true
+
+Config.demultiplyUpgrades = settings.startup["demultiply-upgrades"].value--true

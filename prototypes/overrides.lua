@@ -23,6 +23,9 @@ if data.raw["electric-pole"]["medium-electric-pole-5"] then
 	data.raw["electric-pole"]["medium-electric-pole-5"].fast_replaceable_group = "powerpole"
 end
 
+--data.raw["straight-rail"]["straight-rail"].collision_mask = {--[["item-layer", "object-layer", --]]"floor-layer", --[["water-tile",--]] "not-colliding-with-itself"}
+--data.raw["curved-rail"]["curved-rail"].collision_mask = {--[["item-layer", "object-layer", --]]"floor-layer", --[["water-tile",--]] "not-colliding-with-itself"}
+
 -- Stack Sizes
 if Config.stackSize then
 	increaseStackSize("stone", 200)
@@ -93,6 +96,7 @@ replaceItemInRecipe(data.raw.recipe["rocket-silo"], "concrete", "refined-concret
 
 if data.raw.item["titanium-plate"] then
 	replaceItemInRecipe(data.raw.recipe["refined-concrete"], "steel-plate", "titanium-plate", 0.4)
+	removeItemFromRecipe(data.raw.recipe["refined-concrete"], "iron-stick")
 	splitTech("concrete", {"titanium-processing"}, {"refined-concrete", "refined-hazard-concrete"})
 end
 
@@ -107,6 +111,7 @@ addSciencePackToTech("nickel-processing", "science-pack-2")
 addSciencePackToTech("gold-processing", "science-pack-3")
 addSciencePackToTech("silver-processing", "science-pack-3")
 addSciencePackToTech("zinc-processing", "science-pack-3")
+addSciencePackToTech("aluminium-processing", "science-pack-3")
 addSciencePackToTech("lithium-processing", "science-pack-3")
 addSciencePackToTech("tungsten-processing", "high-tech-science-pack")
 addSciencePackToTech("titanium-processing", "production-science-pack")
@@ -249,6 +254,9 @@ if flag then
 end
 
 table.insert(data.raw["technology"]["logistic-robotics"].prerequisites, "logistics-3")
+if data.raw.tool["logistic-science-pack"] then
+	addSciencePackToTech("logistic-robotics", "logistic-science-pack")
+end
 
 moveRecipe("poison-capsule", "military-3", "military-2") --why was this even mil3
 
@@ -272,76 +280,6 @@ if Config.tieredArmor then
 	data.raw.recipe["modular-armor"].ingredients = {{"heavy-armor", 1}, {"advanced-circuit", 30}}
 	data.raw.recipe["power-armor"].ingredients = {{"modular-armor", 1}, {"electric-engine-unit", 20}, {"steel-plate", 20}}
 	table.insert(data.raw.recipe["power-armor-mk2"].ingredients, {"power-armor", 1})
-end
-
-local function sigFig(num, figures)
-    local x = figures - math.ceil(math.log10(math.abs(num)))
-    return (math.floor(num*10^x+0.5)/10^x)
-end
-
-if Config.techFactor ~= 1 then
-	reduceTechnologyCost("automation", 1)
-	reduceTechnologyCost("logistics", 0.5)
-	reduceTechnologyCost("automation-2", 2)
-	reduceTechnologyCost("logistics-2", 4)
-	reduceTechnologyCost("turrets", 2)
-	reduceTechnologyCost("optics", 2)
-	reduceTechnologyCost("stone-walls", 4)
-	reduceTechnologyCost("gates", 2)
-	reduceTechnologyCost("toolbelt", 2)
-	
-	if data.raw.technology["bob-greenhouse"] then
-		reduceTechnologyCost("bob-greenhouse", 1)
-	end
-	
-	if data.raw.technology["long-inserters-1"] then
-		reduceTechnologyCost("long-inserters-1", 0.5)
-	end
-	
-	if data.raw.technology["long-reach-research_long-reach-1"] then
-		reduceTechnologyCost("long-reach-research_long-reach-1", 2)
-	end
-	if data.raw.technology["long-reach-research_long-build-1"] then
-		reduceTechnologyCost("long-reach-research_long-build-1", 2)
-	end
-	if data.raw.technology["long-mine-research_long-mine-1"] then
-		reduceTechnologyCost("long-mine-research_long-mine-1", 2)
-	end
-	
-	if data.raw.technology["subterranean-logistics-1"] then
-		reduceTechnologyCost("subterranean-logistics-1", 5)
-	end
-	
-	if data.raw.technology["turret-monitoring"] then
-		reduceTechnologyCost("turret-monitoring", 2)
-	end
-	
-	if data.raw.technology["heli-technology"] then
-		reduceTechnologyCost("heli-technology", 2)
-	end
-	
-	for i = 1,8 do
-		local tech = data.raw.technology["inserter-capacity-bonus-" .. i]
-		if tech then
-			if tech.unit.count then
-				reduceTechnologyCost(tech, 1+(i-1)/2)
-			elseif tech.unit.count_formula then
-				tech.unit.count_formula = "2^(L-8)*500"
-			end
-		end
-	end
-	
-	if data.raw.technology["turret-range-1"] then
-		for i = 1,10 do
-			local f1 = 2*i/2
-			local f2 = f1-1
-			local f = 1+(Config.techFactor-1)*(1-f2/f1)
-			local amt = data.raw.technology["turret-range-" .. i].unit.count/f
-			amt = sigFig(amt, 2)
-			--log(i .. " => " .. f .. " so " .. data.raw.technology["turret-range-" .. i].unit.count .. " => " .. amt)
-			data.raw.technology["turret-range-" .. i].unit.count = amt
-		end
-	end
 end
 
 improveAttribute(data.raw.gun["rocket-launcher"].attack_parameters, "range", 35)--from 22; compare with poison capsule at 25 and T2 flamethrower at 30
@@ -523,7 +461,9 @@ end
 
 improveAttribute(data.raw["assembling-machine"]["assembling-machine-3"], "crafting_speed", 1.5) --vanilla is 1.25, which is LESS than a tier2 with the four speed modules
 
-replaceItemInRecipe(data.raw.recipe["solar-panel-equipment"], "solar-panel", "solar-panel", 0.4) --from 5 to 2
+if not mods["bobwarfare"] then
+	replaceItemInRecipe(data.raw.recipe["solar-panel-equipment"], "solar-panel", "solar-panel", 0.4) --from 5 to 2
+end
 
 --quickfix for getting fluids out of pipes; comment back out when done
 --[[

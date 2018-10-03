@@ -138,4 +138,18 @@ data:extend({
             default_value = true,
             order = "r",
         },--]]
+        {
+            type = "bool-setting",
+            name = "coal-decomposition",
+            setting_type = "startup",
+            default_value = true,
+            order = "r",
+        },
+        {
+            type = "bool-setting",
+            name = "demultiply-upgrades",
+            setting_type = "startup",
+            default_value = true,
+            order = "r",
+        },
 })

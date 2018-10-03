@@ -1,17 +1,27 @@
 require "config"
 
+function sigFig(num, figures)
+    local x = figures - math.ceil(math.log10(math.abs(num)))
+    return (math.floor(num*10^x+0.5)/10^x)
+end
+
 function reduceTechnologyCost(tech, factorAmount)
 	if type(tech) == "string" then tech = data.raw.technology[tech] end
 	if not tech then error(serpent.block("No such technology found! " .. debug.traceback())) end
-	if not tech.unit.count then error("Tech " .. tech.name .. " has no science pack cost!") end
+	if not tech.unit.count and not tech.unit.count_formula then error("Tech " .. tech.name .. " has no science pack cost!") end
 	local f = factorAmount > 1 and (1+((Config.techFactor-1)/factorAmount)) or Config.techFactor/factorAmount
-	local new = math.max(1, math.ceil(tech.unit.count/f))
-	if new > 5 then
-		new = math.max(1, 5*math.floor(new/5+0.5)) --round to nearest 5
+	if tech.unit.count then
+		local new = math.max(1, math.ceil(tech.unit.count/f))
+		if new > 5 then
+			new = math.max(1, 5*math.floor(new/5+0.5)) --round to nearest 5
+		end
+		--multiply since those ones are the "effective" costs:
+		log("Adjusted cost of technology '" .. tech.name .. "'; for a tech cost factor of " .. Config.techFactor .. "x, comultiplied through " .. factorAmount .. " to " .. f .. "x: Count changed from " .. tech.unit.count*Config.techFactor .. " to " .. new*Config.techFactor)
+		tech.unit.count = new
+	elseif tech.unit.count_formula then
+		tech.unit.count_formula = tech.unit.count_formula .. "*" .. (1/f)
+		log("Adjusted cost of technology '" .. tech.name .. "'; for a tech cost factor of " .. Config.techFactor .. "x, comultiplied through " .. factorAmount .. " to " .. f .. "x: Formula is now " .. tech.unit.count_formula)
 	end
-	--multiply since those ones are the "effective" costs:
-	log("Adjusted cost of technology '" .. tech.name .. "'; for a tech cost factor of " .. Config.techFactor .. "x, comultiplied through " .. factorAmount .. " to " .. f .. "x: Count changed from " .. tech.unit.count*Config.techFactor .. " to " .. new*Config.techFactor)
-	tech.unit.count = new
 end
 
 function improveAttribute(object, param, newval)
@@ -82,10 +92,28 @@ function addSciencePackToTech(techname, pack)
 	local tech = data.raw.technology[techname]
 	if not tech then return end
 	local prereq = getPrereqTechForPack(pack)
-	if prereq and data.raw.technology[prereq] then
+	if prereq and data.raw.technology[prereq] and not listHasValue(tech.prerequisites, prereq) then
 		table.insert(tech.prerequisites, prereq)
 	end
 	table.insert(tech.unit.ingredients, {pack, 1})
+end
+
+function replaceTechPack(tech, old, new, factor)
+	local f = factor and factor or 1
+	if type(tech) == "string" then tech = data.raw.technology[tech] end
+	if not tech then error(serpent.block("No such technology found! " .. debug.traceback())) end
+	local repl = {}
+	local flag = false
+	for _,pack in pairs (tech.unit.ingredients) do
+		if pack[1] == old then
+			table.insert(repl, {new, math.floor(pack[2]*f)})
+			flag = true
+		else
+			table.insert(repl, pack)
+		end
+	end
+	tech.unit.ingredients = repl
+	return flag
 end
 
 function replaceTechPrereq(tech, old, new)
@@ -161,6 +189,35 @@ function replaceItemInRecipe(recipe, item, repl, ratio, skipError)
 		exp = changeIngredientInList(recipe.expensive.ingredients, item, repl, ratio, skipError)
 	end
 	return {def, norm, exp}
+end
+
+function removeItemFromRecipe(recipe, item)
+	if type(recipe) == "string" then recipe = data.raw.recipe[recipe] end
+	if not recipe then error(serpent.block("No such recipe found!")) end
+	if recipe.ingredients then
+		for i,ing in pairs(recipe.ingredients) do
+			if ing[1] == item then
+				table.remove(recipe.ingredients, i)
+				break
+			end
+		end
+	end
+	if recipe.normal and recipe.normal.ingredients then
+		for i,ing in pairs(recipe.normal.ingredients) do
+			if ing[1] == item then
+				table.remove(recipe.normal.ingredients, i)
+				break
+			end
+		end
+	end
+	if recipe.expensive and recipe.expensive.ingredients then
+		for i,ing in pairs(recipe.expensive.ingredients) do
+			if ing[1] == item then
+				table.remove(recipe.expensive.ingredients, i)
+				break
+			end
+		end
+	end
 end
 
 function addItemToRecipe(recipe, item, amountnormal, amountexpensive)
