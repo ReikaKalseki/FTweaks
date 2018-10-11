@@ -119,8 +119,8 @@ addSciencePackToTech("titanium-processing", "production-science-pack")
 data:extend({
 	createConversionRecipe("burner-mining-drill", "electric-mining-drill"),
 	createConversionRecipe("burner-inserter", "inserter"),
-	createConversionRecipe("steel-furnace", "electric-furnace")
 })
+	createConversionRecipe("steel-furnace", "electric-furnace", true, "advanced-material-processing-2")
 createConversionRecipe("stone-furnace", "steel-furnace", true, "advanced-material-processing")
 
 if data.raw.item["basic-circuit-board"] then
@@ -237,6 +237,13 @@ if data.raw["technology"]["fast-loader"] then
 	data.raw["technology"]["loader"].prerequisites = {"railway", "logistics-2"}
 end
 
+--[[
+for name,loader in pairs(data.raw.loader) do --crashes with more than 9 filters
+	loader.filter_count = 1+4*(loader.speed/0.03125-1)
+	log("Giving loader " .. name .. " " .. loader.filter_count .. " filter slots.")
+end
+--]]
+
 if data.raw["technology"]["angels-warehouses"] then
 	table.insert(data.raw["technology"]["angels-warehouses"].prerequisites, "logistics-2")
 end
@@ -289,21 +296,21 @@ if Config.harderSilo then
 	data.raw["technology"]["rocket-silo"].unit.count = data.raw["technology"]["rocket-silo"].unit.count*10
 	table.insert(data.raw["technology"]["rocket-silo"].prerequisites,"military-4")
 	
-	if data.raw["technology"]["bob-solar-energy-4"] then
-		table.insert(data.raw["technology"]["rocket-silo"].prerequisites,"bob-solar-energy-4")
+	if data.raw["technology"]["bob-solar-energy-4"] and not listHasValue(data.raw["technology"]["rocket-silo"].prerequisites, "bob-solar-energy-4") then
+		table.insert(data.raw["technology"]["rocket-silo"].prerequisites, "bob-solar-energy-4")
 	end
-	if data.raw["technology"]["bob-electric-energy-accumulators-4"] then
-		table.insert(data.raw["technology"]["rocket-silo"].prerequisites,"bob-electric-energy-accumulators-4")
+	if data.raw["technology"]["bob-electric-energy-accumulators-4"] and not listHasValue(data.raw["technology"]["rocket-silo"].prerequisites, "bob-electric-energy-accumulators-4") then
+		table.insert(data.raw["technology"]["rocket-silo"].prerequisites, "bob-electric-energy-accumulators-4")
 	end
 
 	if data.raw["technology"]["speed-module-5"] then
-		table.insert(data.raw["technology"]["rocket-silo"].prerequisites,"speed-module-5")
+		table.insert(data.raw["technology"]["rocket-silo"].prerequisites, "speed-module-5")
 	end
 	if data.raw["technology"]["productivity-module-5"] then
-		table.insert(data.raw["technology"]["rocket-silo"].prerequisites,"productivity-module-5")
+		table.insert(data.raw["technology"]["rocket-silo"].prerequisites, "productivity-module-5")
 	end
 	if data.raw["technology"]["effectivity-module-5"] then
-		table.insert(data.raw["technology"]["rocket-silo"].prerequisites,"effectivity-module-5")
+		table.insert(data.raw["technology"]["rocket-silo"].prerequisites, "effectivity-module-5")
 	end
 	--[[
 	if data.raw["technology"]["plasma-turret-9"] then
@@ -342,7 +349,7 @@ if Config.harderSilo then
 		log("Adding satellite ingredient: " .. (item[1] and item[1] or "nil") .. " x " .. (item[2] and item[2] or "nil"))
 		table.insert(satparts, item)
 	end
-	if data.raw.item["advanced-processing-unit"] then
+	if data.raw.item["advanced-processing-unit"] and circuitcount > 0 then
 		table.insert(satparts, {"advanced-processing-unit", math.floor(circuitcount/2)})
 	end
 	if data.raw.item["plutonium"] then --RTG
@@ -552,7 +559,9 @@ local function createSpawnerResistance(spawner)
 end
 
 for name,spawner in pairs(data.raw["unit-spawner"]) do
-	spawner.resistances = createSpawnerResistance(spawner)
+	if name ~= "biter-hive" then --Hives mod
+		spawner.resistances = createSpawnerResistance(spawner)
+	end
 end
 
 for name,worm in pairs(data.raw.turret) do
@@ -684,4 +693,23 @@ if data.raw.recipe["iron-chunk-processing"] then
 	--data.raw.recipe["gold-chunk-processing"].allow_decomposition = false
 	--data.raw.recipe["silver-chunk-processing"].allow_decomposition = false
 	--data.raw.recipe["nickel-chunk-processing"].allow_decomposition = false
+end
+
+if data.raw.lamp["LargeLamp"] then
+	data.raw.recipe.LargeLamp.ingredients =
+	{
+		{"electronic-circuit", 6},
+		{"iron-stick", 12},
+		{"steel-plate", 4},
+	}
+	
+	if data.raw.item["insulated-cable"] then
+		table.insert(data.raw.recipe.LargeLamp.ingredients, {"insulated-cable", 9})
+	end
+	
+	data.raw.lamp.LargeLamp.energy_usage_per_tick = "36kW"
+	data.raw.lamp.LargeLamp.light.size = 96
+	data.raw.lamp.LargeLamp.light.intensity = 1
+	data.raw.lamp.LargeLamp.light_when_colored.size = 90
+	data.raw.lamp.LargeLamp.picture_on.filename = "__FTweaks__/graphics/large-lamp-on.png"
 end

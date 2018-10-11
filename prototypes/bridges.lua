@@ -386,6 +386,11 @@ if data.raw.technology["heli-technology"] then
 	end
 end
 
+if data.raw.item["mixing-furnace"] then
+	createConversionRecipe("mixing-steel-furnace", "electric-mixing-furnace", true, "alloy-processing-2")
+	createConversionRecipe("chemical-steel-furnace", "chemical-furnace", true, "chemical-processing-3")
+end
+
 if Config.tieredBobRobots and data.raw.item["robot-brain-logistic"] then --also do with robot frames and the tools
 	for i = 1,3 do
 		local suff1 = i == 1 and "" or ("-" .. i)
@@ -448,4 +453,39 @@ if data.raw.technology["electric-pole-2"] then
 	
 	replaceItemInRecipe(data.raw.recipe["medium-electric-pole-3"], "titanium-plate", "cobalt-steel-alloy", 1)
 	replaceItemInRecipe(data.raw.recipe["big-electric-pole-3"], "titanium-plate", "cobalt-steel-alloy", 1)
+end
+
+if data.raw.recipe["electrolyser-3"] and data.raw.item["tungsten-plate"] then
+	replaceItemInRecipe(data.raw.recipe["electrolyser-3"], "tungsten-plate", "aluminium-plate", 1)
+	replaceTechPrereq("electrolyser-3", "tungsten-processing", "aluminium-processing")
+end
+
+if data.raw.recipe["chemical-plant-3"] and data.raw.item["titanium-plate"] then
+	replaceItemInRecipe(data.raw.recipe["chemical-plant-3"], "titanium-plate", "aluminium-plate", 1)
+	replaceTechPrereq("chemical-plant-3", "titanium-processing", "aluminium-processing")
+	table.insert(data.raw.technology["chemical-plant-3"].prerequisites, "cobalt-processing-2")
+	table.insert(data.raw.technology["chemical-plant-3"].prerequisites, "zinc-processing")
+	replaceItemInRecipe(data.raw.recipe["chemical-plant-3"], "titanium-bearing", "cobalt-steel-bearing", 1)
+	replaceItemInRecipe(data.raw.recipe["chemical-plant-3"], "titanium-gear-wheel", "cobalt-steel-gear-wheel", 1)
+	replaceItemInRecipe(data.raw.recipe["chemical-plant-3"], "titanium-pipe", "brass-pipe", 1)
+end
+
+if data.raw.item["copper-pipe"] then
+	replaceItemInRecipe(data.raw.recipe["steam-turbine"], "copper-plate", "copper-pipe", 0.8)
+end
+
+if data.raw.item["steam-engine-2"] then
+	for i = 2,3 do
+		local rec = createConversionRecipe("steam-engine-" .. i, i == 2 and "steam-turbine" or "steam-turbine-" .. (i-1), false, nil, {"steam-engine", "steam-engine-2", "steam-engine-3"})
+		data:extend({rec})
+		--error(serpent.block(ret))
+		if i == 2 then
+			table.insert(data.raw.technology["nuclear-power"].effects, {type = "unlock-recipe", recipe = rec.name})
+			if data.raw.technology["geothermal-2"] then
+				table.insert(data.raw.technology["geothermal-2"].effects, {type = "unlock-recipe", recipe = rec.name})
+			end
+		else
+			table.insert(data.raw.technology["advanced-steam-power-" .. (i-1)].effects, {type = "unlock-recipe", recipe = rec.name})
+		end
+	end
 end

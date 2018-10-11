@@ -49,7 +49,7 @@ function splitTech(tech, prereqs, recipesToMove)
 	local number = b and tonumber(string.sub(tech, b+1)) or nil
 	--error("Number " .. number .. " from " .. tech)
 	tech2.name = number and (tech .. "-" .. (number+1)) or (tech .. "-2")
-	--log(tech2.name .. " from " .. tech)
+	log("Split " .. tech2.name .. " from " .. tech)
 	tech2.prerequisites = prereqs
 	table.insert(prereqs, tech)
 	tech2.effects = {}
@@ -96,6 +96,7 @@ function addSciencePackToTech(techname, pack)
 		table.insert(tech.prerequisites, prereq)
 	end
 	table.insert(tech.unit.ingredients, {pack, 1})
+	log("Added science pack " .. pack .. " to tech " .. tech.name)
 end
 
 function replaceTechPack(tech, old, new, factor)
@@ -113,6 +114,7 @@ function replaceTechPack(tech, old, new, factor)
 		end
 	end
 	tech.unit.ingredients = repl
+	log("Replaced science pack " .. old .. " with " .. new .. " in tech " .. tech.name)
 	return flag
 end
 
@@ -130,6 +132,7 @@ function replaceTechPrereq(tech, old, new)
 		end
 	end
 	tech.prerequisites = repl
+	log("Replaced prerequisite " .. old .. " with " .. new .. " in tech " .. tech.name)
 	return flag
 end
 
@@ -188,6 +191,7 @@ function replaceItemInRecipe(recipe, item, repl, ratio, skipError)
 	if recipe.expensive and recipe.expensive.ingredients then
 		exp = changeIngredientInList(recipe.expensive.ingredients, item, repl, ratio, skipError)
 	end
+	log("Replaced item " .. item .. " with " .. repl .. " in recipe " .. recipe.name .. " with a ratio of " .. ratio .. "x")
 	return {def, norm, exp}
 end
 
@@ -282,17 +286,38 @@ local function buildRecipeSurplus(name1, name2, list1, list2)
 	return ret
 end
 
-local function buildRecipeDifference(name1, name2, list1, list2)
+--Supply nil for list1 to get a plain ingredient list for list2
+local function buildRecipeDifference(name1, name2, list1, list2, form, recursion)
+
+	if recursion then
+		for i,ing in ipairs(list1) do
+			--log(serpent.block(ing))
+			if listHasValue(recursion, ing[1]) and data.raw.recipe[ing[1]] then
+				log("Recursing " .. ing[1])
+				table.remove(list1, i)
+				local list = form == "expensive" and data.raw.recipe[ing[1]].expensive.ingredients or ("normal" and data.raw.recipe[ing[1]].normal.ingredients or data.raw.recipe[ing[1]].ingredients)
+				for _,e in pairs(buildRecipeDifference("", ing[1], nil, list)) do
+					table.insert(list1, e)
+					log("Adding " .. e[1])
+				end
+			end
+		end
+	end
+	
+	if not list2 then error(debug.traceback()) end
+	
 	local counts = {}
 	local ret = {}
-	for i = 1,#list1 do
-		local ing = parseIngredient(list1[i])
-		--log("Parsing input ingredient: " .. (ing[1] and ing[1] or "nil") .. " x " .. (ing[2] and ing[2] or "nil"))
-		if #ing > 0 then
-			--log(#ing .. " > " .. tostring(ing))
-			counts[ing[1]] = (counts[ing[1]] and counts[ing[1]] or 0)+(ing[2] and ing[2] or 1) -- += in case recipe specifies an ingredient multiple times
-		else
-			log("Found empty entry in recipe " .. name1 .. "!")
+	if list1 then
+		for i = 1,#list1 do
+			local ing = parseIngredient(list1[i])
+			--log("Parsing input ingredient: " .. (ing[1] and ing[1] or "nil") .. " x " .. (ing[2] and ing[2] or "nil"))
+			if #ing > 0 then
+				--log(#ing .. " > " .. tostring(ing))
+				counts[ing[1]] = (counts[ing[1]] and counts[ing[1]] or 0)+(ing[2] and ing[2] or 1) -- += in case recipe specifies an ingredient multiple times
+			else
+				log("Found empty entry in recipe " .. name1 .. "!")
+			end
 		end
 	end
 	for i = 1,#list2 do
@@ -310,7 +335,17 @@ local function buildRecipeDifference(name1, name2, list1, list2)
 	return ret
 end
 
-function createConversionRecipe(from, to, register, tech)
+local function createRecipeProfile(recipe)
+    return
+    {
+      enabled = recipe.enabled,
+      ingredients = table.deepcopy(recipe.ingredients),
+      result = recipe.result,
+      results = recipe.results and table.deepcopy(recipe.results) or nil,
+    }
+end
+
+function createConversionRecipe(from, to, register, tech, recursion)
 	local rec1 = data.raw.recipe[from]
 	local rec2 = data.raw.recipe[to]
 	
@@ -321,12 +356,18 @@ function createConversionRecipe(from, to, register, tech)
 		error("No such recipe '" .. to .. "'!")
 	end
 	
+	rec1 = table.deepcopy(rec1)
+	rec2 = table.deepcopy(rec2)
+	
 	local name = rec1.name .. "-conversion-to-" .. rec2.name
 	
 	if data.raw.recipe.name then
 		error("Conversion recipe already exists: " .. name)
 	else
 		log("Creating conversion recipe " .. name)
+		if recursion then
+			log("Recursing ingredients " .. serpent.block(recursion))
+		end
 	end
 	
 	local list = nil
@@ -337,25 +378,33 @@ function createConversionRecipe(from, to, register, tech)
 	local e_exp = nil
 	local e_norm = nil
 	
+	if rec1.normal and not rec2.normal then --harmonize the recipe styles
+		rec2.normal = createRecipeProfile(rec2)
+		rec2.expensive = createRecipeProfile(rec2)
+	elseif rec2.normal and not rec1.normal then
+		rec1.normal = createRecipeProfile(rec1)
+		rec1.expensive = createRecipeProfile(rec1)
+	end
+	
 	local prev = rec1.expensive and rec1.expensive.result or rec1.result
 	
 	if rec1.ingredients and rec2.ingredients then
-		list = buildRecipeDifference(from, to, rec1.ingredients, rec2.ingredients)
-		e_list = buildRecipeSurplus(from, to, rec1.ingredients, rec2.ingredients)
+		list = buildRecipeDifference(from, to, rec1.ingredients, rec2.ingredients, "basic", recursion)
+		e_list = buildRecipeSurplus(from, to, rec1.ingredients, rec2.ingredients, "basic", recursion)
 	end
 	
 	if rec1.expensive or rec2.expensive then
 		local exp1 = rec1.expensive and rec1.expensive.ingredients or rec1.ingredients
 		local exp2 = rec2.expensive and rec2.expensive.ingredients or rec2.ingredients
-		exp = buildRecipeDifference(from, to, exp1, exp2)
-		e_exp = buildRecipeSurplus(from, to, exp1, exp2)
+		exp = buildRecipeDifference(from, to, exp1, exp2, "expensive", recursion)
+		e_exp = buildRecipeSurplus(from, to, exp1, exp2, "expensive", recursion)
 	end
 	
 	if rec1.normal or rec2.normal then
 		local norm1 = rec1.normal and rec1.normal.ingredients or rec1.ingredients
 		local norm2 = rec2.normal and rec2.normal.ingredients or rec2.ingredients
-		norm = buildRecipeDifference(from, to, norm1, norm2)
-		e_norm = buildRecipeSurplus(from, to, norm1, norm2)
+		norm = buildRecipeDifference(from, to, norm1, norm2, "normal", recursion)
+		e_norm = buildRecipeSurplus(from, to, norm1, norm2, "normal", recursion)
 	end
 	
 	if list then
@@ -428,6 +477,30 @@ function createConversionRecipe(from, to, register, tech)
 	
 	ret.allow_decomposition = false
 	ret.allow_as_intermediate = false
+	if ret.normal then
+		ret.normal.allow_decomposition = false
+		ret.normal.allow_as_intermediate = false
+	end
+	if ret.expensive then
+		ret.expensive.allow_decomposition = false
+		ret.expensive.allow_as_intermediate = false
+	end
+	
+	if ret.ingredients == nil and (ret.normal == nil or ret.normal.ingredients == nil) then error("Conversion recipe " .. ret.name .. " has no specified ingredients! Source recipes: " .. serpent.block(rec1) .. " , " .. serpent.block(rec2)) end
+	if ret.ingredients then
+		for _,ing in pairs(ret.ingredients) do
+			if ing[2] == 0 then
+				error("Conversion recipe " .. ret.name .. " has no 0-count ingredients! Source recipes: " .. serpent.block(rec1) .. " , " .. serpent.block(rec2))
+			end
+		end
+	end
+	if ret.normal and ret.normal.ingredients then
+		for _,ing in pairs(ret.normal.ingredients) do
+			if ing[2] == 0 then
+				error("Conversion recipe " .. ret.name .. " has no 0-count ingredients! Source recipes: " .. serpent.block(rec1) .. " , " .. serpent.block(rec2))
+			end
+		end
+	end
 	
 	if register then
 		data:extend({ret})
