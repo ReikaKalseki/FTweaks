@@ -73,25 +73,8 @@ if data.raw.recipe["large-accumulator"] then
 			end
 		end
 	
-	--[[	
-	data:extend({
-	  {
-		type = "recipe",
-		name = "large-accumulator-conversion",
-		energy = 8,
-		enabled = "false",
-		ingredients =
-		{
-		  {"iron-plate", 1},
-		  {"battery", 5},
-		  {"accumulator", 1},
-		},
-		result = "large-accumulator"
-	  }
-	})
-	--]]
-	
 	local rec = createConversionRecipe("accumulator", "large-accumulator", true, "bob-electric-energy-accumulators-2")
+	local rec = createConversionRecipe("accumulator", "fast-accumulator", true, "bob-electric-energy-accumulators-2")
 
 	if not Config.harderSilo then
 		data:extend(
@@ -471,7 +454,7 @@ if data.raw.recipe["chemical-plant-3"] and data.raw.item["titanium-plate"] then
 end
 
 if data.raw.item["copper-pipe"] then
-	replaceItemInRecipe(data.raw.recipe["steam-turbine"], "copper-plate", "copper-pipe", 0.8)
+	replaceItemInRecipe(data.raw.recipe["steam-turbine"], "copper-plate", "copper-pipe", 0.8, true)
 end
 
 if data.raw.item["steam-engine-2"] then

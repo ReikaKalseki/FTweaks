@@ -117,6 +117,43 @@ script.on_load(function()
 		player.print("Researched " .. count .. " technologies.")
 		log("Researched " .. count .. " technologies.")
 	end)
+	
+	commands.add_command("addTrainCondition", {"cmd.add-train-condition-help"}, function(event)
+		local player = game.players[event.player_index]
+		local condition = {}
+		local i = 1
+		for part in string.gmatch(event.parameter, "[^;]+") do
+			if i == 1 then
+				condition.type = part
+			elseif i == 2 then
+				condition.compare_type = part
+			elseif i == 3 then
+				condition.ticks = tonumber(part)*60
+			end
+			i = i+1
+		end
+		if condition.type == nil or condition.compare_type == nil or (condition.ticks == nil and (condition.type == "time" or condition.type == "inactivity")) then
+			player.print("Invalid condition: You must specify a wait condition, a comparison type, and, if applicable, a time!")
+			return
+		end
+		local entity = player.selected
+		if entity.type ~= "train-stop" then
+			player.print("You can only run this command on a train stop!")
+			return
+		end
+		local n = 0
+		for _,train in pairs(entity.get_train_stop_trains()) do
+			local data = train.schedule --has to be copied, modified, and reassigned
+			for _,entry in pairs(data.records) do
+				if entry.station == entity.backer_name then
+					table.insert(entry.wait_conditions, condition)
+				end
+			end
+			train.schedule = data
+			n = n+1
+		end
+		player.print("Added condition to " .. n .. " trains: " .. serpent.block(condition))
+	end)
 end)
 
 script.on_init(function()

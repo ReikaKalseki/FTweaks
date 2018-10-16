@@ -26,6 +26,10 @@ end
 --data.raw["straight-rail"]["straight-rail"].collision_mask = {--[["item-layer", "object-layer", --]]"floor-layer", --[["water-tile",--]] "not-colliding-with-itself"}
 --data.raw["curved-rail"]["curved-rail"].collision_mask = {--[["item-layer", "object-layer", --]]"floor-layer", --[["water-tile",--]] "not-colliding-with-itself"}
 
+
+data.raw["rail-signal"]["rail-signal"].collision_mask = {--[["item-layer", "object-layer", --]]"floor-layer", --[["water-tile",--]]}
+data.raw["rail-chain-signal"]["rail-chain-signal"].collision_mask = {--[["item-layer", "object-layer", --]]"floor-layer", --[["water-tile",--]]}
+
 -- Stack Sizes
 if Config.stackSize then
 	increaseStackSize("stone", 200)
@@ -668,16 +672,15 @@ if data.raw.car["heli-entity-_-"] then
 	for name,car in pairs(data.raw.car) do
 		if string.find(name, "heli", 1, true) then
 			--error(serpent.block(car.consumption .. " >> " .. string.sub(car.consumption, 1, -3) .. " >>> " .. tonumber(string.sub(car.consumption, 1, -3))))
-			if tonumber(string.sub(car.consumption, 1, -3)) then --skip technical entities
-				car.breaking_speed = car.breaking_speed*f
-				car.consumption = (tonumber(string.sub(car.consumption, 1, -3))*f) .. "MW"
-				car.braking_power = (tonumber(string.sub(car.braking_power, 1, -3))*f) .. "MW"
-				car.effectivity = car.effectivity*f*f
-				car.burner.effectivity = car.burner.effectivity*f*f
+			if car.guns and #car.guns > 0 then --skip technical entities
+				table.insert(car.guns, "flamethrower-2")
 			end
 		end
 	end
 end
+
+data.raw.ammo["flamethrower-ammo"].ammo_type[2].action = data.raw.ammo["flamethrower-ammo"].ammo_type[1].action --because it was nerfed to garbage
+data.raw.ammo["flamethrower-ammo"].ammo_type[2].consumption_modifier = 1.25 --as a slight rebalance
 
 if data.raw.technology["worker-robot-battery-1"] then
 	data.raw.technology["worker-robot-battery-4"].effects[1].modifier = 0.125
@@ -693,6 +696,10 @@ if data.raw.recipe["iron-chunk-processing"] then
 	--data.raw.recipe["gold-chunk-processing"].allow_decomposition = false
 	--data.raw.recipe["silver-chunk-processing"].allow_decomposition = false
 	--data.raw.recipe["nickel-chunk-processing"].allow_decomposition = false
+	data.raw.recipe["iron-chunk-processing"].allow_as_intermediate = false
+	data.raw.recipe["copper-chunk-processing"].allow_as_intermediate = false
+	data.raw.recipe["coal-chunk-processing"].allow_as_intermediate = false
+	data.raw.recipe["uranium-chunk-processing"].allow_as_intermediate = false
 end
 
 if data.raw.lamp["LargeLamp"] then
@@ -712,4 +719,12 @@ if data.raw.lamp["LargeLamp"] then
 	data.raw.lamp.LargeLamp.light.intensity = 1
 	data.raw.lamp.LargeLamp.light_when_colored.size = 90
 	data.raw.lamp.LargeLamp.picture_on.filename = "__FTweaks__/graphics/large-lamp-on.png"
+end
+
+if Config.expiringFluid then
+	for _,fluid in pairs(data.raw.resource) do
+		if fluid.category == "basic-fluid" or fluid.category == "water" then
+			fluid.infinite = false
+		end
+	end
 end

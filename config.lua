@@ -43,3 +43,5 @@ Config.splitHelicopter = false--settings.startup["split-helicopter"].value
 Config.coalSludge = settings.startup["coal-decomposition"].value--true
 
 Config.demultiplyUpgrades = settings.startup["demultiply-upgrades"].value--true
+
+Config.expiringFluid = settings.startup["expiring-fluid"].value--true

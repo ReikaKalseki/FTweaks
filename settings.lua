@@ -152,4 +152,11 @@ data:extend({
             default_value = true,
             order = "r",
         },
+        {
+            type = "bool-setting",
+            name = "expiring-fluid",
+            setting_type = "startup",
+            default_value = false,
+            order = "r",
+        },
 })

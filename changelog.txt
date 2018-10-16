@@ -1,4 +1,25 @@
 ---------------------------------------------------------------------------------------------------
+Version: 1.0.164
+Date: Oct 15 2018
+	- Now makes vehicle-mounted flamethrowers not suck
+	- Adds a flamethrower to the vehicle from the helicopter mod
+	- Fixed crash with modified Steam Turbine recipes
+	- Added option to make fluid resources not infinite
+---------------------------------------------------------------------------------------------------
+Version: 1.0.160
+Date: Oct 10 2018
+	- Added optional coal decomposition tech and recipes
+	- Added option to exclude all 'upgrade' type technologies (eg turret damage, robot speed, player reach, etc) from technology cost increase
+	- Fixed crash with Bobwarfare
+	- Tweaked a couple techs' science packs
+	- Belt recipe changes now apply to splitters, underground belts, and loaders as well
+	- Tweaked a few recipes for high-tier Bob assembling machines (electrolyzers, chemical furnaces, etc)
+	- Fixed issue with T2 electric pole tech and Angel Invar override
+	- Added upcraft recipes for steel furnaces to electric variants
+	- Replaced production science with logistic science in express loader tech if available
+	- Added glow and recipe override for "LargeLamp" mod - more visually appealing and more balanced, with Bob integration
+	- Added recipe to upgrade Bob steam engines into steam turbines
+---------------------------------------------------------------------------------------------------
 Version: 1.0.148
 Date: Sep 18 2018
 	- Made solar panel equipment cheaper
