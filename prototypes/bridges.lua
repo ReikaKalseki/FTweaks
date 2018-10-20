@@ -453,6 +453,15 @@ if data.raw.recipe["chemical-plant-3"] and data.raw.item["titanium-plate"] then
 	replaceItemInRecipe(data.raw.recipe["chemical-plant-3"], "titanium-pipe", "brass-pipe", 1)
 end
 
+if data.raw.recipe["storage-tank-3"] and data.raw.item["titanium-plate"] then
+	replaceItemInRecipe(data.raw.recipe["storage-tank-3"], "titanium-plate", "cobalt-steel-alloy", 1)
+	replaceItemInRecipe(data.raw.recipe["bob-pump-3"], "titanium-plate", "aluminium-plate", 1)
+	replaceItemInRecipe(data.raw.recipe["bob-pump-2"], "aluminium-plate", "brass-gear-wheel", 1)
+	replaceTechPrereq("bob-fluid-handling-3", "titanium-processing", "aluminium-processing")
+	table.insert(data.raw.technology["bob-fluid-handling-3"].prerequisites, "cobalt-processing-2")
+	table.insert(data.raw.technology["bob-fluid-handling-2"].prerequisites, "zinc-processing")
+end
+
 if data.raw.item["copper-pipe"] then
 	replaceItemInRecipe(data.raw.recipe["steam-turbine"], "copper-plate", "copper-pipe", 0.8, true)
 end
