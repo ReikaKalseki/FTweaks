@@ -272,7 +272,7 @@ end
 moveRecipe("poison-capsule", "military-3", "military-2") --why was this even mil3
 
 if Config.harderNuclear then
-	data.raw["technology"]["nuclear-power"].prerequisites = {"advanced-electronics-2", "concrete", "advanced-material-processing-2", "electric-energy-distribution-2", "circuit-network", "robotics"}
+	data.raw["technology"]["nuclear-power"].prerequisites = {"advanced-electronics-2", "concrete", "advanced-material-processing-2", "electric-energy-distribution-2", "circuit-network", "robotics", "speed-module-3", "productivity-module-3", "effectivity-module-3"}
 	table.insert(data.raw["technology"]["nuclear-power"].unit.ingredients, {"high-tech-science-pack", 1})
 	table.insert(data.raw["technology"]["nuclear-power"].unit.ingredients, {"production-science-pack", 1})
 	
@@ -445,6 +445,7 @@ if data.raw["underground-belt"]["turbo-underground-belt"] then
 	improveAttribute(data.raw["underground-belt"]["turbo-underground-belt"], "max_distance", 30)
 	improveAttribute(data.raw["underground-belt"]["turbo-underground-belt"], "speed", 0.15)
 	improveAttribute(data.raw["transport-belt"]["turbo-transport-belt"], "speed", 0.15)
+	improveAttribute(data.raw["splitter"]["turbo-splitter"], "speed", 0.15)
 	
 	if data.raw.loader["purple-loader"] then --they got swapped by Bob
 		improveAttribute(data.raw.loader["purple-loader"], "speed", 0.15)
@@ -455,6 +456,7 @@ if data.raw["underground-belt"]["ultimate-underground-belt"] then
 	improveAttribute(data.raw["underground-belt"]["ultimate-underground-belt"], "max_distance", 40)
 	improveAttribute(data.raw["underground-belt"]["ultimate-underground-belt"], "speed", 0.2)
 	improveAttribute(data.raw["transport-belt"]["ultimate-transport-belt"], "speed", 0.2)
+	improveAttribute(data.raw["splitter"]["ultimate-splitter"], "speed", 0.2)
 	
 	if data.raw.loader["green-loader"] then
 		improveAttribute(data.raw.loader["green-loader"], "speed", 0.2)
@@ -521,6 +523,19 @@ end
 
 if data.raw.locomotive["bob-diesel-locomotive-3"] then
 	improveAttribute(data.raw.locomotive["bob-diesel-locomotive-3"], "max_speed", 3)
+end
+
+if data.raw["cargo-wagon"]["bob-cargo-wagon-2"] then
+	for i = 2,4 do
+		local obj = data.raw["cargo-wagon"]["bob-cargo-wagon-" .. i]
+		if obj then
+			local pre = i == 2 and "cargo-wagon" or "bob-cargo-wagon-" .. (i-1)
+			pre = data.raw["cargo-wagon"][pre]
+			local new = pre.inventory_size+2*(obj.inventory_size-pre.inventory_size)
+			log("Improving cargo size of " .. obj.name .. " from " .. obj.inventory_size .. " to " .. new)
+			improveAttribute(obj, "inventory_size", new)
+		end
+	end
 end
 
 if data.raw.recipe["basic-circuit-board"] then
@@ -671,9 +686,12 @@ local f = 1.6
 if data.raw.car["heli-entity-_-"] then
 	for name,car in pairs(data.raw.car) do
 		if string.find(name, "heli", 1, true) then
-			--error(serpent.block(car.consumption .. " >> " .. string.sub(car.consumption, 1, -3) .. " >>> " .. tonumber(string.sub(car.consumption, 1, -3))))
-			if car.guns and #car.guns > 0 then --skip technical entities
-				table.insert(car.guns, "flamethrower-2")
+			if tonumber(string.sub(car.consumption, 1, -3)) then --skip technical entities
+				car.breaking_speed = car.breaking_speed*f
+				car.consumption = (tonumber(string.sub(car.consumption, 1, -3))*f) .. "MW"
+				car.braking_power = (tonumber(string.sub(car.braking_power, 1, -3))*f) .. "MW"
+				car.effectivity = car.effectivity*f*f
+				car.burner.effectivity = car.burner.effectivity*f*f
 			end
 		end
 	end

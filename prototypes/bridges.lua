@@ -481,3 +481,11 @@ if data.raw.item["steam-engine-2"] then
 		end
 	end
 end
+
+if data.raw.recipe["bob-area-mining-drill-2"] then
+	for i = 1,4 do
+		if data.raw.recipe["bob-area-mining-drill-" .. i] then
+			createConversionRecipe("bob-mining-drill-" .. i, "bob-area-mining-drill-" .. i, true, "bob-area-drills-" .. i)
+		end
+	end
+end

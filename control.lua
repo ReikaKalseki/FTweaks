@@ -94,7 +94,7 @@ end
 
 initGlobal(false)
 
-script.on_load(function()
+local function addCommands()
 	commands.add_command("countScience", {"cmd.count-science-help"}, function(event)
 		local count = 0
 		local player = game.players[event.player_index]
@@ -121,6 +121,10 @@ script.on_load(function()
 	commands.add_command("addTrainCondition", {"cmd.add-train-condition-help"}, function(event)
 		local player = game.players[event.player_index]
 		local condition = {}
+		if not event.parameter then
+			player.print("You must specify a condition to add!")
+			return
+		end
 		local i = 1
 		for part in string.gmatch(event.parameter, "[^;]+") do
 			if i == 1 then
@@ -154,6 +158,68 @@ script.on_load(function()
 		end
 		player.print("Added condition to " .. n .. " trains: " .. serpent.block(condition))
 	end)
+	
+	commands.add_command("modifyTrainCondition", {"cmd.modify-train-condition-help"}, function(event)
+		local player = game.players[event.player_index]
+		local condition = {}
+		local look = {}
+		if not event.parameter then
+			player.print("You must specify a condition to replace and what to replace it with!")
+			return
+		end
+		local i = 1
+		for part in string.gmatch(event.parameter, "[^;]+") do
+			if i == 4 then
+				condition.type = part
+			elseif i == 5 then
+				condition.compare_type = part
+			elseif i == 6 then
+				condition.ticks = tonumber(part)*60
+			elseif i == 1 then
+				look.type = part
+			elseif i == 2 then
+				look.compare_type = part
+			elseif i == 3 then
+				look.ticks = tonumber(part)*60
+			end
+			i = i+1
+		end
+		if condition.type == nil or condition.compare_type == nil or (condition.ticks == nil and (condition.type == "time" or condition.type == "inactivity")) then
+			player.print("Invalid condition: You must specify a wait condition, a comparison type, and, if applicable, a time!")
+			return
+		end
+		if look.type == nil or look.compare_type == nil or (look.ticks == nil and (look.type == "time" or look.type == "inactivity")) then
+			player.print("Invalid condition to modify: You must specify a wait condition, a comparison type, and, if applicable, a time!")
+			return
+		end
+		local entity = player.selected
+		if entity.type ~= "train-stop" then
+			player.print("You can only run this command on a train stop!")
+			return
+		end
+		local n = 0
+		for _,train in pairs(entity.get_train_stop_trains()) do
+			local data = train.schedule --has to be copied, modified, and reassigned
+			for _,entry in pairs(data.records) do
+				if entry.station == entity.backer_name then
+					for key,con in pairs(entry.wait_conditions) do
+						if con.type == look.type and con.compare_type == look.compare_type and con.ticks == look.ticks then
+							entry.wait_conditions[key] = condition
+						end
+					end
+				end
+			end
+			train.schedule = data
+			n = n+1
+		end
+		player.print("Replaced condition on " .. n .. " trains: " .. serpent.block(look) .. " with " .. serpent.block(condition))
+	end)
+end
+
+addCommands()
+
+script.on_load(function()
+	
 end)
 
 script.on_init(function()
@@ -162,6 +228,7 @@ end)
 
 script.on_configuration_changed(function()
 	initGlobal(true)
+	global.ftweaks.ranTick = false
 end)
 --[[
 local function convertDirtyOre(player)

@@ -130,3 +130,5 @@ if Config.techFactor ~= 1 then
 		end
 	end
 end
+
+data.raw.recipe["kovarex-enrichment-process"].energy_required = 0.0012
