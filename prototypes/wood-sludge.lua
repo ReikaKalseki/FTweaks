@@ -27,13 +27,13 @@ data:extend({
   },
   {
     type = "recipe",
-    name = "raw-wood-sludge",
+    name = "wood-sludge",
     category = "oil-processing",
     enabled = false,
     energy_required = 9,
     ingredients =
     {
-      {type="item", name="raw-wood", amount=10},
+      {type="item", name="wood", amount=10},
       {type="fluid", name="sulfuric-acid", amount=25},
       {type="fluid", name="steam", amount=50}
     },
@@ -43,10 +43,10 @@ data:extend({
       {type="fluid", name="light-oil", amount=35},
       --{type="item", name="coal", amount=1}
     },
-    icon = "__FTweaks__/graphics/icons/raw-wood-sludge.png",
+    icon = "__FTweaks__/graphics/icons/wood-sludge.png",
 	icon_size = 32,
     subgroup = "fluid-recipes",
-    order = "a[oil-processing]-c[raw-wood-sludge]",
+    order = "a[oil-processing]-c[wood-sludge]",
     allow_decomposition = false
   },
   {
@@ -67,7 +67,7 @@ data:extend({
       },
       {
         type = "unlock-recipe",
-        recipe = "raw-wood-sludge"
+        recipe = "wood-sludge"
       }
     },
     unit =
@@ -75,9 +75,9 @@ data:extend({
       count = 300,
       ingredients =
       {
-        {"science-pack-1", 1},
-        {"science-pack-2", 1},
-        {"science-pack-3", 1},
+        {"automation-science-pack", 1},
+        {"logistic-science-pack", 1},
+        {"chemical-science-pack", 1},
         {"production-science-pack", 1}
       },
       time = 30

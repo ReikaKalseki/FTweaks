@@ -239,7 +239,7 @@ if data.raw.technology["subterranean-logistics-1"] then
 	createConversionRecipe("subterranean-belt", "underground-belt", true, "subterranean-logistics-1")
 end
 
-if data.raw.tool["logistic-science-pack"] then
+if data.raw.tool["bob-logistic-science-pack"] then
 	table.insert(data.raw["technology"]["logistics-3"].prerequisites, "robotics")
 end
 
@@ -263,7 +263,7 @@ if data.raw.item["steel-gear-wheel"] then
 end
 
 if data.raw.technology["cobalt-processing"] then
-	splitTech("cobalt-processing", {"sulfur-processing"}, {"cobalt-plate", "cobalt-steel-alloy", "cobalt-steel-gear-wheel", "cobalt-steel-bearing-ball", "cobalt-steel-bearing", "cobalt-axe"})
+	splitTech("cobalt-processing", {"sulfur-processing"}, {"cobalt-plate", "cobalt-steel-alloy", "cobalt-steel-gear-wheel", "cobalt-steel-bearing-ball", "cobalt-steel-bearing"--[[, "cobalt-axe"--]]})
 	addSciencePackToTech("cobalt-processing-2", "science-pack-3")
 end
 
@@ -271,7 +271,7 @@ if data.raw.recipe["electric-furnace-2"] then
 	replaceItemInRecipe("electric-furnace-2", "tungsten-plate", "cobalt-steel-alloy", 1)
 end
 
-if Config.cheaperBelts and data.raw.item["ultimate-transport-belt"] then
+if Config.cheaperBelts and data.raw.item["nitinol-gear-wheel"] and data.raw.item["ultimate-transport-belt"] then
 	replaceItemInRecipe("ultimate-transport-belt", "nitinol-gear-wheel", "nitinol-gear-wheel", 0.4)
 	replaceItemInRecipe("ultimate-transport-belt", "nitinol-bearing", "nitinol-bearing", 0.4)
 	
@@ -324,8 +324,8 @@ if data.raw.technology.cathodes then
 	replaceTechPrereq("cathodes", "advanced-electronics", "circuit-network")
 end
 
-if data.raw.technology["express-loader"] and data.raw.tool["logistic-science-pack"] then
-	replaceTechPack("express-loader", "production-science-pack", "logistic-science-pack")
+if data.raw.technology["express-loader"] and data.raw.tool["bob-logistic-science-pack"] then
+	replaceTechPack("express-loader", "production-science-pack", "bob-logistic-science-pack")
 end
 
 if data.raw.technology["purple-loader"] then

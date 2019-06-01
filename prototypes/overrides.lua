@@ -38,7 +38,7 @@ if Config.stackSize then
 	increaseStackSize("copper-ore", 200)
 	increaseStackSize("uranium-ore", 200)
 	increaseStackSize("sulfur", 200)
-	increaseStackSize("raw-wood", 200)
+	increaseStackSize("wood", 200)
 	
 	increaseStackSize("wood", 200)
 	increaseStackSize("iron-plate", 200)
@@ -85,7 +85,7 @@ end
 --]]
 
 if Config.saneConcrete then
-	replaceItemInRecipe(data.raw.recipe.concrete, "iron-ore", "iron-stick", 2) --x2 since sticks are 0.5 iron each, this maintains ratios
+	replaceItemInRecipe(data.raw.recipe.concrete, "iron-ore", "iron-stick", 2, true) --x2 since sticks are 0.5 iron each, this maintains ratios
 end
 
 if data.raw.technology["inserter-stack-size-bonus-1"] then
@@ -111,13 +111,13 @@ if data.raw["assembling-machine"]["bob-greenhouse"] then --buff Bob Greenhouses 
 	data.raw.recipe["bob-advanced-greenhouse-cycle"].expensive.energy_required = data.raw.recipe["bob-advanced-greenhouse-cycle"].expensive.energy_required*0.75
 end
 
-addSciencePackToTech("nickel-processing", "science-pack-2")
-addSciencePackToTech("gold-processing", "science-pack-3")
-addSciencePackToTech("silver-processing", "science-pack-3")
-addSciencePackToTech("zinc-processing", "science-pack-3")
-addSciencePackToTech("aluminium-processing", "science-pack-3")
-addSciencePackToTech("lithium-processing", "science-pack-3")
-addSciencePackToTech("tungsten-processing", "high-tech-science-pack")
+addSciencePackToTech("nickel-processing", "logistic-science-pack")
+addSciencePackToTech("gold-processing", "chemical-science-pack")
+addSciencePackToTech("silver-processing", "chemical-science-pack")
+addSciencePackToTech("zinc-processing", "chemical-science-pack")
+addSciencePackToTech("aluminium-processing", "chemical-science-pack")
+addSciencePackToTech("lithium-processing", "chemical-science-pack")
+addSciencePackToTech("tungsten-processing", "utility-science-pack")
 addSciencePackToTech("titanium-processing", "production-science-pack")
 
 data:extend({
@@ -146,12 +146,12 @@ if data.raw.recipe["bob-resin-wood"] then
 	data.raw.recipe["bob-resin-wood"].result_count = nil
 	
 	data.raw.recipe["bob-resin-wood"].normal = {
-		ingredients = {{"raw-wood", 1}},
+		ingredients = {{"wood", 1}},
 		result = "resin",
 		result_count = 3
 	}
 	data.raw.recipe["bob-resin-wood"].expensive = {
-		ingredients = {{"raw-wood", 2}},
+		ingredients = {{"wood", 2}},
 		result = "resin",
 		result_count = 3
 	}
@@ -193,26 +193,26 @@ if Config.gunTurretRecipes then
 end
 
 if Config.redScienceRecipes then
-	local recipe = table.deepcopy(data.raw.recipe["science-pack-1"])
+	local recipe = table.deepcopy(data.raw.recipe["automation-science-pack"])
 	if recipe.energy_required then recipe.energy_required = 0.25*math.floor(4*recipe.energy_required*0.3) end
 	if recipe.normal then recipe.normal.energy_required = 0.25*math.floor(4*recipe.normal.energy_required*0.2) end
 	if recipe.expensive then recipe.expensive.energy_required = 0.25*math.floor(4*recipe.expensive.energy_required*0.5) end
 	recipe.category = "manual-crafting"
-	recipe.name = "manual-science-pack-1"
-	recipe.localised_name = {"recipe-name.manual-science-pack-1"}
+	recipe.name = "manual-automation-science-pack"
+	recipe.localised_name = {"recipe-name.manual-automation-science-pack"}
 	data:extend({recipe})
 	--table.insert(data.raw.technology.turrets.effects, {type = "unlock-recipe", recipe = recipe.name})
-	data.raw.recipe["science-pack-1"].category = "non-manual-crafting"
+	data.raw.recipe["automation-science-pack"].category = "non-manual-crafting"
 	
 	 --keep ratios on this; also, since costs are 1, cannot simply multiply -> have to do this:
-	 data.raw.recipe["science-pack-1"].result_count = 5
-	data.raw.recipe["science-pack-1"].energy_required = data.raw.recipe["science-pack-1"].energy_required*5 --to keep time/output the same
-	if data.raw.recipe["science-pack-1"].normal then
-		data.raw.recipe["science-pack-1"].normal.energy_required = data.raw.recipe["science-pack-1"].normal.energy_required*5
-		data.raw.recipe["science-pack-1"].expensive.energy_required = data.raw.recipe["science-pack-1"].expensive.energy_required*5
+	 data.raw.recipe["automation-science-pack"].result_count = 5
+	data.raw.recipe["automation-science-pack"].energy_required = data.raw.recipe["automation-science-pack"].energy_required*5 --to keep time/output the same
+	if data.raw.recipe["automation-science-pack"].normal then
+		data.raw.recipe["automation-science-pack"].normal.energy_required = data.raw.recipe["automation-science-pack"].normal.energy_required*5
+		data.raw.recipe["automation-science-pack"].expensive.energy_required = data.raw.recipe["automation-science-pack"].expensive.energy_required*5
 	end
-	replaceItemInRecipe(data.raw.recipe["science-pack-1"], "iron-gear-wheel", "iron-gear-wheel", 4)
-	replaceItemInRecipe(data.raw.recipe["science-pack-1"], "copper-plate", "copper-plate", 4)
+	replaceItemInRecipe(data.raw.recipe["automation-science-pack"], "iron-gear-wheel", "iron-gear-wheel", 4)
+	replaceItemInRecipe(data.raw.recipe["automation-science-pack"], "copper-plate", "copper-plate", 4)
 end
 	
 -- fluid color correction
@@ -252,7 +252,7 @@ if data.raw["technology"]["angels-warehouses"] then
 	table.insert(data.raw["technology"]["angels-warehouses"].prerequisites, "logistics-2")
 end
 
-data.raw["technology"]["flying"].prerequisites = {"engine", "advanced-electronics", "advanced-material-processing"}
+--data.raw["technology"]["flying"].prerequisites = {"engine", "advanced-electronics", "advanced-material-processing"}
 
 local flag = true
 for _,prereq in pairs(data.raw["technology"]["power-armor"].prerequisites) do
@@ -265,16 +265,16 @@ if flag then
 end
 
 table.insert(data.raw["technology"]["logistic-robotics"].prerequisites, "logistics-3")
-if data.raw.tool["logistic-science-pack"] then
-	addSciencePackToTech("logistic-robotics", "logistic-science-pack")
+if data.raw.tool["bob-logistic-science-pack"] then
+	addSciencePackToTech("logistic-robotics", "bob-logistic-science-pack")
 end
 
 moveRecipe("poison-capsule", "military-3", "military-2") --why was this even mil3
 
 if Config.harderNuclear then
 	data.raw["technology"]["nuclear-power"].prerequisites = {"advanced-electronics-2", "concrete", "advanced-material-processing-2", "electric-energy-distribution-2", "circuit-network", "robotics", "speed-module-3", "productivity-module-3", "effectivity-module-3"}
-	table.insert(data.raw["technology"]["nuclear-power"].unit.ingredients, {"high-tech-science-pack", 1})
-	table.insert(data.raw["technology"]["nuclear-power"].unit.ingredients, {"production-science-pack", 1})
+	addSciencePackToTech("nuclear-power", "utility-science-pack")
+	addSciencePackToTech("nuclear-power", "production-science-pack")
 	
 	data.raw["assembling-machine"]["centrifuge"].energy_usage = "600kW" --default is 350
 	data.raw["assembling-machine"]["centrifuge"].energy_source.emissions = 0.03 / 2.5 --default is 0.04 / 2.5
@@ -362,12 +362,14 @@ if Config.harderSilo then
 	end
 	
 	data.raw["recipe"]["satellite"].ingredients = satparts
+	--[[
 	for i = 8,3,-1 do
 		if data.raw["assembling-machine"]["assembling-machine-" .. i] then
 			data.raw["assembling-machine"]["assembling-machine-" .. i].ingredient_count = math.max(data.raw["assembling-machine"]["assembling-machine-" .. i].ingredient_count, #satparts) --ensure craftability in the highest assembling machine tier
 			break
 		end
 	end
+	--]]
 	
 	if data.raw.item["titanium-plate"] then
 		if data.raw["recipe"]["low-density-structure"].ingredients then

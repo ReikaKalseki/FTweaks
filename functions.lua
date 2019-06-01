@@ -79,7 +79,7 @@ local function getPrereqTechForPack(pack) --this is going to change in 0.17 to a
 		return "military-2"
 	elseif pack == "logistic-science-pack" then
 		return "logistics-3"
-	elseif pack == "high-tech-science-pack" then
+	elseif pack == "utility-science-pack" then
 		return "advanced-electronics-2"
 	elseif pack == "production-science-pack" then
 		return "advanced-material-processing-2"
@@ -422,6 +422,29 @@ function createConversionRecipe(from, to, register, tech, recursion)
 	ret.ingredients = list
 	local main = rec1.result and rec1.result or rec1.normal.result
 	local result = rec2.result and rec2.result or rec2.normal.result
+	
+	if main == nil then
+		for _,ing in pairs(rec1.results) do
+			if ing.type == "item" then
+				main = ing.name
+				break
+			end
+		end
+		for _,ing in pairs(rec2.results) do
+			if ing.type == "item" then
+				result = ing.name
+				break
+			end
+		end
+	end
+	
+	if not main then
+		error("Cannot create a conversion recipe from a recipe that has no output!" .. serpent.block(rec1))
+	end	
+	if not result then
+		error("Cannot create a conversion recipe to a recipe that has no output!" .. serpent.block(rec2))
+	end
+	
 	ret.localised_name = {"conversion-recipe.name", {"entity-name." .. main}, {"entity-name." .. result}}
 	local orig_icon_src = rec2
 	if not (orig_icon_src.icon or orig_icon_src.icons) then
