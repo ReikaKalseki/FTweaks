@@ -277,14 +277,14 @@ if Config.harderNuclear then
 	addSciencePackToTech("nuclear-power", "production-science-pack")
 	
 	data.raw["assembling-machine"]["centrifuge"].energy_usage = "600kW" --default is 350
-	data.raw["assembling-machine"]["centrifuge"].energy_source.emissions = 0.03 / 2.5 --default is 0.04 / 2.5
+	data.raw["assembling-machine"]["centrifuge"].energy_source.emissions_per_minute = data.raw["assembling-machine"]["centrifuge"].energy_source.emissions_per_minute*0.75
 end
 
 table.insert(data.raw["technology"]["electric-energy-distribution-2"].prerequisites,"advanced-electronics")
 
 data.raw.item["rocket-silo"].subgroup = "production-machine"
 
-table.insert(data.raw.player["player"].crafting_categories,"manual-crafting")
+table.insert(data.raw.character.character.crafting_categories,"manual-crafting")
 
 if Config.tieredArmor then
 	data.raw.recipe["heavy-armor"].ingredients = {{"copper-plate", 100}, {"steel-plate", 30}, {"light-armor", 1}}
@@ -689,7 +689,7 @@ if data.raw.car["heli-entity-_-"] then
 	for name,car in pairs(data.raw.car) do
 		if string.find(name, "heli", 1, true) then
 			if tonumber(string.sub(car.consumption, 1, -3)) then --skip technical entities
-				car.breaking_speed = car.breaking_speed*f
+				--car.breaking_speed = car.breaking_speed*f
 				car.consumption = (tonumber(string.sub(car.consumption, 1, -3))*f) .. "MW"
 				car.braking_power = (tonumber(string.sub(car.braking_power, 1, -3))*f) .. "MW"
 				car.effectivity = car.effectivity*f*f

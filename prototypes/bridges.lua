@@ -222,8 +222,8 @@ if data.raw.technology["subterranean-logistics-1"] then
 	})
 
 	table.insert(data.raw.technology["subterranean-logistics-1"].effects, {type = "unlock-recipe", recipe = "subterranean-belt-conversion-1"})
-	table.insert(data.raw.technology["subterranean-logistics-2"].effects, {type = "unlock-recipe", recipe = "subterranean-belt-conversion-2"})
 	table.insert(data.raw.technology["subterranean-logistics-3"].effects, {type = "unlock-recipe", recipe = "subterranean-belt-conversion-3"})
+	table.insert(data.raw.technology["subterranean-logistics-2"].effects, {type = "unlock-recipe", recipe = "subterranean-belt-conversion-2"})
 end
 --]]
 
@@ -264,7 +264,7 @@ end
 
 if data.raw.technology["cobalt-processing"] then
 	splitTech("cobalt-processing", {"sulfur-processing"}, {"cobalt-plate", "cobalt-steel-alloy", "cobalt-steel-gear-wheel", "cobalt-steel-bearing-ball", "cobalt-steel-bearing"--[[, "cobalt-axe"--]]})
-	addSciencePackToTech("cobalt-processing-2", "science-pack-3")
+	addSciencePackToTech("cobalt-processing-2", "chemical-science-pack")
 end
 
 if data.raw.recipe["electric-furnace-2"] then
@@ -354,10 +354,12 @@ if data.raw.technology["heli-technology"] then
 		data:extend({basic})
 		table.insert(tech.prerequisites, "heli-technology-basic")
 	end
-	if not replaceTechPrereq(tech, "advanced-electronics", "advanced-electronics-2") then
-		table.insert(tech.prerequisites, "advanced-electronics-2")
+	if not listHasValue(tech.prerequisites, "advanced-electronics-2") then
+		if not replaceTechPrereq(tech, "advanced-electronics", "advanced-electronics-2") then
+			table.insert(tech.prerequisites, "advanced-electronics-2")
+		end
 	end
-	table.insert(tech.prerequisites, "rocketry") --since has a rocket launcher in the recipe
+	--table.insert(tech.prerequisites, "rocketry") --since has a rocket launcher in the recipe
 	
 	if listHasValue(data.raw.technology["advanced-electronics-2"].prerequisites, "gold-processing") and mods["Oreverhaul"] then --ie bob logic boards, + oreverhaul means gold is VERY late, later than the heli should be
 		replaceTechPrereq(tech, "advanced-electronics-2", "advanced-electronics")
