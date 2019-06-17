@@ -699,8 +699,10 @@ if data.raw.car["heli-entity-_-"] then
 	end
 end
 
-data.raw.ammo["flamethrower-ammo"].ammo_type[2].action = data.raw.ammo["flamethrower-ammo"].ammo_type[1].action --because it was nerfed to garbage
-data.raw.ammo["flamethrower-ammo"].ammo_type[2].consumption_modifier = 1.25 --as a slight rebalance
+if data.raw.ammo["flamethrower-ammo"] and data.raw.ammo["flamethrower-ammo"].ammo_type and data.raw.ammo["flamethrower-ammo"].ammo_type[2] then
+	data.raw.ammo["flamethrower-ammo"].ammo_type[2].action = data.raw.ammo["flamethrower-ammo"].ammo_type[1].action --because it was nerfed to garbage
+	data.raw.ammo["flamethrower-ammo"].ammo_type[2].consumption_modifier = 1.25 --as a slight rebalance
+end
 
 if data.raw.technology["worker-robot-battery-1"] then
 	data.raw.technology["worker-robot-battery-4"].effects[1].modifier = 0.125

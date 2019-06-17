@@ -235,7 +235,7 @@ local function convertDirtyOre(player)
 	local flag = true
 	local convert = 0
 	local converted = 0
-	local inv = player.get_inventory(defines.inventory.player_main)
+	local inv = player.get_inventory(defines.inventory.character_main)
 	while flag do
 		local rem = inv.remove({name="iron-ore", count=5})
 		if rem ~= 5 then
