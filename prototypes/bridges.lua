@@ -271,7 +271,7 @@ if data.raw.recipe["electric-furnace-2"] then
 	replaceItemInRecipe("electric-furnace-2", "tungsten-plate", "cobalt-steel-alloy", 1)
 end
 
-if Config.cheaperBelts and data.raw.item["nitinol-gear-wheel"] and data.raw.item["ultimate-transport-belt"] then
+if Config.cheaperBelts and data.raw.item["nitinol-gear-wheel"] and data.raw.recipe["ultimate-transport-belt"] then
 	replaceItemInRecipe("ultimate-transport-belt", "nitinol-gear-wheel", "nitinol-gear-wheel", 0.4)
 	replaceItemInRecipe("ultimate-transport-belt", "nitinol-bearing", "nitinol-bearing", 0.4)
 	
@@ -280,7 +280,9 @@ if Config.cheaperBelts and data.raw.item["nitinol-gear-wheel"] and data.raw.item
 	if data.raw.item["cobalt-steel-gear-wheel"] then
 		gear = replaceItemInRecipe("turbo-transport-belt", "cobalt-steel-gear-wheel", "cobalt-steel-gear-wheel", 0.4)
 		bearing = replaceItemInRecipe("turbo-transport-belt", "cobalt-steel-bearing", "cobalt-steel-bearing", 0.4)
-		replaceTechPrereq("bob-logistics-4", "titanium-processing", "cobalt-processing-2")
+		if data.raw.technology["bob-logistics-4"] then
+			replaceTechPrereq("bob-logistics-4", "titanium-processing", "cobalt-processing-2")
+		end
 	else
 		gear = replaceItemInRecipe("turbo-transport-belt", "titanium-gear-wheel", "titanium-gear-wheel", 0.4)
 		bearing = replaceItemInRecipe("turbo-transport-belt", "titanium-bearing", "titanium-bearing", 0.4)
@@ -479,7 +481,7 @@ if data.raw.item["steam-engine-2"] then
 				table.insert(data.raw.technology["geothermal-2"].effects, {type = "unlock-recipe", recipe = rec.name})
 			end
 		else
-			table.insert(data.raw.technology["advanced-steam-power-" .. (i-1)].effects, {type = "unlock-recipe", recipe = rec.name})
+			table.insert(data.raw.technology["bob-steam-turbine-" .. (i-1)].effects, {type = "unlock-recipe", recipe = rec.name})
 		end
 	end
 end

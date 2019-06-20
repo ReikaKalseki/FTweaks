@@ -372,32 +372,10 @@ if Config.harderSilo then
 	--]]
 	
 	if data.raw.item["titanium-plate"] then
-		if data.raw["recipe"]["low-density-structure"].ingredients then
-			table.insert(data.raw["recipe"]["low-density-structure"].ingredients, {"titanium-plate", 5})
-		else
-			table.insert(data.raw["recipe"]["low-density-structure"].normal.ingredients, {"titanium-plate", 5})
-			table.insert(data.raw["recipe"]["low-density-structure"].expensive.ingredients, {"titanium-plate", 10})
-		end
+		addItemToRecipe("low-density-structure", "titanium-plate", 5, 10, false)
 	end
 	if data.raw.item["copper-tungsten-alloy"] then
-		if data.raw["recipe"]["low-density-structure"].ingredients then
-			for _,ingredient in pairs(data.raw["recipe"]["low-density-structure"].ingredients) do
-				if ingredient[1] == "copper-plate" then
-					ingredient[1] = "copper-tungsten-alloy"
-				end
-			end
-		else
-			for _,ingredient in pairs(data.raw["recipe"]["low-density-structure"].normal.ingredients) do
-				if ingredient[1] == "copper-plate" then
-					ingredient[1] = "copper-tungsten-alloy"
-				end
-			end
-			for _,ingredient in pairs(data.raw["recipe"]["low-density-structure"].expensive.ingredients) do
-				if ingredient[1] == "copper-plate" then
-					ingredient[1] = "copper-tungsten-alloy"
-				end
-			end
-		end
+		replaceItemInRecipe("low-density-structure", "copper-plate", "copper-tungsten-alloy", 1, true)
 	end
 	
 	local controlparts = {}
