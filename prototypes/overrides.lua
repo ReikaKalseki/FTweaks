@@ -293,6 +293,10 @@ if Config.tieredArmor then
 	table.insert(data.raw.recipe["power-armor-mk2"].ingredients, {"power-armor", 1})
 end
 
+if Config.logiPipes then
+	addItemToRecipe("logistic-science-pack", "pipe", 1, 2)
+end
+
 improveAttribute(data.raw.gun["rocket-launcher"].attack_parameters, "range", 35)--from 22; compare with poison capsule at 25 and T2 flamethrower at 30
 
 -- tougher endgame

@@ -45,3 +45,5 @@ Config.coalSludge = settings.startup["coal-decomposition"].value--true
 Config.demultiplyUpgrades = settings.startup["demultiply-upgrades"].value--true
 
 Config.expiringFluid = settings.startup["expiring-fluid"].value--true
+
+Config.logiPipes = settings.startup["logistics-pipes"].value--true

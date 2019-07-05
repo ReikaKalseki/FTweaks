@@ -159,4 +159,11 @@ data:extend({
             default_value = false,
             order = "r",
         },
+        {
+            type = "bool-setting",
+            name = "logistics-pipes",
+            setting_type = "startup",
+            default_value = true,
+            order = "r",
+        },
 })
