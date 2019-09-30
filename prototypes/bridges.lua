@@ -267,7 +267,7 @@ if data.raw.technology["cobalt-processing"] then
 	addSciencePackToTech("cobalt-processing-2", "chemical-science-pack")
 end
 
-if data.raw.recipe["electric-furnace-2"] then
+if data.raw.recipe["electric-furnace-2"] and data.raw.item["tungsten-plate"] then
 	replaceItemInRecipe("electric-furnace-2", "tungsten-plate", "cobalt-steel-alloy", 1)
 end
 
@@ -433,13 +433,19 @@ end
 if data.raw.technology["electric-pole-2"] then
 	replaceTechPrereq("electric-pole-2", "zinc-processing", data.raw.technology["angels-invar-smelting-1"] and "angels-invar-smelting-1" or "invar-processing")
 	
-	replaceItemInRecipe(data.raw.recipe["medium-electric-pole-2"], "brass-alloy", "invar-alloy", 1)
-	replaceItemInRecipe(data.raw.recipe["big-electric-pole-2"], "brass-alloy", "invar-alloy", 1)
+	if data.raw.item["brass-alloy"] then
+		replaceItemInRecipe(data.raw.recipe["medium-electric-pole-2"], "brass-alloy", "invar-alloy", 1)
+		replaceItemInRecipe(data.raw.recipe["big-electric-pole-2"], "brass-alloy", "invar-alloy", 1)
+	end
 	
-	replaceTechPrereq("electric-pole-3", "titanium-processing", "cobalt-processing")
+	if data.raw.technology["titanium-processing"] then
+		replaceTechPrereq("electric-pole-3", "titanium-processing", "cobalt-processing")
+	end
 	
-	replaceItemInRecipe(data.raw.recipe["medium-electric-pole-3"], "titanium-plate", "cobalt-steel-alloy", 1)
-	replaceItemInRecipe(data.raw.recipe["big-electric-pole-3"], "titanium-plate", "cobalt-steel-alloy", 1)
+	if data.raw.item["titanium-plate"] then
+		replaceItemInRecipe(data.raw.recipe["medium-electric-pole-3"], "titanium-plate", "cobalt-steel-alloy", 1)
+		replaceItemInRecipe(data.raw.recipe["big-electric-pole-3"], "titanium-plate", "cobalt-steel-alloy", 1)
+	end
 end
 
 if data.raw.recipe["electrolyser-3"] and data.raw.item["tungsten-plate"] then

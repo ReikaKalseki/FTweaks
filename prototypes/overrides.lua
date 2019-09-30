@@ -280,7 +280,9 @@ if Config.harderNuclear then
 	data.raw["assembling-machine"]["centrifuge"].energy_source.emissions_per_minute = data.raw["assembling-machine"]["centrifuge"].energy_source.emissions_per_minute*0.75
 end
 
-table.insert(data.raw["technology"]["electric-energy-distribution-2"].prerequisites,"advanced-electronics")
+if not listHasValue(data.raw["technology"]["electric-energy-distribution-2"].prerequisites,"advanced-electronics") then
+	table.insert(data.raw["technology"]["electric-energy-distribution-2"].prerequisites,"advanced-electronics")
+end
 
 data.raw.item["rocket-silo"].subgroup = "production-machine"
 
@@ -397,8 +399,8 @@ if Config.harderSilo then
 	data.raw["recipe"]["rocket-control-unit"].ingredients = controlparts
 	
 	data.raw["recipe"]["rocket-control-unit"].energy_required = data.raw["recipe"]["rocket-control-unit"].energy_required*10
-	data.raw["recipe"]["low-density-structure"].normal.energy_required = data.raw["recipe"]["low-density-structure"].normal.energy_required*4
-	data.raw["recipe"]["low-density-structure"].expensive.energy_required = data.raw["recipe"]["low-density-structure"].expensive.energy_required*4
+	data.raw["recipe"]["low-density-structure"].normal.energy_required = math.floor(data.raw["recipe"]["low-density-structure"].normal.energy_required*1.5)
+	data.raw["recipe"]["low-density-structure"].expensive.energy_required = math.floor(data.raw["recipe"]["low-density-structure"].expensive.energy_required*1.5)
 	data.raw["recipe"]["rocket-fuel"].energy_required = data.raw["recipe"]["rocket-fuel"].energy_required*5
 	table.insert(data.raw["recipe"]["rocket-fuel"].ingredients, {"steel-plate", 2})
 	
