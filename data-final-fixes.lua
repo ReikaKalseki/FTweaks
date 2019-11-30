@@ -1,3 +1,6 @@
+require "__DragonIndustries__.color"
+require "__DragonIndustries__.arrays"
+
 require("prototypes.bridges")
 require "functions"
 
@@ -131,4 +134,49 @@ if Config.techFactor ~= 1 then
 	end
 end
 
-data.raw.recipe["kovarex-enrichment-process"].energy_required = 0.0012
+--data.raw.recipe["kovarex-enrichment-process"].energy_required = 0.0012
+
+local function loadColors(colors) --in vanilla chemplant, liquid is primary, foam ("green patch") is secondary, smoke is tertiary (outer) and quaternary (inner)
+	if #colors >= 4 then
+		return colors[1], colors[2], colors[3], colors[4]
+	elseif #colors == 3 then
+		return colors[1], colors[2], colors[3], colors[3]
+	elseif #colors == 2 then
+		return colors[1], colors[1], colors[2], colors[2]
+	else
+		return colors[1], colors[1], colors[1], colors[1]
+	end
+end
+
+for name,recipe in pairs(data.raw.recipe) do
+	if recipe.category == "chemistry" and recipe.crafting_machine_tint == nil then
+		local colors = {}
+		local out = recipe.results
+		if out == nil then out = {recipe.result} end
+		for _,item in pairs(out) do
+			if item.type == "fluid" then
+				table.insert(colors, data.raw.fluid[item.name].base_color)
+			end
+		end
+		if #colors == 0 then
+			for _,item in pairs(recipe.ingredients) do
+				if item.type == "fluid" then
+					table.insert(colors, data.raw.fluid[item.name].base_color)
+				end
+			end
+		end
+		colors = removeNilValues(colors)
+		if #colors > 0 then
+			local color1, color2, color3, color4 = loadColors(colors)
+			recipe.crafting_machine_tint = {
+				  primary = color1,
+				  secondary = color2,
+				  tertiary = color3,
+				  quaternary = color4,
+			}
+			log("Setting recipe " .. recipe.name .. " colors for chemplant based on fluid colors: " .. serpent.block(recipe.crafting_machine_tint))
+		else
+			log("Recipe " .. recipe.name .. " is chemistry but has no fluids involved, or none of them have colors?")
+		end
+	end
+end
