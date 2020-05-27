@@ -25,7 +25,7 @@ local function modifyRecipe(ref)
 				end
 				if ingredient[2] > 0 then
 					log("Adding advanced satellite ingredient: " .. (ingredient[1] and ingredient[1] or "nil") .. " x " .. (ingredient[2] and ingredient[2] or "nil"))
-					table.insert(ingredients, ingredient)
+					table.insert(ingredients, {ingredient[1], ingredient[2]})
 				else
 					log("Found a zero-count ingredient: " .. ingredient[1])
 				end

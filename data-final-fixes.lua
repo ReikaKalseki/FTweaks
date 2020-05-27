@@ -166,8 +166,11 @@ for name,recipe in pairs(data.raw.recipe) do
 			end
 		end
 		colors = removeNilValues(colors)
+		--log(#colors .. " and " .. serpent.dump(colors))
 		if #colors > 0 then
 			local color1, color2, color3, color4 = loadColors(colors)
+			--log("color4 is: " .. serpent.dump(color4))
+			if color1 == nil or color2 == nil or color3 == nil or color4 == nil then error("Generated a null color from " .. serpent.dump(colors)) end
 			recipe.crafting_machine_tint = {
 				  primary = color1,
 				  secondary = color2,
