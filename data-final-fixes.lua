@@ -10,11 +10,6 @@ for name, spill in pairs(data.raw["simple-entity"]) do
 	end
 end
 
-
-if data.raw["transport-belt"]["wooden-belt"] then
-	data:extend({createConversionRecipe("wooden-belt", "transport-belt")})
-end
-
 --[[
 for _,tech in pairs(data.raw.technology) do
 	local packs = tech.unit.ingredients

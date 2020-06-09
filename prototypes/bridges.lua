@@ -499,3 +499,21 @@ if data.raw.recipe["bob-area-mining-drill-2"] then
 		end
 	end
 end
+
+if data.raw.unit["Construction Drone"] then
+	--table.insert(data.raw.unit["Construction Drone"].collision_mask, "water-tile")
+	table.insert(data.raw.unit["Construction Drone"].collision_mask, "layer-14")
+	
+	table.insert(data.raw.tile["water"].collision_mask, "layer-14")
+	table.insert(data.raw.tile["deepwater"].collision_mask, "layer-14")
+	table.insert(data.raw.tile["water-green"].collision_mask, "layer-14")
+	table.insert(data.raw.tile["deepwater-green"].collision_mask, "layer-14")
+	table.insert(data.raw.tile["water-shallow"].collision_mask, "layer-14")
+	table.insert(data.raw.tile["water-mud"].collision_mask, "layer-14")
+	
+	log("Set construction drone collision mask to " .. serpent.block(data.raw.unit["Construction Drone"].collision_mask))
+end
+
+if data.raw["assembling-machine"]["electric-offshore-pump"] then
+	data.raw["assembling-machine"]["electric-offshore-pump"].energy_usage = "90kW"
+end

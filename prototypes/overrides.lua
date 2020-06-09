@@ -734,3 +734,5 @@ if Config.expiringFluid then
 		end
 	end
 end
+
+addPrereqToTech("bob-greenhouse", "automation")
