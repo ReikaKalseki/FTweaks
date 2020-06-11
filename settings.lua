@@ -166,4 +166,11 @@ data:extend({
             default_value = true,
             order = "r",
         },
+        {
+            type = "bool-setting",
+            name = "steam-cracking",
+            setting_type = "startup",
+            default_value = true,
+            order = "r",
+        },
 })

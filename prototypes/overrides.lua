@@ -735,4 +735,15 @@ if Config.expiringFluid then
 	end
 end
 
+addPrereqToTech("advanced-electronics", "electronics")
+addPrereqToTech("advanced-electronics-2", "advanced-electronics")
+addPrereqToTech("low-density-structure", "plastics")
+
+if Config.steamCrack then
+	replaceItemInRecipe("advanced-oil-processing", "water", "steam", 1)
+	replaceItemInRecipe("coal-liquefaction", "water", "steam", 1, true)
+	replaceItemInRecipe("light-oil-cracking", "water", "steam", 1)
+	replaceItemInRecipe("heavy-oil-cracking", "water", "steam", 1)
+end
+
 addPrereqToTech("bob-greenhouse", "automation")
