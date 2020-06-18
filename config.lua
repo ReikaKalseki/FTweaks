@@ -30,8 +30,6 @@ Config.saneConcrete = settings.startup["sane-concrete"].value--true
 
 Config.techFactor = settings.startup["tech-demultiply"].value
 
-Config.gunTurretRecipes = settings.startup["split-gun-turret"].value
-
 Config.redScienceRecipes = settings.startup["split-red-science"].value
 
 Config.tieredBobRobots = settings.startup["tiered-bob-robots"].value
@@ -49,3 +47,5 @@ Config.expiringFluid = settings.startup["expiring-fluid"].value--true
 Config.logiPipes = settings.startup["logistics-pipes"].value--true
 
 Config.steamCrack = settings.startup["steam-cracking"].value--true
+
+Config.invinciDrones = settings.startup["invincible-drones"].value--true

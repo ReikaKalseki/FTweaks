@@ -1,5 +1,7 @@
 require "config"
 
+require "__DragonIndustries__.strings"
+
 function initGlobal(force)
 	if not global.ftweaks then
 		global.ftweaks = {}
@@ -159,12 +161,52 @@ local function addCommands()
 		player.print("Added condition to " .. n .. " trains: " .. serpent.block(condition))
 	end)
 	
+	commands.add_command("rerouteTrain", {"cmd.modify-train-station-help"}, function(event)
+		local player = game.players[event.player_index]
+		local condition = {}
+		local look = {}
+		if not event.parameter then
+			player.print("You must specify a station to replace and what to replace it with!")
+			return
+		end
+		local entity = player.selected
+		if entity.type ~= "locomotive" and entity.type ~= "cargo-wagon" and entity.type ~= "fluid-wagon" then
+			player.print("You can only run this command on a train!")
+			return
+		end
+		local parts = splitString(event.parameter, "/")
+		if #parts ~= 2 then
+			player.print("Invalid replace: You must specify two stations, in the form 'from/to'!")
+			return
+		end
+		local from = parts[1]
+		local to = parts[2]
+		if from == nil or to == nil then
+			player.print("Invalid replace: You must specify two stations, in the form 'from/to'!")
+			return
+		end
+		local train = entity.train
+		local data = train.schedule --has to be copied, modified, and reassigned
+		for _,entry in pairs(data.records) do
+			if entry.station == from then
+				entry.station = to
+			end
+		end
+		train.schedule = data
+		player.print("Replaced station: " .. from .. " with " .. to)
+	end)
+	
 	commands.add_command("modifyTrainCondition", {"cmd.modify-train-condition-help"}, function(event)
 		local player = game.players[event.player_index]
 		local condition = {}
 		local look = {}
 		if not event.parameter then
 			player.print("You must specify a condition to replace and what to replace it with!")
+			return
+		end
+		local entity = player.selected
+		if entity.type ~= "train-stop" then
+			player.print("You can only run this command on a train stop!")
 			return
 		end
 		local i = 1
@@ -190,11 +232,6 @@ local function addCommands()
 		end
 		if look.type == nil or look.compare_type == nil or (look.ticks == nil and (look.type == "time" or look.type == "inactivity")) then
 			player.print("Invalid condition to modify: You must specify a wait condition, a comparison type, and, if applicable, a time!")
-			return
-		end
-		local entity = player.selected
-		if entity.type ~= "train-stop" then
-			player.print("You can only run this command on a train stop!")
 			return
 		end
 		local n = 0

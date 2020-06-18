@@ -1,6 +1,8 @@
 require "functions"
 require "config"
 
+require "__DragonIndustries__.entities"
+
 local function createVoidRecipe(fluid)
 	if data.raw.fluid[fluid] and data.raw.recipe["void-hydrogen"] then
 		local rec = table.deepcopy(data.raw.recipe["void-hydrogen"])
@@ -501,8 +503,9 @@ if data.raw.recipe["bob-area-mining-drill-2"] then
 end
 
 if data.raw.unit["Construction Drone"] then
-	--table.insert(data.raw.unit["Construction Drone"].collision_mask, "water-tile")
-	table.insert(data.raw.unit["Construction Drone"].collision_mask, "layer-14")
+	local drone = data.raw.unit["Construction Drone"]
+	--table.insert(drone.collision_mask, "water-tile")
+	table.insert(drone.collision_mask, "layer-14")
 	
 	table.insert(data.raw.tile["water"].collision_mask, "layer-14")
 	table.insert(data.raw.tile["deepwater"].collision_mask, "layer-14")
@@ -511,9 +514,23 @@ if data.raw.unit["Construction Drone"] then
 	table.insert(data.raw.tile["water-shallow"].collision_mask, "layer-14")
 	table.insert(data.raw.tile["water-mud"].collision_mask, "layer-14")
 	
-	log("Set construction drone collision mask to " .. serpent.block(data.raw.unit["Construction Drone"].collision_mask))
+	log("Set construction drone collision mask to " .. serpent.block(drone.collision_mask))
+	
+	if Config.invinciDrones then
+		drone.destructible = false
+		drone.resistances = createTotalResistance()
+	end
 end
 
 if data.raw["assembling-machine"]["electric-offshore-pump"] then
 	data.raw["assembling-machine"]["electric-offshore-pump"].energy_usage = "90kW"
+end
+
+if data.raw.technology["Schall-pickup-tower-1"] then
+	replaceItemInRecipe("Schall-pickup-tower-R32", "advanced-circuit", "electronic-circuit", 5, false)
+	data.raw.technology["Schall-pickup-tower-1"].prerequisites = {"electronics", "electric-energy-distribution-1"}
+	removeSciencePackFromTech("Schall-pickup-tower-1", "military-science-pack")
+	removeSciencePackFromTech("Schall-pickup-tower-1", "chemical-science-pack")
+	data.raw.technology["Schall-pickup-tower-2"].prerequisites = {"advanced-electronics", "Schall-pickup-tower-1", "electric-energy-distribution-2", "construction-robotics"}
+	removeSciencePackFromTech("Schall-pickup-tower-2", "military-science-pack")
 end

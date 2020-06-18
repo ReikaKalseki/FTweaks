@@ -105,13 +105,6 @@ data:extend({
         },
         {
             type = "bool-setting",
-            name = "split-gun-turret",
-            setting_type = "startup",
-            default_value = true,
-            order = "r",
-        },
-        {
-            type = "bool-setting",
             name = "split-red-science",
             setting_type = "startup",
             default_value = true,
@@ -171,6 +164,13 @@ data:extend({
             name = "steam-cracking",
             setting_type = "startup",
             default_value = true,
+            order = "r",
+        },
+        {
+            type = "bool-setting",
+            name = "invincible-drones",
+            setting_type = "startup",
+            default_value = false,
             order = "r",
         },
 })

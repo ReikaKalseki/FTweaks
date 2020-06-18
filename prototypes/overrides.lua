@@ -176,22 +176,6 @@ for name,e in pairs(data.raw["assembling-machine"]) do
 	end
 end
 
-if Config.gunTurretRecipes then
-	local recipe = table.deepcopy(data.raw.recipe["gun-turret"])
-	if recipe.energy_required then recipe.energy_required = 0.25*math.floor(4*recipe.energy_required*0.5) end
-	if recipe.normal then recipe.normal.energy_required = 0.25*math.floor(4*recipe.normal.energy_required*0.4) end
-	if recipe.expensive then recipe.expensive.energy_required = 0.25*math.floor(4*recipe.expensive.energy_required*0.6) end
-	recipe.category = "manual-crafting"
-	recipe.name = "manual-gun-turret"
-	recipe.localised_name = {"recipe-name.manual-gun-turret"}
-	data:extend({recipe})
-	table.insert(data.raw.technology.turrets.effects, {type = "unlock-recipe", recipe = recipe.name})
-	data.raw.recipe["gun-turret"].category = "non-manual-crafting"
-	replaceItemInRecipe(data.raw.recipe["gun-turret"], "iron-plate", "iron-plate", 0.8)
-	replaceItemInRecipe(data.raw.recipe["gun-turret"], "iron-gear-wheel", "iron-gear-wheel", 0.9)
-	replaceItemInRecipe(data.raw.recipe["gun-turret"], "copper-plate", "copper-plate", 0.75)
-end
-
 if Config.redScienceRecipes then
 	local recipe = table.deepcopy(data.raw.recipe["automation-science-pack"])
 	if recipe.energy_required then recipe.energy_required = 0.25*math.floor(4*recipe.energy_required*0.3) end
@@ -214,6 +198,8 @@ if Config.redScienceRecipes then
 	replaceItemInRecipe(data.raw.recipe["automation-science-pack"], "iron-gear-wheel", "iron-gear-wheel", 4)
 	replaceItemInRecipe(data.raw.recipe["automation-science-pack"], "copper-plate", "copper-plate", 4)
 end
+
+changeRecipeTime("gun-turret", 0.75, 0)
 	
 -- fluid color correction
 data.raw["fluid"]["heavy-oil"].base_color = {r=0.906, g=0.376, b=0.145}
@@ -598,12 +584,12 @@ if data.raw["electric-energy-interface"]["wind-turbine-2"] then
     }
 end
 
-for name,radar in pairs(data.raw.radar) do --by default radar amplification adds 2 "active scan" and 3 "region scan" per level; this changes it to 0.25/5, so that one radar cannot active scan a huge area, and compensates by increasing search range
+for name,radar in pairs(data.raw.radar) do --by default radar amplification adds 2 "active scan" and 3 "region scan" per level; this reduces it, so that one radar cannot active scan a huge area, and compensates by increasing search range
 	if string.find(name, "big_brother", 1, true) then
 		local amp = (radar.max_distance_of_sector_revealed-data.raw.radar.radar.max_distance_of_sector_revealed)/3
 		if amp > 0 then
-			radar.max_distance_of_nearby_sector_revealed = data.raw.radar.radar.max_distance_of_nearby_sector_revealed+math.floor(amp/4)
-			radar.max_distance_of_sector_revealed = radar.max_distance_of_sector_revealed+amp*2
+			radar.max_distance_of_nearby_sector_revealed = data.raw.radar.radar.max_distance_of_nearby_sector_revealed+math.floor(amp/2.5)
+			radar.max_distance_of_sector_revealed = radar.max_distance_of_sector_revealed+amp*1.5
 		end
 	end
 end
@@ -740,10 +726,15 @@ addPrereqToTech("advanced-electronics-2", "advanced-electronics")
 addPrereqToTech("low-density-structure", "plastics")
 
 if Config.steamCrack then
-	replaceItemInRecipe("advanced-oil-processing", "water", "steam", 1)
-	replaceItemInRecipe("coal-liquefaction", "water", "steam", 1, true)
-	replaceItemInRecipe("light-oil-cracking", "water", "steam", 1)
-	replaceItemInRecipe("heavy-oil-cracking", "water", "steam", 1)
+	for name,recipe in pairs(data.raw.recipe) do
+		--log(name .. " > " .. recipe.category)
+		if recipe.category == "oil-processing" or string.find(name, "cracking", 1, true) then
+			replaceItemInRecipe(recipe, "water", "steam", 1, true)
+			log(serpent.block(recipe))
+		end
+	end
 end
 
 addPrereqToTech("bob-greenhouse", "automation")
+
+data.raw.recipe["copper-cable"].energy_required = 0.3
