@@ -298,13 +298,14 @@ end
 --]]
 --local strees = {}
 
+local s = 0
+
 script.on_event(defines.events.on_tick, function(event)
 	if not global.ftweaks.ranTick then
 		doOneTick()
 		global.ftweaks.ranTick = true
 		game.print("FTweaks: Game state changed; reloading caches.")
 	end
-	--game.difficulty_settings.recipe_difficulty = defines.difficulty_settings.recipe_difficulty.expensive
 end)
 
 script.on_event(defines.events.on_player_joined_game, function(event)

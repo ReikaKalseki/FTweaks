@@ -492,6 +492,12 @@ if data.raw.item["steam-engine-2"] then
 			table.insert(data.raw.technology["bob-steam-turbine-" .. (i-1)].effects, {type = "unlock-recipe", recipe = rec.name})
 		end
 	end
+else
+	local rec = createConversionRecipe("steam-engine", "steam-turbine", true)
+	table.insert(data.raw.technology["nuclear-power"].effects, {type = "unlock-recipe", recipe = rec.name})
+	if data.raw.technology["geothermal-2"] then
+		table.insert(data.raw.technology["geothermal-2"].effects, {type = "unlock-recipe", recipe = rec.name})
+	end
 end
 
 if data.raw.recipe["bob-area-mining-drill-2"] then

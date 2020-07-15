@@ -173,4 +173,11 @@ data:extend({
             default_value = false,
             order = "r",
         },
+        {
+            type = "bool-setting",
+            name = "cheap-cliff-explosives",
+            setting_type = "startup",
+            default_value = true,
+            order = "r",
+        },
 })

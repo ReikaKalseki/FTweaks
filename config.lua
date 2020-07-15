@@ -49,3 +49,5 @@ Config.logiPipes = settings.startup["logistics-pipes"].value--true
 Config.steamCrack = settings.startup["steam-cracking"].value--true
 
 Config.invinciDrones = settings.startup["invincible-drones"].value--true
+
+Config.cheapCliffExplosives = settings.startup["cheap-cliff-explosives"].value--true

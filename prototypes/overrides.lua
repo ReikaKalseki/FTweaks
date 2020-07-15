@@ -735,6 +735,18 @@ if Config.steamCrack then
 	end
 end
 
+if Config.cheapCliffExplosives then
+	local input = data.raw.recipe["cliff-explosives"].ingredients
+	for i,ing in ipairs(input) do
+		local item = parseIngredient(ing)
+		if item[1] == "explosives" then
+			item[2] = 4
+		end
+		input[i] = {name = item[1], amount = item[2], item[3]}
+	end
+	data.raw.recipe["cliff-explosives"].result_count = 3
+end
+
 addPrereqToTech("bob-greenhouse", "automation")
 
 data.raw.recipe["copper-cable"].energy_required = 0.3
