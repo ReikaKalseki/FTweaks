@@ -658,6 +658,9 @@ local f = 1.6
 if data.raw.car["heli-entity-_-"] then
 	for name,car in pairs(data.raw.car) do
 		if string.find(name, "heli", 1, true) then
+			if not car.flags then car.flags = {} end
+			table.insert(car.flags, "no-automated-item-removal")
+			table.insert(car.flags, "no-automated-item-insertion")
 			if tonumber(string.sub(car.consumption, 1, -3)) then --skip technical entities
 				--car.breaking_speed = car.breaking_speed*f
 				car.consumption = (tonumber(string.sub(car.consumption, 1, -3))*f) .. "MW"
