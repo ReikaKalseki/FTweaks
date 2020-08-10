@@ -53,6 +53,7 @@ if Config.stackSize then
 	increaseStackSize("stone-wall", 100)
 	
 	increaseStackSize("concrete", 500)
+	increaseStackSize("refined-concrete", 500)
 	increaseStackSize("landfill", 500)
 
 	increaseStackSize("rocket-fuel", 50)
@@ -753,3 +754,14 @@ end
 addPrereqToTech("bob-greenhouse", "automation")
 
 data.raw.recipe["copper-cable"].energy_required = 0.3
+
+if Config.betterArtillery then
+	data.raw.gun["artillery-wagon-cannon"].attack_parameters.range = 12*32 -- from 7*32
+	if mods["EndgameCombat"] then
+		
+	else
+		data.raw["artillery-projectile"]["artillery-projectile"].action.action_delivery.target_effects[1].action.action_delivery.target_effects[1].damage.amount = 15000 --from 500
+		data.raw["artillery-projectile"]["artillery-projectile"].action.action_delivery.target_effects[1].action.action_delivery.target_effects[2].damage.amount = 15000 --from 500
+	end
+	--table.insert(data.raw.technology.artillery.effects, {type = "artillery-range", modifier = 1.5})
+end

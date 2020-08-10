@@ -35,7 +35,7 @@ local function modifyRecipe(ref)
 		end
 
 		ref.ingredients = ingredients
-		table.insert(ref.ingredients, {"satellite", 2})
+		table.insert(ref.ingredients, {"satellite", 1})
 		ref.energy_required = ref.energy_required*4
 	end
 end
@@ -62,7 +62,7 @@ data:extend({
     name = "advanced-satellite",
     icon = "__base__/graphics/technology/rocket-silo.png",
     prerequisites = {
-		"rocket-silo",
+		"space-science-pack",
 	},
     effects =
     {

@@ -180,4 +180,18 @@ data:extend({
             default_value = true,
             order = "r",
         },
+        {
+            type = "bool-setting",
+            name = "better-artillery",
+            setting_type = "startup",
+            default_value = true,
+            order = "r",
+        },
+        {
+            type = "bool-setting",
+            name = "item-collector-equipment",
+            setting_type = "startup",
+            default_value = true,
+            order = "r",
+        },
 })

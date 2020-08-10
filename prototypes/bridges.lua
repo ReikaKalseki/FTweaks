@@ -449,12 +449,12 @@ if data.raw.technology["electric-pole-2"] then
 		replaceItemInRecipe(data.raw.recipe["big-electric-pole-3"], "titanium-plate", "cobalt-steel-alloy", 1)
 	end
 end
-
+--[[ native now
 if data.raw.recipe["electrolyser-3"] and data.raw.item["tungsten-plate"] then
 	replaceItemInRecipe(data.raw.recipe["electrolyser-3"], "tungsten-plate", "aluminium-plate", 1)
 	replaceTechPrereq("electrolyser-3", "tungsten-processing", "aluminium-processing")
 end
-
+--]]
 if data.raw.recipe["chemical-plant-3"] and data.raw.item["titanium-plate"] then
 	replaceItemInRecipe(data.raw.recipe["chemical-plant-3"], "titanium-plate", "aluminium-plate", 1)
 	replaceTechPrereq("chemical-plant-3", "titanium-processing", "aluminium-processing")

@@ -35,3 +35,25 @@ function increaseStackSize(name, amt)
 	end
 	item.stack_size = math.max(item.stack_size, amt)
 end
+
+local function shouldCollectItem(entity)
+	return entity.to_be_deconstructed() or entity.stack.name == "biter-flesh"
+end
+
+function tickCollectorEquipment(player)
+	if player.valid and player.character.grid and player.character.grid.valid then
+		local items = player.character.grid.get_contents()
+		if items and items["item-collection-equipment"] and player.character.grid.available_in_batteries > 0 then
+			local inv = player.character.get_inventory(defines.inventory.character_main)
+			local r = 40
+			local box = {{player.position.x-r, player.position.y-r}, {player.position.x+r, player.position.y+r}}
+			local items = player.surface.find_entities_filtered{name = "item-on-ground", area = box, force = {player.force, game.forces.neutral}}
+			for _,e in pairs(items) do
+				if e.stack and e.stack.valid_for_read and shouldCollectItem(e) and inv.can_insert(e.stack) then
+					inv.insert(e.stack)
+					e.destroy()
+				end
+			end
+		end
+	end
+end

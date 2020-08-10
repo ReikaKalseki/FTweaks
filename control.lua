@@ -1,4 +1,5 @@
 require "config"
+require "functions"
 
 require "__DragonIndustries__.strings"
 
@@ -305,6 +306,11 @@ script.on_event(defines.events.on_tick, function(event)
 		doOneTick()
 		global.ftweaks.ranTick = true
 		game.print("FTweaks: Game state changed; reloading caches.")
+	end
+	if event.tick%15 == 0 then
+		for _,player in pairs(game.players) do
+			tickCollectorEquipment(player)
+		end
 	end
 end)
 
