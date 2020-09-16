@@ -531,7 +531,7 @@ end
 if data.raw["assembling-machine"]["electric-offshore-pump"] then
 	data.raw["assembling-machine"]["electric-offshore-pump"].energy_usage = "90kW"
 end
-
+--[[
 if data.raw.technology["Schall-pickup-tower-1"] then
 	replaceItemInRecipe("Schall-pickup-tower-R32", "advanced-circuit", "electronic-circuit", 5, false)
 	data.raw.technology["Schall-pickup-tower-1"].prerequisites = {"electronics", "electric-energy-distribution-1"}
@@ -539,4 +539,4 @@ if data.raw.technology["Schall-pickup-tower-1"] then
 	removeSciencePackFromTech("Schall-pickup-tower-1", "chemical-science-pack")
 	data.raw.technology["Schall-pickup-tower-2"].prerequisites = {"advanced-electronics", "Schall-pickup-tower-1", "electric-energy-distribution-2", "construction-robotics"}
 	removeSciencePackFromTech("Schall-pickup-tower-2", "military-science-pack")
-end
+end--]]

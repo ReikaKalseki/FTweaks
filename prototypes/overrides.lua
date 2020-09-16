@@ -121,12 +121,14 @@ addSciencePackToTech("lithium-processing", "chemical-science-pack")
 addSciencePackToTech("tungsten-processing", "utility-science-pack")
 addSciencePackToTech("titanium-processing", "production-science-pack")
 
-data:extend({
-	createConversionRecipe("burner-mining-drill", "electric-mining-drill"),
-	createConversionRecipe("burner-inserter", "inserter"),
-})
+if not mods["aai-industry"] then --redundant
+	data:extend({
+		createConversionRecipe("burner-mining-drill", "electric-mining-drill"),
+		createConversionRecipe("burner-inserter", "inserter"),
+	})
 	createConversionRecipe("steel-furnace", "electric-furnace", true, "advanced-material-processing-2")
-createConversionRecipe("stone-furnace", "steel-furnace", true, "advanced-material-processing")
+	createConversionRecipe("stone-furnace", "steel-furnace", true, "advanced-material-processing")
+end
 
 if data.raw.item["basic-circuit-board"] then
 	data.raw.recipe["small-lamp"].ingredients = {
@@ -275,7 +277,7 @@ data.raw.item["rocket-silo"].subgroup = "production-machine"
 
 table.insert(data.raw.character.character.crafting_categories,"manual-crafting")
 
-if Config.tieredArmor then
+if Config.tieredArmor and not mods["aai-industry"] then --he does it too
 	data.raw.recipe["heavy-armor"].ingredients = {{"copper-plate", 100}, {"steel-plate", 30}, {"light-armor", 1}}
 	data.raw.recipe["modular-armor"].ingredients = {{"heavy-armor", 1}, {"advanced-circuit", 30}}
 	data.raw.recipe["power-armor"].ingredients = {{"modular-armor", 1}, {"electric-engine-unit", 20}, {"steel-plate", 20}}

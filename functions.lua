@@ -45,7 +45,7 @@ function tickCollectorEquipment(player)
 		local items = player.character.grid.get_contents()
 		if items and items["item-collection-equipment"] and player.character.grid.available_in_batteries > 0 then
 			local inv = player.character.get_inventory(defines.inventory.character_main)
-			local r = 40
+			local r = 60
 			local box = {{player.position.x-r, player.position.y-r}, {player.position.x+r, player.position.y+r}}
 			local items = player.surface.find_entities_filtered{name = "item-on-ground", area = box, force = {player.force, game.forces.neutral}}
 			for _,e in pairs(items) do
