@@ -41,7 +41,7 @@ local function shouldCollectItem(entity)
 end
 
 function tickCollectorEquipment(player)
-	if player.valid and player.character.grid and player.character.grid.valid then
+	if player.valid and player.character and player.character.grid and player.character.grid.valid then
 		local items = player.character.grid.get_contents()
 		if items and items["item-collection-equipment"] and player.character.grid.available_in_batteries > 0 then
 			local inv = player.character.get_inventory(defines.inventory.character_main)

@@ -5,7 +5,7 @@
   "author": "Reika",
   "contact": "",
   "homepage": "",
-  "factorio_version" : "0.18",
+  "factorio_version" : "1.1",
   "description": "Tweaks the game to either fix minor issues, add QoL features, or make larger changes to game behavior.",
   "dependencies": ["base", "DragonIndustries", "? RubberBelts", "? bobpower", "? bobrevamp", "? bobplates", "? bobassembly"]
 }

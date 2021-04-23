@@ -51,7 +51,6 @@ local item = table.deepcopy(data.raw.item.satellite)
 item.name = "advanced-satellite"
 item.rocket_launch_product[2] = 5000 --instead of 1k
 
--- this line is 0.15 code; above is for 0.16 -- table.insert(data.raw["rocket-silo-rocket"]["rocket-silo-rocket"].result_items, {"space-science-pack", 5000, "advanced-satellite"})
 increaseStackSize("space-science-pack", 5000)
 
 data:extend({
