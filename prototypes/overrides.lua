@@ -736,7 +736,7 @@ if Config.steamCrack then
 		--log(name .. " > " .. recipe.category)
 		if recipe.category == "oil-processing" or string.find(name, "cracking", 1, true) then
 			replaceItemInRecipe(recipe, "water", "steam", 1, true)
-			log(serpent.block(recipe))
+			--log(serpent.block(recipe))
 		end
 	end
 end
