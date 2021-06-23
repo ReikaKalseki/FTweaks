@@ -1,4 +1,16 @@
 ---------------------------------------------------------------------------------------------------
+Version: 0.17.12
+Date: Jun 17 2019
+	- More 0.17 fixes
+---------------------------------------------------------------------------------------------------
+Version: 0.17.6
+Date: Jun 6 2019
+	- Update to 0.17
+	- Fixed recipe handling errors
+	- Moved shared code and recipe library to Dragon Industries
+	- Removed rocketry dependency from Helicopters
+	- Fixed braking power modification for Helicopters
+---------------------------------------------------------------------------------------------------
 Version: 1.0.180
 Date: Nov 28 2018
 	- Fixed commands not being accessible the first load of a save
@@ -43,20 +55,153 @@ Date: Sep 5 2018
 Version: 1.0.132
 Date: Sep 2 2018
 	- Increased rocket launcher range to 35 from 22
-	- Gate technology is now cheaper on harder tech costs
 	- Nano constructors now last 2.5x longer
 	- Added some science packs and their techs as prerequisites for later-game Bob ore processing
+	- Split BobMods cobalt processing into two techs, the later one for alloying
+	- Helicopters mod tech now requires advanced electronics 2
+	- Added option to make BobMod robot parts require successive crafting and upgrading like other things do - recipes tweaked to keep total cost the same
+	- RubberBelts wooden gear can now be sludged into oil products like raw wood can
+---------------------------------------------------------------------------------------------------
+Version: 1.0.128
+Date: Aug 24 2018
+	- Gate technology is now cheaper on harder tech costs
 	- Added conversion recipes for stone/basic furnaces into their steel variants
 	- Conversion recipes are no longer used by manual crafting as intermediates
 	- Fixed "automatic" version of red science pack recipe giving 5x the yield-per-time
 	- Moved poison capsule to military 2
 	- Added a recipe to decompose nitric oxide to water and nitrogen
-	- Split BobMods cobalt processing into two techs, the later one for alloying
 	- Made "cathodes" tech for Nixie Tubes easier - no advanced electronics, only circuit network
-	- Helicopters mod tech now requires advanced electronics 2
-	- Added option to make BobMod robot parts require successive crafting and upgrading like other things do - recipes tweaked to keep total cost the same
-	- RubberBelts wooden gear can now be sludged into oil products like raw wood can
 ---------------------------------------------------------------------------------------------------
 Version: 1.0.120
-Date: Aug 21 2018
+Date: Aug 20 2018
 	- Split concrete tech into two, the later of which unlocks refined concrete
+---------------------------------------------------------------------------------------------------
+Version: 1.0.115
+Date: Aug 15 2018
+	- Added rocketry tech dependency to helicopters
+	- Updated stack size handler
+---------------------------------------------------------------------------------------------------
+Version: 1.0.112
+Date: Aug 13 2018
+	- Fixed erroneous references to silo scripts
+	- Reduced speed penalty on AlienBiomes snow
+	- Added options and functionality to split Gun Turret and red science recipes into a faster manual version and a cheaper automated version
+	- Added an upcrafting recipe for RubberBelts crappy belt
+	- Further improved recipe handling
+	- Fixed references to green and purple loaders
+	- Expanded tech set for "demultiply" option
+	- Made all overrides more mod compatible
+---------------------------------------------------------------------------------------------------
+Version: 1.0.96
+Date: Jul 29 2018
+	- Made manual silo crafting an option
+	- Added some fixes to recipe handling
+	- Replaced concrete with refined concrete in many high-tier recipes
+	- Added Bob titanium to refined concrete if present
+---------------------------------------------------------------------------------------------------
+Version: 1.0.74
+Date: Feb 3 2018
+	- Improved green and purple loader speeds
+---------------------------------------------------------------------------------------------------
+Version: 1.0.70
+Date: Jan 14 2018
+	- Added void recipes for various bob fluids
+	- Added logistics 2 to angel's warehouses tech dependencies
+---------------------------------------------------------------------------------------------------
+Version: 1.0.64
+Date: Jan 6 2018
+	- Added option and function to replace iron ore with iron stick in concrete recipe
+	- Added option and function to reduce effect of a world's technology cost factor on a few main early game techs to prevent forcing players to manually craft hundreds of red science
+	- Added significant mod handling
+	- Boilerplated much of the recipe handling to simply functionality (which would later be moved unchanged to Dragon Industries)
+	- Buffed Bob greenhouses to compete with the old TreeFarm mod
+	- Added more upcrafting recipes for early game items
+	- Changed bob resin recipe
+---------------------------------------------------------------------------------------------------
+Version: 1.0.60
+Date: Dec 23 2017
+	- Update to 0.16
+	- Added advanced satellite, inheriting many of the earlier changes to the vanilla one
+---------------------------------------------------------------------------------------------------
+Version: 1.0.44
+Date: Aug 31 2017
+	- Added wood sludging
+	- Added bob T4 and T5 solars to hard satellite recipe
+---------------------------------------------------------------------------------------------------
+Version: 1.0.24
+Date: Aug 8 2017
+	- Significantly increase centrifuge power cost and marginally increase emissions
+	- Re-added a weaker version of BigBrother active radar bonus
+	- Increased performance of Helicopter
+---------------------------------------------------------------------------------------------------
+Version: 1.0.12
+Date: Aug 3 2017
+	- Added "running through water" sounds
+	- Reduced BigBrother radars active area bonus - but increasing their map searching radius to compensate - to avoid making EGCombat wide area scanner obsolete
+	- Added locale
+	- Added large negative explosive resist to biter nests
+	- Added options and functionality for smaller tree hitboxes and tiered (ie successive) armor crafting
+---------------------------------------------------------------------------------------------------
+Version: 1.0.2
+Date: Jul 17 2017
+	- Reduced accumulator sound volume
+	- Fixed scripting not being MP compatible
+	- Added code to reload recipes and technologies when the game is reloaded, to keep up to date with mod changes
+	- Fixed construction robot fire resist code removing all other resistances
+---------------------------------------------------------------------------------------------------
+Version: 1.0.0
+Date: Jul 14 2017
+	- Release
+	- Rocket launches now increase enemy evolution and trigger attack waves
+	- Added custom centrifuge and steam turbine sounds (the latter adapted from ReactorCraft)
+	- Made stack size increases more compatible with mods
+	- Added "manual crafting" category and moved rocket silo to it
+	- Made hard rocket silo depend on EGCombat plasma turrets
+	- Added plutonium to satellite recipe (RTG) if present via mods
+	- Added 2x steel plate to rocket fuel recipe and moved recipe to chemplant
+	- Increased medium biter attack range almost back to vanilla values
+	- Made breeder fuel in mods dependent on kovarex enrichment
+	- Removed 0.12-era Bob stone pipe fluid capacity increases
+---------------------------------------------------------------------------------------------------
+Version: 0.0.5
+Date: Jul 2 2017
+	- Made all the nuclear tech changes an option
+	- Added fix for "chemical spill" mod hitboxes
+	- Removed references to UraniumPower items
+	- Split cheap steel recipe to expensive/normal
+	- Added some logical tech dependencies to a few techs, including loaders (logi 2, rail), flight, and electric energy distribution 2
+	- Moved options to the vanilla mod settings system
+---------------------------------------------------------------------------------------------------
+Version: 0.0.3
+Date: Jun 20 2017
+	- Update to 0.15
+	- Remove artifact/module recipe changes due to artifacts being removed from the game
+	- Added code to improve power pole fast replace groups
+	- Added code to fix LoaderRedux tech dependencies
+	- Removed follower-robot-count-20 from rocket silo dependency list
+	- Overhauled satellite recipe, including major bob compat
+	- Reduced bob solder crafting time
+	- Increased bob locomotive speed
+	- Added upcrafting recipes for bob furnaces, accumulators, and other hardware
+	- Made all construction robots immune to fire
+---------------------------------------------------------------------------------------------------
+Version: 0.0.2
+Game: 0.14
+Date: Oct 28 2016
+	- Update to 0.14
+	- Added several config options for the more dramatic changes
+	- Added code to remove bob green circuit equivalent from lamps and rail signals, using the wood board instead
+	- Expanded nuclear tech dependencies
+	- Reduced crafting time for bob green circuit equivalent
+	- Cheapened KSPower wind turbine and increased power output
+---------------------------------------------------------------------------------------------------
+Version: 0.0.1
+Game: 0.12
+Date: Jun 4 2016
+	- Organize code
+	- Remove pump capacity and speed increases
+---------------------------------------------------------------------------------------------------
+Version: 0.0.0
+Game: 0.12
+Date: Dec 3 2015
+	- Creation
