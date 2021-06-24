@@ -1,9 +1,69 @@
 ---------------------------------------------------------------------------------------------------
-Version: 0.17.12
+Version: 1.105.1
+Date: Apr 28 2021
+	- Update to 1.1
+---------------------------------------------------------------------------------------------------
+Version: 1.18.24
+Date: Nov 15 2020
+	- Increased item collector equipment range from 40 to 60
+	- Removed Schall changes
+	- Added handling for AAI industry for early upcrafting recipes and armor tiering
+---------------------------------------------------------------------------------------------------
+Version: 1.18.18
+Date: Aug 10 2020
+	- Added option and function to increase artillery range and (if EGCombat is not installed) damage
+	- Added optional Item Collector equipment
+	- Advanced satellite now requires space science, not just rocket silo
+	- Removed now-native changes to Bob Electrolyzer 3 (tungsten vs aluminum)
+---------------------------------------------------------------------------------------------------
+Version: 1.18.15
+Date: Jul 28 2020
+	- Added option and function to make cliff explosives cheaper
+	- Added upcrafting recipe from steam engine to steam turbine
+	- Added code to prevent inserters from interacting with Helicopters, preventing the need for its "disable nearby inserters" option
+---------------------------------------------------------------------------------------------------
+Version: 1.18.6
+Date: Jun 15 2020
+	- Added option and function to make Construction Drones invincible
+	- Added command to reroute all trains using a particular stop
+	- Added code to rebalance Schall Pickup towers and make them sequentially gated
+---------------------------------------------------------------------------------------------------
+Version: 1.18.5
+Date: Jun 11 2020
+	- Added option and function for steam cracking (ie use of steam rather than water in cracking recipes)
+	- Added option and function for tech demultiply on upgrade-type techs
+	- Edited some tech prereqs around electronics and plastic
+---------------------------------------------------------------------------------------------------
+Version: 1.18.2
+Date: Jun 7 2020
+	- Removed rubberbelts crappy belt upcrafting, as that is now native
+	- Changed power usage of Electric Offshore Pump
+	- Added code to change Construction Drone collision masks
+	- Added "Automation" tech prereq to bob greenhouses
+---------------------------------------------------------------------------------------------------
+Version: 1.18.1
+Date: May 29 2020
+	- Update to 0.18
+	- Fixed some compat issues in advanced satellite recipe
+---------------------------------------------------------------------------------------------------
+Version: 1.17.35
+Date: Dec 29 2019
+	- Added code to make all chemplant recipes have colorized exhaust if they do not already, calculated based on the colors of the fluids
+---------------------------------------------------------------------------------------------------
+Version: 1.17.24
+Date: Sep 30 2019
+	- Added option to add iron pipe to green science like the abandoned vanilla idea from FFF 275
+	- Fixed some crashes on load where a non-bob mod adds some bob materials but not others
+---------------------------------------------------------------------------------------------------
+Version: 1.17.15
+Date: Jul 1 2019
+	- Fixed handling of bob steam power and belts
+---------------------------------------------------------------------------------------------------
+Version: 1.17.12
 Date: Jun 17 2019
 	- More 0.17 fixes
 ---------------------------------------------------------------------------------------------------
-Version: 0.17.6
+Version: 1.17.6
 Date: Jun 6 2019
 	- Update to 0.17
 	- Fixed recipe handling errors
