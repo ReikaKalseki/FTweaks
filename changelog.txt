@@ -164,11 +164,13 @@ Date: Feb 3 2018
 	- Improved green and purple loader speeds
 ---------------------------------------------------------------------------------------------------
 Version: 1.0.70
+Game: 0.16
 Date: Jan 14 2018
 	- Added void recipes for various bob fluids
 	- Added logistics 2 to angel's warehouses tech dependencies
 ---------------------------------------------------------------------------------------------------
-Version: 1.0.64
+Version: 1.0.66
+Game: 0.16
 Date: Jan 6 2018
 	- Added option and function to replace iron ore with iron stick in concrete recipe
 	- Added option and function to reduce effect of a world's technology cost factor on a few main early game techs to prevent forcing players to manually craft hundreds of red science
@@ -179,6 +181,7 @@ Date: Jan 6 2018
 	- Changed bob resin recipe
 ---------------------------------------------------------------------------------------------------
 Version: 1.0.60
+Game: 0.16
 Date: Dec 23 2017
 	- Update to 0.16
 	- Added advanced satellite, inheriting many of the earlier changes to the vanilla one
@@ -189,13 +192,15 @@ Date: Aug 31 2017
 	- Added bob T4 and T5 solars to hard satellite recipe
 ---------------------------------------------------------------------------------------------------
 Version: 1.0.24
+Game: 0.15
 Date: Aug 8 2017
 	- Significantly increase centrifuge power cost and marginally increase emissions
 	- Re-added a weaker version of BigBrother active radar bonus
 	- Increased performance of Helicopter
 ---------------------------------------------------------------------------------------------------
 Version: 1.0.12
-Date: Aug 3 2017
+Game: 0.15
+Date: Aug 6 2017
 	- Added "running through water" sounds
 	- Reduced BigBrother radars active area bonus - but increasing their map searching radius to compensate - to avoid making EGCombat wide area scanner obsolete
 	- Added locale
@@ -203,6 +208,7 @@ Date: Aug 3 2017
 	- Added options and functionality for smaller tree hitboxes and tiered (ie successive) armor crafting
 ---------------------------------------------------------------------------------------------------
 Version: 1.0.2
+Game: 0.15
 Date: Jul 17 2017
 	- Reduced accumulator sound volume
 	- Fixed scripting not being MP compatible
@@ -210,6 +216,7 @@ Date: Jul 17 2017
 	- Fixed construction robot fire resist code removing all other resistances
 ---------------------------------------------------------------------------------------------------
 Version: 1.0.0
+Game: 0.15
 Date: Jul 14 2017
 	- Release
 	- Rocket launches now increase enemy evolution and trigger attack waves
@@ -224,6 +231,7 @@ Date: Jul 14 2017
 	- Removed 0.12-era Bob stone pipe fluid capacity increases
 ---------------------------------------------------------------------------------------------------
 Version: 0.0.5
+Game: 0.15
 Date: Jul 2 2017
 	- Made all the nuclear tech changes an option
 	- Added fix for "chemical spill" mod hitboxes
@@ -233,6 +241,7 @@ Date: Jul 2 2017
 	- Moved options to the vanilla mod settings system
 ---------------------------------------------------------------------------------------------------
 Version: 0.0.3
+Game: 0.15
 Date: Jun 20 2017
 	- Update to 0.15
 	- Remove artifact/module recipe changes due to artifacts being removed from the game
