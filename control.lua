@@ -316,7 +316,7 @@ end)
 
 script.on_event(defines.events.on_player_joined_game, function(event)
 	if game.players and #game.players > 0 and game.players[event.player_index].name == "Reika" then
-		game.players[event.player_index].color = {r=0.2, g=0.7, b=1.0, a=1.0}
+		game.players[event.player_index].color = {r=0.8, g=0.0, b=1.0, a=1.0}
 		game.print("Rawr")
 		--game.speed = 55/60
 		--convertDirtyOre(game.players[event.player_index])

@@ -71,6 +71,10 @@ if Config.cheapSteel then
 	data.raw.recipe["steel-plate"].expensive.ingredients = {{"iron-plate", 4}}
 end
 
+if Config.cheapLandfill < 1 then
+	replaceItemInRecipe(data.raw.recipe.landfill, "stone", "stone", Config.cheapLandfill)
+end
+
 if data.raw.ammo["ammo-nano-constructors"] then
 	improveAttribute(data.raw.ammo["ammo-nano-constructors"], "magazine_size", 25) --from 10
 end

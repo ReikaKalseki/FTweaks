@@ -6,6 +6,8 @@ Config.stackSize = settings.startup["bigger-stacks"].value--true
 --This enables the cheaper steel recipe.
 Config.cheapSteel = settings.startup["cheap-steel"].value--true
 
+Config.cheapLandfill = settings.startup["cheap-landfill"].value--true
+
 --This enables the harder rocket silo recipe.
 Config.harderSilo = settings.startup["harder-silo"].value--true
 

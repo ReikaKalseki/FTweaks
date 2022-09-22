@@ -282,6 +282,8 @@ if Config.cheaperBelts and data.raw.item["nitinol-gear-wheel"] and data.raw.reci
 	if data.raw.item["cobalt-steel-gear-wheel"] then
 		gear = replaceItemInRecipe("turbo-transport-belt", "cobalt-steel-gear-wheel", "cobalt-steel-gear-wheel", 0.4)
 		bearing = replaceItemInRecipe("turbo-transport-belt", "cobalt-steel-bearing", "cobalt-steel-bearing", 0.4)
+		removeItemFromRecipe("express-transport-belt", "cobalt-steel-gear-wheel")
+		removeItemFromRecipe("express-transport-belt", "cobalt-steel-bearing")
 		if data.raw.technology["bob-logistics-4"] then
 			replaceTechPrereq("bob-logistics-4", "titanium-processing", "cobalt-processing-2")
 		end
@@ -511,14 +513,14 @@ end
 if data.raw.unit["Construction Drone"] then
 	local drone = data.raw.unit["Construction Drone"]
 	--table.insert(drone.collision_mask, "water-tile")
-	table.insert(drone.collision_mask, "layer-14")
+	table.insert(drone.collision_mask, "layer-44")
 	
-	table.insert(data.raw.tile["water"].collision_mask, "layer-14")
-	table.insert(data.raw.tile["deepwater"].collision_mask, "layer-14")
-	table.insert(data.raw.tile["water-green"].collision_mask, "layer-14")
-	table.insert(data.raw.tile["deepwater-green"].collision_mask, "layer-14")
-	table.insert(data.raw.tile["water-shallow"].collision_mask, "layer-14")
-	table.insert(data.raw.tile["water-mud"].collision_mask, "layer-14")
+	table.insert(data.raw.tile["water"].collision_mask, "layer-44")
+	table.insert(data.raw.tile["deepwater"].collision_mask, "layer-44")
+	table.insert(data.raw.tile["water-green"].collision_mask, "layer-44")
+	table.insert(data.raw.tile["deepwater-green"].collision_mask, "layer-44")
+	table.insert(data.raw.tile["water-shallow"].collision_mask, "layer-44")
+	table.insert(data.raw.tile["water-mud"].collision_mask, "layer-44")
 	
 	log("Set construction drone collision mask to " .. serpent.block(drone.collision_mask))
 	
@@ -531,12 +533,12 @@ end
 if data.raw["assembling-machine"]["electric-offshore-pump"] then
 	data.raw["assembling-machine"]["electric-offshore-pump"].energy_usage = "90kW"
 end
---[[
+
 if data.raw.technology["Schall-pickup-tower-1"] then
-	replaceItemInRecipe("Schall-pickup-tower-R32", "advanced-circuit", "electronic-circuit", 5, false)
+	replaceItemInRecipe("Schall-pickup-tower-R32", "advanced-circuit", "electronic-circuit", 5, true)
 	data.raw.technology["Schall-pickup-tower-1"].prerequisites = {"electronics", "electric-energy-distribution-1"}
 	removeSciencePackFromTech("Schall-pickup-tower-1", "military-science-pack")
 	removeSciencePackFromTech("Schall-pickup-tower-1", "chemical-science-pack")
 	data.raw.technology["Schall-pickup-tower-2"].prerequisites = {"advanced-electronics", "Schall-pickup-tower-1", "electric-energy-distribution-2", "construction-robotics"}
 	removeSciencePackFromTech("Schall-pickup-tower-2", "military-science-pack")
-end--]]
+end

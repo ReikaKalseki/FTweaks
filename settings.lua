@@ -18,6 +18,15 @@ data:extend({
 			--localised_description = "Bobplates-style; reduces cost to 2 iron per steel and halves smelt time.",
         },
         {
+            type = "double-setting",
+            name = "cheap-landfill",
+            setting_type = "startup",
+            default_value = 0.5,
+			min_value = 0.05,
+			max_value = 10,
+            order = "r",
+        },
+        {
             type = "bool-setting",
             name = "harder-silo",
             setting_type = "startup",
