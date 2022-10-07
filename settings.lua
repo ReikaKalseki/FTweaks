@@ -203,4 +203,13 @@ data:extend({
             default_value = true,
             order = "r",
         },
+        {
+            type = "double-setting",
+            name = "bob-gem-efficiency",
+            setting_type = "startup",
+            default_value = 1.0,
+			min_value = 0.05,
+			max_value = 1.0,
+            order = "r",
+        },
 })

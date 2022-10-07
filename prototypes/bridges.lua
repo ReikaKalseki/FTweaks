@@ -273,6 +273,10 @@ if data.raw.recipe["electric-furnace-2"] and data.raw.item["tungsten-plate"] the
 	replaceItemInRecipe("electric-furnace-2", "tungsten-plate", "cobalt-steel-alloy", 1)
 end
 
+if data.raw.item["sodium-hydroxide"] then
+	replaceItemInRecipe("chemical-science-pack", "sodium-hydroxide", "sodium-hydroxide", 3)
+end
+
 if Config.cheaperBelts and data.raw.item["nitinol-gear-wheel"] and data.raw.recipe["ultimate-transport-belt"] then
 	replaceItemInRecipe("ultimate-transport-belt", "nitinol-gear-wheel", "nitinol-gear-wheel", 0.4)
 	replaceItemInRecipe("ultimate-transport-belt", "nitinol-bearing", "nitinol-bearing", 0.4)
@@ -530,8 +534,19 @@ if data.raw.unit["Construction Drone"] then
 	end
 end
 
+if data.raw.roboport["bob-robo-charge-port-large"] then
+	data.raw.roboport["bob-robo-charge-port-large"].collision_box = nil
+	data.raw.roboport["bob-robo-charge-port-large-2"].collision_box = nil
+	data.raw.roboport["bob-robo-charge-port-large-3"].collision_box = nil
+	data.raw.roboport["bob-robo-charge-port-large-4"].collision_box = nil
+end
+
 if data.raw["assembling-machine"]["electric-offshore-pump"] then
 	data.raw["assembling-machine"]["electric-offshore-pump"].energy_usage = "90kW"
+end
+
+if data.raw.item["lead-plate"] then
+	replaceItemInRecipe(data.raw.recipe["battery"], "lead-plate", "lead-plate", 3, true)
 end
 
 if data.raw.technology["Schall-pickup-tower-1"] then
@@ -541,4 +556,30 @@ if data.raw.technology["Schall-pickup-tower-1"] then
 	removeSciencePackFromTech("Schall-pickup-tower-1", "chemical-science-pack")
 	data.raw.technology["Schall-pickup-tower-2"].prerequisites = {"advanced-electronics", "Schall-pickup-tower-1", "electric-energy-distribution-2", "construction-robotics"}
 	removeSciencePackFromTech("Schall-pickup-tower-2", "military-science-pack")
+	
+	replaceItemInRecipe("Schall-pickup-tower-R64", "Schall-pickup-tower-R32", "Schall-pickup-tower-R32", 0.5, true)
+	replaceItemInRecipe("Schall-pickup-tower-R96", "Schall-pickup-tower-R64", "Schall-pickup-tower-R64", 0.5, true)
+	replaceItemInRecipe("Schall-pickup-tower-R128", "Schall-pickup-tower-R96", "Schall-pickup-tower-R96", 0.5, true)
+end
+
+if data.raw.boiler["oil-steam-boiler"] and data.raw.boiler["boiler-2"] then
+	data.raw.boiler["oil-steam-boiler"].target_temperature = data.raw.boiler["boiler-2"].target_temperature
+	data.raw.boiler["oil-steam-boiler"].energy_consumption = data.raw.boiler["boiler-3"].energy_consumption
+end
+
+local function applyToBobGemRecipe(rec, frac)
+	rec = data.raw.recipe[rec]
+	convertRecipeToResultTable(rec)
+	rec.results[1].probability = Config.gemEfficiency
+	rec.results[1].amount_min = 1
+	rec.results[1].amount_max = 1
+end
+
+if Config.gemEfficiency < 1 and data.raw.item["ruby-4"] then
+	applyToBobGemRecipe("bob-ruby-4")
+	applyToBobGemRecipe("bob-sapphire-4")
+	applyToBobGemRecipe("bob-emerald-4")
+	applyToBobGemRecipe("bob-amethyst-4")
+	applyToBobGemRecipe("bob-topaz-4")
+	applyToBobGemRecipe("bob-diamond-4")
 end

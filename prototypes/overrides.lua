@@ -26,10 +26,6 @@ end
 --data.raw["straight-rail"]["straight-rail"].collision_mask = {--[["item-layer", "object-layer", --]]"floor-layer", --[["water-tile",--]] "not-colliding-with-itself"}
 --data.raw["curved-rail"]["curved-rail"].collision_mask = {--[["item-layer", "object-layer", --]]"floor-layer", --[["water-tile",--]] "not-colliding-with-itself"}
 
-
-data.raw["rail-signal"]["rail-signal"].collision_mask = {--[["item-layer", "object-layer", --]]"floor-layer", --[["water-tile",--]]}
-data.raw["rail-chain-signal"]["rail-chain-signal"].collision_mask = {--[["item-layer", "object-layer", --]]"floor-layer", --[["water-tile",--]]}
-
 -- Stack Sizes
 if Config.stackSize then
 	increaseStackSize("stone", 200)
@@ -195,12 +191,13 @@ if Config.redScienceRecipes then
 	--table.insert(data.raw.technology.turrets.effects, {type = "unlock-recipe", recipe = recipe.name})
 	data.raw.recipe["automation-science-pack"].category = "non-manual-crafting"
 	
-	 --keep ratios on this; also, since costs are 1, cannot simply multiply -> have to do this:
-	 data.raw.recipe["automation-science-pack"].result_count = 5
-	data.raw.recipe["automation-science-pack"].energy_required = data.raw.recipe["automation-science-pack"].energy_required*5 --to keep time/output the same
+	--keep ratios on this; also, since costs are 1, cannot simply multiply -> have to do this:
+	data.raw.recipe["automation-science-pack"].result_count = 5
 	if data.raw.recipe["automation-science-pack"].normal then
 		data.raw.recipe["automation-science-pack"].normal.energy_required = data.raw.recipe["automation-science-pack"].normal.energy_required*5
 		data.raw.recipe["automation-science-pack"].expensive.energy_required = data.raw.recipe["automation-science-pack"].expensive.energy_required*5
+	else
+		data.raw.recipe["automation-science-pack"].energy_required = data.raw.recipe["automation-science-pack"].energy_required*5 --to keep time/output the same
 	end
 	replaceItemInRecipe(data.raw.recipe["automation-science-pack"], "iron-gear-wheel", "iron-gear-wheel", 4)
 	replaceItemInRecipe(data.raw.recipe["automation-science-pack"], "copper-plate", "copper-plate", 4)
@@ -454,7 +451,7 @@ end
 improveAttribute(data.raw["assembling-machine"]["assembling-machine-3"], "crafting_speed", 1.5) --vanilla is 1.25, which is LESS than a tier2 with the four speed modules
 
 if not mods["bobwarfare"] then
-	replaceItemInRecipe(data.raw.recipe["solar-panel-equipment"], "solar-panel", "solar-panel", 0.4) --from 5 to 2
+	replaceItemInRecipe(data.raw.recipe["solar-panel-equipment"], "solar-panel", "solar-panel", 0.4, true) --from 5 to 2
 end
 
 --quickfix for getting fluids out of pipes; comment back out when done

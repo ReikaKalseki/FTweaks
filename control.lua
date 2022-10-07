@@ -98,6 +98,14 @@ end
 initGlobal(false)
 
 local function addCommands()
+	commands.add_command("identify", {"cmd.identify-help"}, function(event)
+		local player = game.players[event.player_index]
+		local sel = player.selected
+		if not (sel and sel.valid) then player.print("No entity is selected.") return end
+		player.print("Selected entity: " .. sel.prototype.type .. " / " .. sel.prototype.name)
+		player.print("Class name: " .. sel.prototype.object_name)
+	end)
+	
 	commands.add_command("countScience", {"cmd.count-science-help"}, function(event)
 		local count = 0
 		local player = game.players[event.player_index]
@@ -306,6 +314,7 @@ script.on_event(defines.events.on_tick, function(event)
 		doOneTick()
 		global.ftweaks.ranTick = true
 		game.print("FTweaks: Game state changed; reloading caches.")
+		log("FTweaks: Game state changed; reloading caches.")
 	end
 	if event.tick%15 == 0 then
 		for _,player in pairs(game.players) do

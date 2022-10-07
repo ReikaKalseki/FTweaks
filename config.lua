@@ -57,3 +57,5 @@ Config.cheapCliffExplosives = settings.startup["cheap-cliff-explosives"].value--
 Config.betterArtillery = settings.startup["better-artillery"].value--true
 
 Config.collectorEquipment = settings.startup["item-collector-equipment"].value--true
+
+Config.gemEfficiency = settings.startup["bob-gem-efficiency"].value--true
