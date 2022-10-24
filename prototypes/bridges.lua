@@ -534,11 +534,21 @@ if data.raw.unit["Construction Drone"] then
 	end
 end
 
+local function removeBobRobochargingPadCollision(entity, large)
+	data.raw.roboport[entity].collision_box = nil
+	data.raw.roboport[entity].tile_height = large and 3 or 2
+	data.raw.roboport[entity].tile_width = large and 3 or 2
+end
+
 if data.raw.roboport["bob-robo-charge-port-large"] then
-	data.raw.roboport["bob-robo-charge-port-large"].collision_box = nil
-	data.raw.roboport["bob-robo-charge-port-large-2"].collision_box = nil
-	data.raw.roboport["bob-robo-charge-port-large-3"].collision_box = nil
-	data.raw.roboport["bob-robo-charge-port-large-4"].collision_box = nil
+	removeBobRobochargingPadCollision("bob-robo-charge-port")
+	removeBobRobochargingPadCollision("bob-robo-charge-port-2")
+	removeBobRobochargingPadCollision("bob-robo-charge-port-3")
+	removeBobRobochargingPadCollision("bob-robo-charge-port-4")
+	removeBobRobochargingPadCollision("bob-robo-charge-port-large", true)
+	removeBobRobochargingPadCollision("bob-robo-charge-port-large-2", true)
+	removeBobRobochargingPadCollision("bob-robo-charge-port-large-3", true)
+	removeBobRobochargingPadCollision("bob-robo-charge-port-large-4", true)
 end
 
 if data.raw["assembling-machine"]["electric-offshore-pump"] then
