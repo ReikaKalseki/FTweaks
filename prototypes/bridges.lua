@@ -593,3 +593,25 @@ if Config.gemEfficiency < 1 and data.raw.item["ruby-4"] then
 	applyToBobGemRecipe("bob-topaz-4")
 	applyToBobGemRecipe("bob-diamond-4")
 end
+
+if data.raw.inserter["turbo-stack-filter-inserter"] then
+	data.raw.inserter["stack-filter-inserter"].filter_count = 3 --this is the blue one; express-stack-filter-inserter, while it exists, is not used, and the red one is a custom reimpl
+	data.raw.inserter["turbo-stack-filter-inserter"].filter_count = 5
+end
+
+local function ensureContactsInBobModule(recipe)
+	local rec = data.raw["recipe"][recipe]
+	if rec then
+		addItemToRecipe(rec, "module-contact", 5)
+	end
+end
+
+if data.raw.item["module-contact"] then
+	ensureContactsInBobModule("speed-module-3")
+	ensureContactsInBobModule("effectivity-module-3")
+	ensureContactsInBobModule("productivity-module-3")
+	ensureContactsInBobModule("pollution-clean-module-3")
+	ensureContactsInBobModule("raw-speed-module-3")
+	ensureContactsInBobModule("raw-productivity-module-3")
+	ensureContactsInBobModule("green-module-3")
+end

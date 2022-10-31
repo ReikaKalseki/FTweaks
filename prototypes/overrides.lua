@@ -194,6 +194,8 @@ if Config.redScienceRecipes then
 	--keep ratios on this; also, since costs are 1, cannot simply multiply -> have to do this:
 	data.raw.recipe["automation-science-pack"].result_count = 5
 	if data.raw.recipe["automation-science-pack"].normal then
+		data.raw.recipe["automation-science-pack"].normal.result_count = 5
+		data.raw.recipe["automation-science-pack"].expensive.result_count = 5
 		data.raw.recipe["automation-science-pack"].normal.energy_required = data.raw.recipe["automation-science-pack"].normal.energy_required*5
 		data.raw.recipe["automation-science-pack"].expensive.energy_required = data.raw.recipe["automation-science-pack"].expensive.energy_required*5
 	else
@@ -255,8 +257,8 @@ if flag then
 end
 
 table.insert(data.raw["technology"]["logistic-robotics"].prerequisites, "logistics-3")
-if data.raw.tool["bob-logistic-science-pack"] then
-	addSciencePackToTech("logistic-robotics", "bob-logistic-science-pack")
+if data.raw.tool["advanced-logistic-science-pack"] then
+	addSciencePackToTech("logistic-robotics", "advanced-logistic-science-pack")
 end
 
 moveRecipe("poison-capsule", "military-3", "military-2") --why was this even mil3
