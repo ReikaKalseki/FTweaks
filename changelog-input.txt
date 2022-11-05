@@ -1,4 +1,26 @@
 ---------------------------------------------------------------------------------------------------
+Version: 1.148.1
+Date: Oct 31 2022
+	- BobMod integration: Fixed offset of charge pads
+	- BobMod integration: Increased filter slot count of high-tier filter inserters, 3 for blue and 5 for purple
+	- BobMod integration: Added missing module contact to tier 3 of all module colors
+	- More fixes to normal/expensive split in red science split option
+---------------------------------------------------------------------------------------------------
+Version: 1.144.1
+Date: Oct 7 2022
+	- Added option to cheapen landfill
+	- Removed cobalt steel from blue belt recipe
+	- Removed train-signal collision removal
+	- Added "identify" command to help in debugging
+	- Fixed normal/expensive split in red science split option
+	- Updated schall pickup tower recipe changes
+	- Increased output temperature of KSPower steam boiler to be comparable to a BobMods boiler 2
+	- BobMod integration: Added option to reduce gem cutting efficiency
+	- BobMod integration: Increased sodium hydroxide cost of blue science
+	- BobMod integration: Removed collision from robot charge pads
+	- BobMod integration: Increased lead cost of battery
+	- BobMod integration: Fixed crash with solar equipment
+---------------------------------------------------------------------------------------------------
 Version: 1.105.1
 Date: Apr 28 2021
 	- Update to 1.1
