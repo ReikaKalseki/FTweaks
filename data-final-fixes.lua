@@ -178,3 +178,13 @@ for name,recipe in pairs(data.raw.recipe) do
 		end
 	end
 end
+
+if Config.productivityOnAmmo then
+	for name,recipe in pairs(data.raw.recipe) do
+		if not (string.find(name, "-crate", 1, true) or string.find(name, "-unpacking", 1, true)) then
+			if recipe.result and data.raw.ammo[recipe.result] then
+				markForProductivityAllowed(recipe)
+			end
+		end
+	end
+end

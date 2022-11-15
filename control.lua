@@ -16,7 +16,7 @@ function initGlobal(force)
 		remote.call("silo_script", "add_tracked_item", "advanced-satellite")
 	end
 end
-
+--[[
 local modifiers = {
 	["worker-robot-speed"] = "worker_robots_speed_modifier",
 	["worker-robot-battery"] = "worker_robots_battery_modifier",
@@ -40,7 +40,7 @@ local modifiers = {
 	--["inserter-stack-size-bonus"] = "inserter_stack_size_bonus",
 	--[""] = "",
 }
-
+--]]
 local function getAllPreReqs(list, tech)
 	for name,pre in pairs(tech.prerequisites) do
 		list[name] = pre
@@ -60,7 +60,7 @@ local function getPreReqBonus(tech, type)
 	end
 	return sum
 end
-
+--[[
 local function recalcModifier(force, tech, effect)
 	local val = effect.modifier
 	local type = effect.type
@@ -72,7 +72,7 @@ local function recalcModifier(force, tech, effect)
 		game.print("Setting " .. get .. " to " .. pre+val)
 	end
 end
-
+--]]
 local function doOneTick()
 	for _,force in pairs(game.forces) do
 		force.reset_technologies()
@@ -272,7 +272,7 @@ script.on_init(function()
 	initGlobal(true)
 end)
 
-script.on_configuration_changed(function()
+script.on_configuration_changed(function(data)
 	initGlobal(true)
 	global.ftweaks.ranTick = false
 end)
@@ -348,8 +348,8 @@ end
 script.on_event(defines.events.on_rocket_launched, function(event)
 	if Config.harderRockets then
 		game.forces.enemy.evolution_factor = math.min(1, game.forces.enemy.evolution_factor+getRocketEvoIncrease(game.forces.enemy.evolution_factor))
-		local size = math.random(200, 500)
-		local radius = math.random(800, 2000)
+		local size = math.random(200, 500) --[[@as uint]]
+		local radius = math.random(800, 2000) --[[@as uint]]
 		local biters = event.rocket_silo.surface.set_multi_command{command={type=defines.command.attack_area, destination=event.rocket_silo.position, radius=80, distraction=defines.distraction.none}, unit_count=size, force=game.forces.enemy, unit_search_distance=radius}
 		event.rocket_silo.force.print("Detecting drastic increase in enemy activity..." .. biters .. " enemies disturbed")
 	end

@@ -34,11 +34,11 @@ createVoidRecipe("air")
 createVoidRecipe("liquid-air")
 
 if data.raw.recipe["large-accumulator"] then
-	log(tostring(Config.harderSilo))
+	--log(tostring(Config.harderSilo))
+	local ingredients = nil
+	local exp = nil
+	local norm = nil
 		if not Config.harderSilo then
-			local ingredients = nil
-			local exp = nil
-			local norm = nil
 			local accucount = 0
 			if data.raw.recipe["satellite"].ingredients then
 				ingredients = {}
@@ -250,7 +250,7 @@ if data.raw.item["steel-gear-wheel"] then
 
 	for _,rec in pairs(express) do
 		replaceItemInRecipe(rec, "iron-gear-wheel", "steel-gear-wheel", Config.cheaperBelts and 0.35 or 0.5, true) --0.5 to keep the iron cost the same
-		local bearings = Config.cheaperBelts and 2 or 4, Config.cheaperBelts and 2 or 5
+		local bearings = Config.cheaperBelts and 2 or 4--, Config.cheaperBelts and 2 or 5
 		if rec == "express-underground-belt" then bearings = bearings*3 end
 		addItemToRecipe(rec, "steel-bearing", bearings)
 	end
@@ -595,15 +595,20 @@ if Config.gemEfficiency < 1 and data.raw.item["ruby-4"] then
 end
 
 if data.raw.inserter["turbo-stack-filter-inserter"] then
-	data.raw.inserter["stack-filter-inserter"].filter_count = 3 --this is the blue one; express-stack-filter-inserter, while it exists, is not used, and the red one is a custom reimpl
+	data.raw.inserter["stack-filter-inserter"].filter_count = 3 --this is the blue one; express-stack-filter-inserter, is changed to the ultimate one, and the red one is a custom reimpl
 	data.raw.inserter["turbo-stack-filter-inserter"].filter_count = 5
+	data.raw.inserter["express-stack-filter-inserter"].filter_count = 5 --green, not blue
+end
+
+local function ensureItemInBobModule(recipe, item, amt)
+	local rec = data.raw["recipe"][recipe]
+	if rec then
+		addItemToRecipe(rec, item, amt)
+	end
 end
 
 local function ensureContactsInBobModule(recipe)
-	local rec = data.raw["recipe"][recipe]
-	if rec then
-		addItemToRecipe(rec, "module-contact", 5)
-	end
+	ensureItemInBobModule(rec, "module-contact", 5)
 end
 
 if data.raw.item["module-contact"] then
@@ -614,4 +619,14 @@ if data.raw.item["module-contact"] then
 	ensureContactsInBobModule("raw-speed-module-3")
 	ensureContactsInBobModule("raw-productivity-module-3")
 	ensureContactsInBobModule("green-module-3")
+	ensureItemInBobModule("god-module-3", "electronic-components", 7)
+end
+
+if Config.productivityOnGems and data.raw.recipe["bob-ruby-5"] then
+	markForProductivityAllowed("bob-ruby-5")
+	markForProductivityAllowed("bob-sapphire-5")
+	markForProductivityAllowed("bob-emerald-5")
+	markForProductivityAllowed("bob-amethyst-5")
+	markForProductivityAllowed("bob-topaz-5")
+	markForProductivityAllowed("bob-diamond-5")
 end

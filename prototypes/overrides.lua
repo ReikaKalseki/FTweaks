@@ -504,13 +504,13 @@ if data.raw.locomotive["bob-diesel-locomotive-3"] then
 end
 
 if data.raw["cargo-wagon"]["bob-cargo-wagon-2"] then
-	for i = 2,4 do
+	--local byTierDelta = data.raw["cargo-wagon"]["bob-cargo-wagon-2"].inventory_size-data.raw["cargo-wagon"]["cargo-wagon"].inventory_size
+	for i = 2,6 do
 		local obj = data.raw["cargo-wagon"]["bob-cargo-wagon-" .. i]
 		if obj then
-			local pre = i == 2 and "cargo-wagon" or "bob-cargo-wagon-" .. (i-1)
-			pre = data.raw["cargo-wagon"][pre]
-			local new = pre.inventory_size+2*(obj.inventory_size-pre.inventory_size)
-			log("Improving cargo size of " .. obj.name .. " from " .. obj.inventory_size .. " to " .. new)
+			local baseline = data.raw["cargo-wagon"]["cargo-wagon"].inventory_size
+			local new = baseline+Config.cargoWagonBoost*(obj.inventory_size-baseline)
+			log("Improving cargo size of " .. obj.name .. " from " .. obj.inventory_size .. " to " .. new .. "(+" .. (new-baseline) .. " improvement from base)")
 			improveAttribute(obj, "inventory_size", new)
 		end
 	end
@@ -769,4 +769,8 @@ if Config.betterArtillery then
 		data.raw["artillery-projectile"]["artillery-projectile"].action.action_delivery.target_effects[1].action.action_delivery.target_effects[2].damage.amount = 15000 --from 500
 	end
 	--table.insert(data.raw.technology.artillery.effects, {type = "artillery-range", modifier = 1.5})
+end
+
+if mods["bobplates"] then
+	markForProductivityAllowed("pipe")
 end

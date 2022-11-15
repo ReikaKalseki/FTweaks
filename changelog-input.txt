@@ -1,4 +1,17 @@
 ---------------------------------------------------------------------------------------------------
+Version: 1.152.1
+Date: Nov 15 2022
+	- Fixed bob-cargo-wagon capacity scaling, and made the values configurable
+	- Added two options to enable productivity on ammo and bob gems recipes
+	- Iron pipe is now productivity-enabled when bobplates is installed
+	- Fixed missing transistors x7 in bob god module 3
+	- Increased filter slot count of bob ultimate inserter to 5
+	- Major code cleanup
+---------------------------------------------------------------------------------------------------
+Version: 1.150.1
+Date: Nov 4 2022
+	- Fixed missing locale for manual red science pack recipe
+---------------------------------------------------------------------------------------------------
 Version: 1.148.1
 Date: Oct 31 2022
 	- BobMod integration: Fixed offset of charge pads

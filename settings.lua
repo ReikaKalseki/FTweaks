@@ -212,4 +212,27 @@ data:extend({
 			max_value = 1.0,
             order = "r",
         },
+        {
+            type = "double-setting",
+            name = "bob-cargo-wagon-bonus-boost",
+            setting_type = "startup",
+            default_value = 2,
+			min_value = 1,
+			max_value = 5,
+            order = "r",
+        },
+        {
+            type = "bool-setting",
+            name = "ammo-productivity",
+            setting_type = "startup",
+            default_value = true,
+            order = "r",
+        },
+        {
+            type = "bool-setting",
+            name = "gem-productivity",
+            setting_type = "startup",
+            default_value = true,
+            order = "r",
+        },
 })
